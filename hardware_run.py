@@ -5,7 +5,11 @@ Pipeline: build QUBO (lam=0.3) -> QAOA ansatz -> assign optimised parameters
 re-optimised with qaoa_run.optimise if the file is missing) -> transpile for
 the backend -> SamplerV2 with dynamical decoupling and Pauli twirling ->
 submit and RETURN IMMEDIATELY (results are fetched later by
-retrieve_hardware.py). The job metadata goes to results/hardware_job.json.
+retrieve_hardware.py). The job metadata is keyed by seed and instance (see
+job_file_for): the first job ever submitted, seed 0 with 5 loans at p=1, stays
+in results/hardware_job.json; every other job goes to
+results/hardware_job_seed{S}_n{N}_p{P}.json, so a new job never overwrites an
+earlier job's record or result.
 
 Credentials: only the saved account (QiskitRuntimeService.save_account, done
 by the user outside this repo) or the QISKIT_IBM_TOKEN environment variable.
@@ -102,6 +106,56 @@ def best_p_from_results(seed: int, results_dir: Path = RESULTS) -> int | None:
     return None if best is None else best[1]
 
 
+LEGACY_KEY = (0, 5, 1)  # (seed, n_loans, p) of the first job; keeps its file names
+
+
+def job_file_for(seed: int, n_loans: int, p: int, results_dir: Path = RESULTS) -> Path:
+    """Return the job-record path for one (seed, n_loans, p) instance.
+
+    The first job (seed 0, 5 loans, p=1) keeps results/hardware_job.json so the
+    existing record is untouched; all other instances get their own file.
+    """
+    if (seed, n_loans, p) == LEGACY_KEY:
+        return results_dir / "hardware_job.json"
+    return results_dir / f"hardware_job_seed{seed}_n{n_loans}_p{p}.json"
+
+
+def result_file_for(
+    seed: int, n_loans: int, p: int, results_dir: Path = RESULTS
+) -> Path:
+    """Return the retrieved-result path for one (seed, n_loans, p) instance."""
+    if (seed, n_loans, p) == LEGACY_KEY:
+        return results_dir / "hardware_result.json"
+    return results_dir / f"hardware_result_seed{seed}_n{n_loans}_p{p}.json"
+
+
+def describe_params_source(
+    n_loans: int, seed: int, p: int, results_dir: Path = RESULTS
+) -> str:
+    """Say exactly where the QAOA parameters come from, without computing them.
+
+    Order used by get_params: (1) for the 8-loan instance, the saved
+    results/qaoa_seed{S}_p{P}.json; (2) otherwise the cache file
+    results/hardware_params_seed{S}_n{N}_p{P}.json; (3) otherwise a fresh
+    COBYLA run (qaoa_run.optimise, 5 restarts, 200 iterations, seeded) on that
+    exact instance, which is then written to the cache file.
+    """
+    saved = results_dir / f"qaoa_seed{seed}_p{p}.json"
+    cache = results_dir / f"hardware_params_seed{seed}_n{n_loans}_p{p}.json"
+    if n_loans == 8 and saved.exists():
+        return f"SAVED parameters from {saved.as_posix()} (instance: seed {seed}, 8 loans, p={p})"
+    if cache.exists():
+        return (
+            f"CACHED parameters from {cache.as_posix()}, optimised earlier on the "
+            f"instance seed {seed}, {n_loans} loans, p={p}"
+        )
+    return (
+        f"RE-OPTIMISED now with COBYLA on the instance seed {seed}, {n_loans} loans, "
+        f"p={p} (no saved or cached parameters; result will be cached at "
+        f"{cache.as_posix()})"
+    )
+
+
 def get_params(
     q: Qubo,
     n_loans: int,
@@ -130,18 +184,30 @@ def get_params(
     path = results_dir / f"qaoa_seed{seed}_p{p}.json"
     if n_loans == 8 and path.exists():
         data = json.loads(path.read_text(encoding="utf-8"))
-        return p, np.array(data["optimiser"]["best_params"]), f"saved {path.name}"
+        return (
+            p,
+            np.array(data["optimiser"]["best_params"]),
+            f"saved {path.name} (seed {seed}, {n_loans} loans, p={p})",
+        )
     cache = results_dir / f"hardware_params_seed{seed}_n{n_loans}_p{p}.json"
     if cache.exists():
         saved = json.loads(cache.read_text(encoding="utf-8"))
-        return p, np.array(saved["params"]), f"cached {cache.name}"
+        return (
+            p,
+            np.array(saved["params"]),
+            f"cached {cache.name} (optimised on seed {seed}, {n_loans} loans, p={p})",
+        )
     opt = optimise(q, p, seed)
     cache.parent.mkdir(parents=True, exist_ok=True)
     cache.write_text(
         json.dumps({"params": opt["best_params"], "best_value": opt["best_value"]}),
         encoding="utf-8",
     )
-    return p, np.array(opt["best_params"]), f"re-optimised p={p} n_loans={n_loans}"
+    return (
+        p,
+        np.array(opt["best_params"]),
+        f"re-optimised just now on seed {seed}, {n_loans} loans, p={p}",
+    )
 
 
 def transpile_for(
@@ -308,6 +374,20 @@ def submit(backend: Any, prep: dict[str, Any], seed: int) -> dict[str, Any]:
     }
 
 
+def params_line(prep: dict[str, Any], seed: int) -> str:
+    """One line stating which QAOA parameters this run uses and for which instance."""
+    return (
+        f"QAOA parameters for seed {seed}, {prep['n_loans']} loans, p={prep['p']}: "
+        f"{prep['provenance']}. Values: "
+        + ", ".join(f"{v:.6f}" for v in prep["params"])
+    )
+
+
+def job_path_for(prep: dict[str, Any], seed: int) -> Path:
+    """Job-record path for the prepared instance (see job_file_for)."""
+    return job_file_for(seed, prep["n_loans"], prep["p"])
+
+
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point. Returns the process exit code."""
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -338,9 +418,11 @@ def main(argv: list[str] | None = None) -> int:
             f"two_qubit_gates={prep['stats']['two_qubit_gates']}"
         )
         print(prep["reason"])
+        print(params_line(prep, args.seed))
+        print(f"Job record would be written to: {job_path_for(prep, args.seed)}")
         print(
             "To submit, save your IBM account or set QISKIT_IBM_TOKEN, then run: "
-            f"python hardware_run.py{size_flag}{p_flag}"
+            f"python hardware_run.py{size_flag}{p_flag} --seed {args.seed}"
         )
         return 0
 
@@ -356,12 +438,21 @@ def main(argv: list[str] | None = None) -> int:
         f"two_qubit_gates={prep['stats']['two_qubit_gates']}"
     )
     print(prep["reason"])
+    print(params_line(prep, args.seed))
+    job_path = job_path_for(prep, args.seed)
+    print(f"Job record path: {job_path}")
     if args.dry_run:
         validate_options(sampler_options())
         print("Dry run: options valid, job NOT submitted.")
         return 0
+    if job_path.exists():
+        print(
+            f"Refusing to submit: {job_path} already exists (an earlier job for "
+            "this seed, instance and p). Move or delete it deliberately first."
+        )
+        return 1
     record = submit(backend, prep, args.seed)
-    path = save_job_record(record)
+    path = save_job_record(record, job_path)
     print(f"Submitted job {record['job_id']} to {record['backend']}; saved {path}")
     return 0
 

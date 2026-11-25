@@ -134,3 +134,134 @@ def test_small_instance_mode_prints_size_before_any_submit(
 def test_min_qubits_for_matches_qubo() -> None:
     assert hardware_run.min_qubits_for(5) == 9
     assert hardware_run.min_qubits_for(4) == 8
+
+
+def test_job_and_result_files_are_keyed_by_instance(tmp_path: Path) -> None:
+    """The first job keeps its legacy file names; every other instance gets its own."""
+    jf, rf = hardware_run.job_file_for, hardware_run.result_file_for
+    assert jf(0, 5, 1, tmp_path) == tmp_path / "hardware_job.json"
+    assert rf(0, 5, 1, tmp_path) == tmp_path / "hardware_result.json"
+    assert jf(1, 5, 1, tmp_path) == tmp_path / "hardware_job_seed1_n5_p1.json"
+    assert rf(1, 5, 1, tmp_path) == tmp_path / "hardware_result_seed1_n5_p1.json"
+    assert jf(0, 4, 1, tmp_path) != jf(0, 5, 1, tmp_path)
+    assert jf(0, 5, 2, tmp_path) != jf(0, 5, 1, tmp_path)
+    paths = {jf(s, n, p, tmp_path) for s in (0, 1, 2) for n in (4, 5) for p in (1, 2)}
+    assert len(paths) == 12
+
+
+def test_params_source_description_is_exact(tmp_path: Path) -> None:
+    d = hardware_run.describe_params_source
+    # Nothing saved: must say it re-optimises on that exact instance.
+    assert "RE-OPTIMISED now" in d(5, 1, 1, tmp_path)
+    assert "seed 1, 5 loans, p=1" in d(5, 1, 1, tmp_path)
+    (tmp_path / "hardware_params_seed1_n5_p1.json").write_text(
+        '{"params": [0.1, 0.2]}', encoding="utf-8"
+    )
+    assert "CACHED parameters" in d(5, 1, 1, tmp_path)
+    # A saved 8-loan run is used only for 8 loans.
+    (tmp_path / "qaoa_seed2_p1.json").write_text("{}", encoding="utf-8")
+    assert "SAVED parameters" in d(8, 2, 1, tmp_path)
+    assert "SAVED" not in d(5, 2, 1, tmp_path)
+
+
+def _patch_offline(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> list[int]:
+    """Make hardware_run.main run offline against a temp results folder."""
+    monkeypatch.setattr(hardware_run, "RESULTS", tmp_path)
+    monkeypatch.setattr(
+        hardware_run,
+        "job_file_for",
+        lambda s, n, p, results_dir=tmp_path: hardware_run.RESULTS
+        / f"job_seed{s}_n{n}_p{p}.json",
+    )
+    monkeypatch.setattr(
+        hardware_run,
+        "get_params",
+        lambda q, n, s, d=None, p=None: (1, np.array([0.3, 0.4]), f"test seed {s}"),
+    )
+    submitted: list[int] = []
+
+    class FakeBackend:
+        name = "fake_backend"
+
+        def __init__(self) -> None:
+            self.n = 0
+
+    class FakeService:
+        def least_busy(self, **kwargs: object) -> FakeBackend:
+            return FakeBackend()
+
+    monkeypatch.setattr(hardware_run, "connect_service", lambda: FakeService())
+    real_prepare = hardware_run.prepare
+    real_fallback = hardware_run.fallback_backend
+
+    def fake_prepare(backend, seed, ladder, p):
+        return real_prepare(real_fallback(), seed, ladder, p)
+
+    monkeypatch.setattr(hardware_run, "prepare", fake_prepare)
+
+    def fake_submit(backend, prep, seed):
+        submitted.append(seed)
+        return {"job_id": f"job{seed}", "backend": "fake_backend", "seed": seed}
+
+    monkeypatch.setattr(hardware_run, "submit", fake_submit)
+    return submitted
+
+
+def test_second_job_does_not_overwrite_first(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Two seeds write two files; resubmitting the same instance is refused."""
+    submitted = _patch_offline(monkeypatch, tmp_path)
+    assert hardware_run.main(["--n-loans", "4", "--p", "1", "--seed", "0"]) == 0
+    first = tmp_path / "job_seed0_n4_p1.json"
+    first_bytes = first.read_bytes()
+    assert hardware_run.main(["--n-loans", "4", "--p", "1", "--seed", "1"]) == 0
+    second = tmp_path / "job_seed1_n4_p1.json"
+    assert first.read_bytes() == first_bytes  # untouched
+    assert second.exists() and second.read_bytes() != first_bytes
+    assert submitted == [0, 1]
+    # The same instance again must not overwrite and must not submit.
+    assert hardware_run.main(["--n-loans", "4", "--p", "1", "--seed", "0"]) == 1
+    assert first.read_bytes() == first_bytes
+    assert submitted == [0, 1]
+    assert "Refusing to submit" in capsys.readouterr().out
+
+
+def test_dry_run_prints_parameter_source_and_writes_nothing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    submitted = _patch_offline(monkeypatch, tmp_path)
+    assert (
+        hardware_run.main(["--n-loans", "4", "--p", "1", "--seed", "1", "--dry-run"])
+        == 0
+    )
+    out = capsys.readouterr().out
+    assert "QAOA parameters for seed 1, 4 loans, p=1" in out
+    assert "test seed 1" in out
+    assert "Job record path:" in out and "job_seed1_n4_p1.json" in out
+    assert submitted == [] and list(tmp_path.iterdir()) == []
+
+
+def test_no_credentials_path_names_the_parameter_source(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(hardware_run, "connect_service", lambda: None)
+    monkeypatch.setattr(
+        hardware_run,
+        "get_params",
+        lambda q, n, s, d=None, p=None: (1, np.array([0.3, 0.4]), "cached x (seed 1)"),
+    )
+    assert hardware_run.main(["--n-loans", "4", "--seed", "1"]) == 0
+    out = capsys.readouterr().out
+    assert "QAOA parameters for seed 1, 4 loans, p=1" in out
+    assert "--seed 1" in out and "Job record would be written to:" in out
+
+
+def test_retrieve_selects_job_by_instance(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(
+        retrieve_hardware, "job_file_for", lambda s, n, p: tmp_path / f"j{s}.json"
+    )
+    assert retrieve_hardware.main(["--seed", "7"]) == 0
+    assert "j7.json" in capsys.readouterr().out
