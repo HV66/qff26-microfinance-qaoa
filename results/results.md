@@ -194,6 +194,142 @@ Where greedy fails (gap above 0), QAOA is above random in 2 of 3 runs and below 
 | 4 | 0.0000 | no | 2 | 21 | 10 | 2.10 | indistinguishable from random | no |
 | 4 | 0.0000 | no | 3 | 18 | 10 | 1.80 | indistinguishable from random | no |
 
+## Price of fairness (sector-coverage constraint)
+
+Constraint: every sector with >= 1 loan request has >= 1 funded loan. Classical exhaustive search over all loan vectors, so no QAOA result is involved. Loss is the increase in the minimised objective against the unconstrained optimum; percent is relative to the absolute unconstrained objective, which is close to zero at lambda 1.0, so percentages there are large and the absolute loss is the safer number. The extra qubits are arithmetic only (nothing was built): sum over sectors of bit_length(n_s - 1) slack bits to turn `sum_{i in s} x_i >= 1` into an equality.
+
+| lam | cases | cases with loss > 0 | mean loss % | max loss % | infeasible |
+|---|---|---|---|---|---|
+| 0.1 | 5 | 1 | 0.7387 | 3.6935 | 0 |
+| 0.3 | 5 | 2 | 5.4989 | 27.3025 | 0 |
+| 1.0 | 5 | 3 | 162.8990 | 676.3028 | 0 |
+
+| seed | lam | unconstrained objective | constrained objective | loss (abs) | loss % | unconstrained already covers all sectors | loans funded (constrained) | amount / budget (constrained) | extra slack qubits (qubits before -> after) |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 0.1000 | -3.3492 | -3.3492 | 0.0000 | 0.00 | yes | 4 | 11 / 11 | 5 (12 -> 17) |
+| 0 | 0.3000 | -3.1396 | -3.1396 | 0.0000 | 0.00 | yes | 4 | 11 / 11 | 5 (12 -> 17) |
+| 0 | 1.0000 | -2.4059 | -2.4059 | 0.0000 | 0.00 | yes | 4 | 11 / 11 | 5 (12 -> 17) |
+| 1 | 0.1000 | -4.1719 | -4.1719 | 0.0000 | 0.00 | yes | 4 | 17 / 17 | 5 (13 -> 18) |
+| 1 | 0.3000 | -3.3702 | -3.3702 | 0.0000 | 0.00 | yes | 3 | 15 / 17 | 5 (13 -> 18) |
+| 1 | 1.0000 | -0.9569 | -0.9569 | 0.0000 | 0.00 | yes | 3 | 15 / 17 | 5 (13 -> 18) |
+| 2 | 0.1000 | -2.4610 | -2.3701 | 0.0909 | 3.69 | no | 3 | 12 / 12 | 5 (12 -> 17) |
+| 2 | 0.3000 | -1.6639 | -1.2096 | 0.4543 | 27.30 | no | 3 | 12 / 12 | 5 (12 -> 17) |
+| 2 | 1.0000 | -0.2914 | 1.6795 | 1.9709 | 676.30 | no | 3 | 6 / 12 | 5 (12 -> 17) |
+| 3 | 0.1000 | -2.3086 | -2.3086 | 0.0000 | 0.00 | yes | 5 | 12 / 13 | 5 (12 -> 17) |
+| 3 | 0.3000 | -1.6472 | -1.6440 | 0.0032 | 0.19 | no | 5 | 12 / 13 | 5 (12 -> 17) |
+| 3 | 1.0000 | -0.5417 | -0.1228 | 0.4189 | 77.33 | no | 3 | 5 / 13 | 5 (12 -> 17) |
+| 4 | 0.1000 | -4.3164 | -4.3164 | 0.0000 | 0.00 | yes | 4 | 20 / 21 | 5 (13 -> 18) |
+| 4 | 0.3000 | -2.8433 | -2.8433 | 0.0000 | 0.00 | yes | 4 | 20 / 21 | 5 (13 -> 18) |
+| 4 | 1.0000 | -1.1703 | -0.4580 | 0.7123 | 60.86 | no | 3 | 14 / 21 | 5 (13 -> 18) |
+
+## Slack-free (unbalanced) budget penalty
+
+Technique: unbalanced penalization of an inequality constraint (credited in `qubo_unbalanced.py`; the citation is from memory and was not verified online). The coefficient rule is fixed in `docs/preregistration.md` and was not tuned.
+
+**Minimum decodes to the exact optimum on 3 of 10 seeds (lambda 0.3, 8 loans): pass [0, 2, 6], fail [1, 3, 4, 5, 7, 8, 9].** On every failing seed the minimum is budget-feasible and spends the full budget but is a worse portfolio than the exact optimum: the penalty is almost an equality constraint at integer amounts (see the dated correction in the preregistration).
+
+| seed | min-energy decode | decoded x | spend / budget | exact x | exact spend | decoded objective | exact objective | penalty for 1 unspent unit |
+|---|---|---|---|---|---|---|---|---|
+| 0 | pass | 01010110 | 11 / 11 | 01010110 | 11 | -3.1396 | -3.1396 | 5.2931 |
+| 1 | FAIL | 00101110 | 17 / 17 | 00101010 | 15 | -3.2792 | -3.3702 | 5.5561 |
+| 2 | pass | 10100010 | 12 / 12 | 10100010 | 12 | -1.6639 | -1.6639 | 4.1052 |
+| 3 | FAIL | 11000001 | 13 / 13 | 01101001 | 10 | -1.0268 | -1.6472 | 2.7931 |
+| 4 | FAIL | 01010010 | 21 / 21 | 10010011 | 20 | -1.4680 | -2.8433 | 8.1460 |
+| 5 | FAIL | 00101110 | 16 / 16 | 00000111 | 14 | -1.3178 | -2.1129 | 3.8550 |
+| 6 | pass | 10001001 | 15 / 15 | 10001001 | 15 | -3.9629 | -3.9629 | 3.3325 |
+| 7 | FAIL | 01110000 | 20 / 20 | 01010000 | 14 | -1.1981 | -2.2259 | 5.1372 |
+| 8 | FAIL | 10000110 | 15 / 15 | 11001100 | 14 | -1.9779 | -2.5603 | 3.5470 |
+| 9 | FAIL | 10001110 | 16 / 16 | 10011010 | 14 | -1.6780 | -2.5756 | 7.2528 |
+
+QAOA on both versions (seeds 0-4, p = 1-3, same settings). Cells show unbalanced / slack. Verdicts are the raw one-sided binomial verdict against uniform random sampling.
+
+| seed | p | qubits | logical depth | two-qubit gates | P(optimum) | P(feasible, decoded) | verdict, unbalanced | verdict, slack |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 1 | 8 / 12 | 48 / 72 | 56 / 132 | 0.0076 / 0.0042 | 0.5200 / 0.7805 | above random | indistinguishable from random |
+| 0 | 2 | 8 / 12 | 78 / 114 | 112 / 264 | 0.0032 / 0.0051 | 0.4062 / 0.8833 | indistinguishable from random | indistinguishable from random |
+| 0 | 3 | 8 / 12 | 108 / 156 | 168 / 396 | 0.0076 / 0.0029 | 0.5085 / 0.8120 | above random | indistinguishable from random |
+| 1 | 1 | 8 / 13 | 48 / 78 | 56 / 156 | 0.0049 / 0.0059 | 0.3545 / 0.8008 | indistinguishable from random | above random |
+| 1 | 2 | 8 / 13 | 78 / 123 | 112 / 312 | 0.0063 / 0.0049 | 0.3669 / 0.8425 | above random | indistinguishable from random |
+| 1 | 3 | 8 / 13 | 108 / 168 | 168 / 468 | 0.0090 / 0.0085 | 0.4890 / 0.8008 | above random | above random |
+| 2 | 1 | 8 / 12 | 48 / 72 | 56 / 132 | 0.0061 / 0.0073 | 0.4458 / 0.7991 | above random | above random |
+| 2 | 2 | 8 / 12 | 78 / 114 | 112 / 264 | 0.0049 / 0.0020 | 0.4648 / 0.6833 | indistinguishable from random | below random |
+| 2 | 3 | 8 / 12 | 108 / 156 | 168 / 396 | 0.0029 / 0.0063 | 0.4299 / 0.8225 | indistinguishable from random | above random |
+| 3 | 1 | 8 / 12 | 48 / 72 | 56 / 132 | 0.0012 / 0.0032 | 0.1501 / 0.6309 | below random | indistinguishable from random |
+| 3 | 2 | 8 / 12 | 78 / 114 | 112 / 264 | 0.0012 / 0.0063 | 0.5503 / 0.7385 | below random | above random |
+| 3 | 3 | 8 / 12 | 108 / 156 | 168 / 396 | 0.0049 / 0.0042 | 0.4624 / 0.5513 | indistinguishable from random | indistinguishable from random |
+| 4 | 1 | 8 / 13 | 48 / 78 | 56 / 156 | 0.0095 / 0.0024 | 0.3506 / 0.6577 | above random | indistinguishable from random |
+| 4 | 2 | 8 / 13 | 78 / 123 | 112 / 312 | 0.0020 / 0.0051 | 0.3098 / 0.7893 | below random | indistinguishable from random |
+| 4 | 3 | 8 / 13 | 108 / 168 | 168 / 468 | 0.0005 / 0.0044 | 0.4819 / 0.7163 | below random | indistinguishable from random |
+
+Holm family F2 (the 15 unbalanced runs only): 6 raw p-values below 0.05, 4 survive: unbalanced QAOA seed 0 p=1, unbalanced QAOA seed 0 p=3, unbalanced QAOA seed 1 p=3, unbalanced QAOA seed 4 p=1. This is its own family and does not change the 18-test family above.
+
+## CVaR objective ablation
+
+CVaR with alpha 0.1: the optimiser minimises the mean energy of the lowest-energy 10% of probability mass instead of the mean energy. Same restarts, iterations, start angles and shots. Cells show CVaR / expectation. Verdict counts over the 15 cells: CVaR: 5 above random, 4 below random, 6 indistinguishable from random; expectation: 5 above random, 1 below random, 9 indistinguishable from random.
+
+| seed | p | optimum hits | P(optimum) | P(feasible, decoded) | verdict, CVaR | verdict, expectation |
+|---|---|---|---|---|---|---|
+| 0 | 1 | 15 / 17 | 0.0037 / 0.0042 | 0.7522 / 0.7805 | indistinguishable from random | indistinguishable from random |
+| 0 | 2 | 11 / 21 | 0.0027 / 0.0051 | 0.7642 / 0.8833 | indistinguishable from random | indistinguishable from random |
+| 0 | 3 | 4 / 12 | 0.0010 / 0.0029 | 0.4116 / 0.8120 | below random | indistinguishable from random |
+| 1 | 1 | 27 / 24 | 0.0066 / 0.0059 | 0.6685 / 0.8008 | above random | above random |
+| 1 | 2 | 26 / 20 | 0.0063 / 0.0049 | 0.8772 / 0.8425 | above random | indistinguishable from random |
+| 1 | 3 | 37 / 35 | 0.0090 / 0.0085 | 0.6895 / 0.8008 | above random | above random |
+| 2 | 1 | 17 / 30 | 0.0042 / 0.0073 | 0.4429 / 0.7991 | indistinguishable from random | above random |
+| 2 | 2 | 24 / 8 | 0.0059 / 0.0020 | 0.6643 / 0.6833 | above random | below random |
+| 2 | 3 | 10 / 26 | 0.0024 / 0.0063 | 0.5784 / 0.8225 | indistinguishable from random | above random |
+| 3 | 1 | 26 / 13 | 0.0063 / 0.0032 | 0.7329 / 0.6309 | above random | indistinguishable from random |
+| 3 | 2 | 11 / 26 | 0.0027 / 0.0063 | 0.4031 / 0.7385 | indistinguishable from random | above random |
+| 3 | 3 | 4 / 17 | 0.0010 / 0.0042 | 0.3772 / 0.5513 | below random | indistinguishable from random |
+| 4 | 1 | 5 / 10 | 0.0012 / 0.0024 | 0.4314 / 0.6577 | below random | indistinguishable from random |
+| 4 | 2 | 9 / 21 | 0.0022 / 0.0051 | 0.4580 / 0.7893 | below random | indistinguishable from random |
+| 4 | 3 | 19 / 18 | 0.0046 / 0.0044 | 0.4370 / 0.7163 | indistinguishable from random | indistinguishable from random |
+
+Holm family F3 (the 15 CVaR runs only): 5 raw p-values below 0.05, 1 survive: CVaR QAOA seed 1 p=3. Its own family.
+
+## Noise ablation: readout mitigation and zero-noise extrapolation
+
+5 loans, p = 1, 4096 shots, `fake_fez` noise model. ZNE is our own global unitary folding at scale factors 1, 3, 5 with a linear extrapolation to scale 0 of P(optimum). Descriptive only: nothing was tuned. ZNE minus noisy is positive on 3 and negative on 2 of 5 seeds, mean 0.0002. ZNE circuits are transpiled at optimization level 1 and folded, so scale 1 is not identical to the level-3 'noisy' circuit; the JSON records that difference. Per-scale values and circuit sizes are in `results/noise_ablation.json`.
+
+| seed | ideal (statevector) | noiseless | noisy | noisy + readout mitigation | ZNE (raw) | ZNE (clipped) | ZNE raw minus noisy | uniform 1/32 |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 0.0508 | 0.0500 | 0.0420 | 0.0464 | 0.0478 | 0.0478 | 0.0058 | 0.0312 |
+| 1 | 0.0134 | 0.0161 | 0.0120 | 0.0122 | 0.0177 | 0.0177 | 0.0057 | 0.0312 |
+| 2 | 0.0345 | 0.0381 | 0.0354 | 0.0366 | 0.0305 | 0.0305 | -0.0049 | 0.0312 |
+| 3 | 0.0287 | 0.0320 | 0.0303 | 0.0325 | 0.0317 | 0.0317 | 0.0014 | 0.0312 |
+| 4 | 0.0353 | 0.0344 | 0.0376 | 0.0376 | 0.0307 | 0.0307 | -0.0069 | 0.0312 |
+
+| scale | seed 0 depth | seed 0 two-qubit gates |
+|---|---|---|
+| 1 | 276 | 168 |
+| 3 | 1214 | 504 |
+| 5 | 2152 | 840 |
+
+## p=1 angle landscape and the saved optimiser angles
+
+Exact noiseless P(optimum) and exact <H> on a (beta, gamma) grid at p = 1, 5 loans; the angles are the optimiser's saved angles for the hardware jobs. Left panel of each plot: P(optimum); right panel: <H>, the quantity the optimiser minimised.
+
+| seed | P(optimum) at saved angles | grid maximum P(optimum) | ratio | <H> at saved angles | grid minimum <H> | uniform P(optimum) |
+|---|---|---|---|---|---|---|
+| 0 | 0.0508 | 0.0526 | 0.9655 | 113.6492 | 114.0921 | 0.0312 |
+| 1 | 0.0134 | 0.1148 | 0.1165 | 565.9975 | 152.6632 | 0.0312 |
+
+- Seed 0: saved angles are NOT within one grid step of the P(optimum) grid maximum (distance 22 beta steps, 30 gamma steps) and NOT within one grid step of the <H> grid minimum (distance 24 beta steps, 31 gamma steps).
+- Seed 1: saved angles are NOT within one grid step of the P(optimum) grid maximum (distance 12 beta steps, 82 gamma steps) and NOT within one grid step of the <H> grid minimum (distance 48 beta steps, 51 gamma steps).
+
+![landscape seed 0](plots/landscape_seed0_n5_p1.png)
+
+![landscape seed 1](plots/landscape_seed1_n5_p1.png)
+
+## ibm_fez calibration context (read-only)
+
+Backend `ibm_fez`. Caveats: (1) The layout of a fresh transpile may differ from the layout used at submission time; compare the fresh depth and two-qubit count with the job record's. (2) The calibration data is the CURRENT calibration of the backend, not the calibration at the time of the jobs (2026-11-25), so this is context, not a measurement of the conditions of those jobs.
+
+| seed | job id | job record depth / 2q | fresh transpile depth / 2q | fresh matches | median 2q error | median T1 (us) | median T2 (us) | median readout error |
+|---|---|---|---|---|---|---|---|---|
+| 0 | dc3imv5hdvas73bo063g | 238 / 130 | 238 / 130 | yes | 0.0018 | 148.5209 | 120.8539 | 0.0083 |
+| 1 | dc3jnp6q4uuc73a74reg | 250 / 130 | 247 / 130 | no | 0.0018 | 148.5209 | 120.8539 | 0.0083 |
+
 ## Plots
 
 ![QAOA energy convergence](plots/compare_energy_convergence.png)

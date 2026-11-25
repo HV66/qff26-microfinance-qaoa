@@ -692,6 +692,28 @@ def build(results_dir: Path = RESULTS) -> str:
         "## Hard instances: where greedy fails, does QAOA beat random?\n\n"
         + hard_instance_md(results_dir)
     )
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "second_wave_md", Path(__file__).with_name("second_wave_md.py")
+    )
+    assert spec is not None and spec.loader is not None
+    sw = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sw)
+
+    second_wave = [
+        ("Price of fairness (sector-coverage constraint)", sw.fairness_md),
+        ("Slack-free (unbalanced) budget penalty", sw.unbalanced_md),
+        ("CVaR objective ablation", sw.cvar_md),
+        (
+            "Noise ablation: readout mitigation and zero-noise extrapolation",
+            sw.noise_ablation_md,
+        ),
+        ("p=1 angle landscape and the saved optimiser angles", sw.landscape_md),
+        ("ibm_fez calibration context (read-only)", sw.calibration_md),
+    ]
+    for title, builder in second_wave:
+        sections.append(f"## {title}\n\n" + builder(results_dir))
     plots = [
         f"![{alt}](plots/{name})"
         for name, alt in PLOT_FILES

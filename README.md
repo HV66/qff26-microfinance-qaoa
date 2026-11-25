@@ -290,6 +290,41 @@ This is a research prototype on synthetic data, not a credit-scoring product.
 - **Known risks.** As shown above, the objective can leave a whole sector unfunded, and estimated returns and covariances can encode historical bias. Any real use needs checks for disparate impact on the groups a lender serves, and a way for declined applicants to be reviewed.
 - **Next step: a fairness constraint.** Adding a minimum-coverage or sector-balance constraint, or a penalty on unfunded sectors, is listed under next steps; it is not implemented here.
 
+## Second-wave experiments
+
+These were preregistered in `docs/preregistration.md` (commit `2277934`) before any of their scripts ran: instances, optimiser settings, the unbalanced-penalty coefficient rule, CVaR alpha 0.1 and ZNE scale factors 1, 3, 5 were fixed in advance, every result is reported whatever it shows, and each new family of tests gets its own Holm correction. The earlier 18-test family is unchanged. All tables are in `results/results.md`. No hardware job was run for any of them.
+
+### Price of fairness
+
+`scripts/price_of_fairness.py` adds a classical filter "every sector that requested a loan has at least one funded loan" and re-solves by exhaustive search (seeds 0 to 4, lambda 0.1 / 0.3 / 1.0; `results/price_of_fairness.json`). The constraint costs objective in 6 of 15 cases: 1 of 5 at lambda 0.1 (mean loss 0.74%, max 3.69%), 2 of 5 at lambda 0.3 (mean 5.50%, max 27.30%) and 3 of 5 at lambda 1.0 (mean 162.90%, max 676.30%). At lambda 1.0 the unconstrained objective is close to zero, so those percentages are inflated; on seed 2 the constrained objective is positive (1.6795 against -0.2914 unconstrained), meaning a portfolio that covers every sector has negative net value under that risk aversion. All 15 cases stayed feasible. Putting the constraint into the QUBO would need 5 extra slack qubits for every seed (12 to 17 qubits, or 13 to 18); this is arithmetic only, nothing was built or run.
+
+### Slack-free (unbalanced) budget penalty
+
+`qubo_unbalanced.py` replaces the budget slack bits with the penalty `-l1 * g + l2 * g^2` on the unspent budget `g` (coefficients from a rule fixed in the preregistration and not tuned). The technique is credited to the literature on unbalanced penalization (Montanez-Barrera et al., arXiv 2211.13914); that citation is from memory and was not verified online in this session.
+
+- **The minimum is often the wrong portfolio.** For lambda 0.3 and 8 loans, the minimum-energy bitstring decodes to the exact optimum on 3 of 10 seeds (0, 2, 6). On the other 7 (1, 3, 4, 5, 7, 8, 9) it is a budget-feasible portfolio that spends the whole budget and is worse than the optimum (`results/unbalanced_min_decode.json`). With integer loan amounts the penalty for leaving one unit unspent is 2.79 to 8.15, so the term acts almost like an equality constraint. A dated correction in the preregistration records this; the rule was not changed.
+- **Circuit cost is lower.** 8 qubits instead of 12 or 13, 30.8% to 38.5% less logical depth and 2.36 to 2.79 times fewer logical two-qubit gates (`results/unbalanced_vs_slack.json`).
+- **Feasibility is lower in every cell.** P(feasible, decoded) is 0.1501 to 0.5503 against 0.5513 to 0.8833 for the slack version, lower in 15 of 15 cells.
+- **P(optimum) is mixed.** Higher than the slack version in 7 of 15 cells and lower in 8. Verdicts against uniform random: unbalanced has 6 above, 5 indistinguishable and 4 below; slack has 5 above, 9 indistinguishable and 1 below. Under its own Holm correction (family F2, 15 tests) 6 are below 0.05 raw and 4 survive: seed 0 p=1, seed 0 p=3, seed 1 p=3 and seed 4 p=1 (`results/unbalanced_holm.json`). The raw "below random" verdicts are not part of that family.
+
+### CVaR objective
+
+`qaoa_cvar.py` optimises the mean energy of the lowest 10% of probability mass (CVaR, alpha 0.1; Barkoutsos et al., Quantum 2020, cited from memory and not verified online) instead of the mean energy, with the same restarts, iterations, angles and shots (seeds 0 to 4, p = 1 to 3). It gave no consistent benefit: higher P(optimum) in 6 of 15 cells and lower in 9; P(feasible, decoded) lower in 13 of 15; verdicts 5 above, 6 indistinguishable and 4 below random, against 5 above, 9 indistinguishable and 1 below for the expectation runs. Under its own Holm correction (family F3, 15 tests) 5 are below 0.05 raw and 1 survives, seed 1 p=3 (`results/cvar_holm.json`).
+
+### Noise ablation
+
+`scripts/noise_ablation.py` runs 5 loans at p=1 on the `fake_fez` noise model for seeds 0 to 4: noiseless, noisy, tensored readout mitigation, and our own global-folding zero-noise extrapolation (scale factors 1, 3, 5, linear fit to scale 0; ZNE after Temme et al. and Giurgica-Tiron et al., cited from memory and not verified online). ZNE did not reliably help: ZNE minus noisy is +0.0058, +0.0057, -0.0049, +0.0014 and -0.0069 for seeds 0 to 4 (positive on 3, negative on 2, mean 0.0002). Per-scale P(optimum) values are not monotone in noise; with 4096 shots and P(optimum) near 0.03 the binomial standard error is about 0.003, the same size as the effects. Readout mitigation moved P(optimum) by 0.0044, 0.0002, 0.0012, 0.0022 and 0.0 over noisy. Noisy values sit within 0.0088 of the noiseless statevector value on every seed, so there is little signal for mitigation to recover at this size. ZNE circuits are transpiled at optimization level 1 (so scale 1 is not identical to the level-3 "noisy" circuit), and their depth is 276 to 2152 with 168 to 840 two-qubit gates at scales 1 to 5 for seeds 0, 1 and 4.
+
+### Angle landscape and calibration
+
+`scripts/landscape.py` evaluates exact noiseless P(optimum) and exact `<H>` on a 101 by 201 (beta, gamma) grid at p=1 for 5 loans (`results/landscape.json`, plots in `results/plots/`). The saved angles used for the hardware jobs are at neither the P(optimum) maximum nor the `<H>` minimum for either seed. Seed 0: P(optimum) 0.0508 at the saved angles against a grid maximum of 0.0526 (ratio 0.9655); seed 1: 0.0134 against a grid maximum of 0.1148 (ratio 0.1165), so a better p=1 angle pair exists for seed 1 on this grid, about 3.67 times the uniform value. Minimising `<H>` and maximising P(optimum) pick different angles. No cause is claimed for why seed 0's saved point scores so close to the maximum from 22 to 30 grid steps away.
+
+`scripts/ibm_calibration.py` (read-only, saved account) reports current `ibm_fez` calibration for the qubits a fresh transpile of the two jobs uses: median two-qubit error 0.001784, median T1 148.52 us, median T2 120.85 us, median readout error 0.0083 (`results/ibm_calibration.json`). This is the current calibration, not the calibration at the time of the jobs on 2026-11-25, and the fresh layout matched the job record's depth and two-qubit count for seed 0 (238 / 130) but not for seed 1 (247 against 250 depth, 130 two-qubit gates), so it is context rather than a measurement of those runs.
+
+### CSV solver
+
+`solve_csv.py examples/loans_example.csv --budget 12` solves a user CSV (columns `amount`, `expected_return`, `sector`; at most 10 loans, with a clear error otherwise) and prints the exact, greedy and QAOA-sampled portfolios with a sector audit. The CSV carries no covariance, so it assumes sector-block correlation 0.6 within and 0.1 across sectors with the same volatility for every loan, and says so. The example file is synthetic. It is a research prototype, not credit advice; a human credit officer stays in the loop.
+
 ## Honest limitations
 
 - **No quantum advantage is claimed or measured.** At n = 8 every classical method reaches the exact optimum on the headline instance: exact, greedy (on seed 0), and simulated annealing all give gap 0.0000%. Greedy is suboptimal on some seeds (five-seed mean gap 3.0799%, worst 15.3994%); simulated annealing is not.
@@ -326,6 +361,8 @@ Other checks: an independent verifier (`tests/independent/verify_independent.py`
 - Shot-based expectation estimation in the optimiser loop, and warm-started or layer-wise parameter initialisation.
 - Mixers or encodings that respect the budget constraint to avoid the penalty term and the slack qubits.
 - Real, anonymised sector default data and a sector-shock stress test.
+- A better-conditioned slack-free budget penalty: the preregistered rule decodes to the exact optimum on only 3 of 10 seeds, so a rule that leaves budget unspent without a large penalty is needed.
+- A fairness constraint inside the QUBO, now that its classical cost is known (6 of 15 cases lose objective).
 - A fairness constraint (minimum sector coverage or a penalty on unfunded sectors) in the QUBO, followed by a re-run of the impact analysis to measure what it costs in return and risk.
 - A sparser formulation, for example a constraint-preserving mixer, to remove the slack qubits and the all-pairs coupling.
 
