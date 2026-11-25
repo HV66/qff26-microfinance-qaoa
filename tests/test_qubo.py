@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from data import LoanPortfolio, make_portfolio
-from qubo import Qubo, build_qubo, slack_coefficients
+from qubo import Qubo, build_qubo, slack_coefficients, to_ising
 
 SEEDS = range(10)
 N_LOANS = 8
@@ -106,3 +106,29 @@ def test_penalty_is_necessary() -> None:
 def test_auto_penalty_scales_with_lambda() -> None:
     p = make_portfolio(N_LOANS, 0)
     assert build_qubo(p, lam=1.0).penalty > build_qubo(p, lam=0.1).penalty
+
+
+@pytest.mark.parametrize("seed", SEEDS)
+def test_ising_energies_equal_qubo_energies_on_all_bitstrings(seed: int) -> None:
+    p = make_portfolio(N_LOANS, seed)
+    q = build_qubo(p)
+    ising_diag = to_ising(q).to_matrix(sparse=True).diagonal().real
+    assert ising_diag.shape == (2**q.n_vars,)
+    assert np.allclose(ising_diag, q.all_energies(), atol=1e-8)
+
+
+def test_ising_is_diagonal_and_real_on_small_random_qubo() -> None:
+    rng = np.random.default_rng(7)
+    big_q = np.triu(rng.normal(size=(5, 5)))
+    q = Qubo(big_q, 1.5, 3, np.array([1, 2]), 1.0, 0.3)
+    op = to_ising(q)
+    assert all(set(lbl) <= {"I", "Z"} for lbl in op.paulis.to_labels())
+    assert np.allclose(op.to_matrix(sparse=True).diagonal().real, q.all_energies())
+
+
+def test_ising_qubit_order_matches_variable_order() -> None:
+    """Only variable 0 has a linear term: bitstring index 1 must pay it."""
+    q = Qubo(np.diag([2.0, 0.0, 0.0]), 0.0, 3, np.array([1]), 1.0, 0.3)
+    diag = to_ising(q).to_matrix(sparse=True).diagonal().real
+    assert diag[1] == pytest.approx(2.0)  # variable 0 set
+    assert diag[2] == pytest.approx(0.0)  # variable 1 set

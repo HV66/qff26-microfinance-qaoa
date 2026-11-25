@@ -21,6 +21,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+from qiskit.quantum_info import SparsePauliOp
 
 from data import LoanPortfolio
 
@@ -145,3 +146,55 @@ def build_qubo(
     q = 2.0 * np.triu(m_sym, k=1)
     q[np.diag_indices(big_n)] = np.diag(m_sym) + lin
     return Qubo(Q=q, offset=offset, n_loans=n, slack_coeffs=c, penalty=pen, lam=lam)
+
+
+def to_ising(q: Qubo) -> SparsePauliOp:
+    """Convert a QUBO to an Ising Hamiltonian (own implementation).
+
+    Substitute z_i = (1 - Z_i) / 2, where Z_i is the Pauli-Z on qubit i
+    (eigenvalue +1 for bit 0, -1 for bit 1). Then
+
+        z_i       = 1/2 - Z_i / 2
+        z_i z_j   = 1/4 - Z_i / 4 - Z_j / 4 + Z_i Z_j / 4
+
+    so for E = sum_i Q_ii z_i + sum_{i<j} Q_ij z_i z_j + offset:
+
+        coeff(Z_i)     = -Q_ii / 2 - (1/4) * sum_{j != i} Q_ij
+        coeff(Z_i Z_j) = Q_ij / 4
+        coeff(I)       = offset + sum_i Q_ii / 2 + sum_{i<j} Q_ij / 4
+
+    The constant is kept as an identity term, so the operator's diagonal
+    equals the QUBO energy of every bitstring exactly.
+
+    Args:
+        q: The QUBO. Q must be upper triangular.
+
+    Returns:
+        SparsePauliOp on q.n_vars qubits. Qubit k is variable k, which is
+        character k from the right in a Qiskit Pauli label.
+    """
+    big_n = q.n_vars
+    upper = np.triu(q.Q, k=1)
+    diag = np.diag(q.Q)
+    z_coeff = -diag / 2.0 - (upper.sum(axis=0) + upper.sum(axis=1)) / 4.0
+    identity = q.offset + diag.sum() / 2.0 + upper.sum() / 4.0
+
+    terms: list[tuple[str, float]] = [("I" * big_n, float(identity))]
+    for i in range(big_n):
+        terms.append((_pauli_label(big_n, (i,)), float(z_coeff[i])))
+    for i in range(big_n):
+        for j in range(i + 1, big_n):
+            if upper[i, j] != 0.0:
+                terms.append((_pauli_label(big_n, (i, j)), float(upper[i, j] / 4.0)))
+    return SparsePauliOp.from_list(terms).simplify()
+
+
+def _pauli_label(n_qubits: int, z_qubits: tuple[int, ...]) -> str:
+    """Return a Pauli label with Z on the given qubits and I elsewhere.
+
+    Qiskit labels are little-endian: qubit k is character n_qubits - 1 - k.
+    """
+    chars = ["I"] * n_qubits
+    for k in z_qubits:
+        chars[n_qubits - 1 - k] = "Z"
+    return "".join(chars)
