@@ -94,7 +94,8 @@ def test_run_one_metric_sanity() -> None:
     assert s["p_optimal"] <= s["p_feasible_decoded"]
     if s["best_feasible_gap_pct"] is not None:
         assert s["best_feasible_gap_pct"] >= -1e-9
-    assert 0.0 <= r["optimiser"]["approx_ratio"] <= 1.0
+    assert 0.0 <= r["optimiser"]["normalised_score"] <= 1.0
+    assert "approx_ratio" not in r["optimiser"]
     assert r["circuit"]["depth"] > 0 and r["circuit"]["two_qubit_gates"] > 0
     assert r["config"]["shots"] == r["random_null"]["shots"]
 

@@ -44,8 +44,8 @@
    731.0044641511705
   ],
   "n_evals": 1000,
-  "approx_ratio": 0.9771599221391234,
-  "approx_ratio_uniform_state": 0.8543746398380303,
+  "normalised_score": 0.9771599221391234,
+  "normalised_score_uniform_state": 0.8543746398380303,
   "histories": [
    [
     1223.7634900952276,

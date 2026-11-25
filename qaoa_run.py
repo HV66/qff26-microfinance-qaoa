@@ -11,6 +11,10 @@ simulation-only shortcut: on hardware the expectation would be estimated from
 shots. The final numbers (P(optimum), feasibility) come from SAMPLING, not
 from the statevector.
 
+Metric naming: "normalised_score" is (Emax - E)/(Emax - Emin) over the full
+QUBO spectrum (1 at the minimum, 0 at the maximum) for the optimiser's final
+<H>. It is not a multiplicative approximation ratio.
+
 Run:  python qaoa_run.py --seeds 0 --ps 1 2 3 4
 """
 
@@ -309,7 +313,13 @@ def run_one(
     counts = sample_counts(q, p, params, shots, seed)
     sample_time = time.perf_counter() - t1
 
-    def ratio(e: float) -> float:
+    def norm_score(e: float) -> float:
+        """Spectrum-normalised score (Emax - E)/(Emax - Emin).
+
+        It is 1 at the QUBO minimum and 0 at the QUBO maximum. It is NOT a
+        multiplicative approximation ratio (E / E_opt) and says nothing about
+        a guaranteed fraction of the optimum.
+        """
         return (e_max - e) / (e_max - e_min)
 
     null = random_sampling(pf, q, shots, seed)
@@ -337,8 +347,8 @@ def run_one(
             "best_params": opt["best_params"],
             "restart_values": opt["restart_values"],
             "n_evals": opt["n_evals"],
-            "approx_ratio": ratio(opt["best_value"]),
-            "approx_ratio_uniform_state": ratio(float(energies.mean())),
+            "normalised_score": norm_score(opt["best_value"]),
+            "normalised_score_uniform_state": norm_score(float(energies.mean())),
             "histories": opt["histories"],
         },
         "sampling": sample_metrics(pf, q, counts, bf.x, bf.objective),
@@ -416,10 +426,11 @@ def main() -> None:
             r = save(run_one(seed, p))
             s = json.loads(r.read_text(encoding="utf-8"))
             log.info(
-                "seed=%d p=%d ratio=%.4f P(opt)=%.4f feas_dec=%.3f gap=%s depth=%d t=%.1fs",
+                "seed=%d p=%d norm_score=%.4f P(opt)=%.4f feas_dec=%.3f gap=%s "
+                "depth=%d t=%.1fs",
                 seed,
                 p,
-                s["optimiser"]["approx_ratio"],
+                s["optimiser"]["normalised_score"],
                 s["sampling"]["p_optimal"],
                 s["sampling"]["p_feasible_decoded"],
                 s["sampling"]["best_feasible_gap_pct"],

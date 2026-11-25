@@ -237,6 +237,37 @@ def noise_md(paths: list[Path]) -> str:
     return "\n\n".join(blocks)
 
 
+def score_md(results_dir: Path) -> str:
+    """Markdown for the optimiser's normalised score, seed 0, with its definition."""
+    rows = []
+    for path in sorted(results_dir.glob("qaoa_seed0_p*.json")):
+        run = json.loads(path.read_text(encoding="utf-8"))
+        opt = run["optimiser"]
+        rows.append(
+            [
+                run["config"]["p"],
+                opt["best_value"],
+                opt["normalised_score"],
+                opt["normalised_score_uniform_state"],
+            ]
+        )
+    if not rows:
+        return "No seed-0 QAOA result files found."
+    rows.sort(key=lambda r: r[0])
+    intro = (
+        "Normalised score = (Emax - E) / (Emax - Emin), where E is the optimiser's "
+        "final exact <H> and Emin, Emax are the smallest and largest QUBO energies "
+        "over all bitstrings. It is 1 at the QUBO minimum and 0 at the maximum. It "
+        "is NOT a multiplicative approximation ratio. It is a measure of the "
+        "optimiser's expectation value, not of sampled solution quality; the "
+        "sampled metrics are P(optimum) and the best-feasible gap above."
+    )
+    table = md_table(
+        ["p", "final <H>", "normalised score", "score of the uniform state"], rows
+    )
+    return intro + "\n\n" + table
+
+
 def extra_md(title: str, path: Path) -> str:
     """Render top-level scalar fields of an optional result file."""
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -264,6 +295,9 @@ def build(results_dir: Path = RESULTS) -> str:
         "## Lambda sensitivity (seed 0)\n\n" + lambda_md(payload["lambda_sensitivity"]),
         "## Five-seed summary (lam=0.3)\n\n" + seeds_md(payload["seed_summary"]),
     ]
+    sections.append(
+        "## Optimiser normalised score (seed 0)\n\n" + score_md(results_dir)
+    )
     if "vs_random" in payload:
         sections.append(
             "## QAOA vs random sampling, every seed and depth\n\n"
