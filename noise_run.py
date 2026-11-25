@@ -19,8 +19,8 @@ Sizes: the full instance is 8 loans = 12 qubits. If it does not finish within
 the time budget, run with --n-loans 5 (9 qubits); the choice used is stored in
 the saved JSON ("instance").
 
-Run:  python noise_run.py [--n-loans 8] [--shots 4096] [--seed 0]
-Output: results/noise_run.json
+Run:  python noise_run.py [--n-loans 8] [--p 1] [--shots 4096] [--seed 0]
+Output: results/noise_run_p{P}.json (8 loans) or noise_run_n{N}_p{P}.json
 """
 
 from __future__ import annotations
@@ -53,7 +53,6 @@ from qubo import build_qubo
 log = logging.getLogger(__name__)
 
 RESULTS = Path("results")
-OUT_FILE = RESULTS / "noise_run.json"
 
 
 def run_sampler(
@@ -131,12 +130,14 @@ def mitigate_counts(
     return {format(i, f"0{n}b"): int(c) for i, c in enumerate(draws) if c}
 
 
-def run_variants(n_loans: int, shots: int, seed: int) -> dict[str, Any]:
+def run_variants(
+    n_loans: int, shots: int, seed: int, p: int | None = None
+) -> dict[str, Any]:
     """Run noiseless, noisy and noisy+readout-mitigated variants."""
     pf = make_portfolio(n_loans, seed)
     q = build_qubo(pf, LAM)
     bf = brute_force(pf, LAM)
-    p, params, provenance = get_params(q, n_loans, seed)
+    p, params, provenance = get_params(q, n_loans, seed, p=p)
     circuit = build_ansatz(q, p).assign_parameters(params)
     fake = fallback_backend()
     tqc = transpile_for(circuit, fake)
@@ -191,17 +192,26 @@ def run_variants(n_loans: int, shots: int, seed: int) -> dict[str, Any]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """CLI entry point; writes results/noise_run.json."""
+    """CLI entry point; writes results/noise_run_p{P}.json."""
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--n-loans", type=int, default=8)
     parser.add_argument("--shots", type=int, default=SHOTS)
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--out", type=Path, default=OUT_FILE)
+    parser.add_argument("--p", type=int, default=None, help="QAOA depth")
+    parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(message)s")
-    out = run_variants(args.n_loans, args.shots, args.seed)
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(out, indent=1), encoding="utf-8")
+    out = run_variants(args.n_loans, args.shots, args.seed, args.p)
+    inst = out["instance"]
+    default_name = (
+        f"noise_run_p{inst['p']}.json"
+        if inst["n_loans"] == 8
+        else f"noise_run_n{inst['n_loans']}_p{inst['p']}.json"
+    )
+    out_path = args.out if args.out is not None else RESULTS / default_name
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(out, indent=1), encoding="utf-8")
+    print(f"saved {out_path}")
     print(
         f"n_loans={args.n_loans} qubits={out['instance']['n_qubits']} "
         f"p={out['instance']['p']} depth={out['transpiled']['depth']} "
@@ -213,7 +223,6 @@ def main(argv: list[str] | None = None) -> int:
             f"P(feas dec)={m['p_feasible_decoded']:.4f} "
             f"gap%={m['best_feasible_gap_pct']}"
         )
-    print(f"saved {args.out}")
     return 0
 
 

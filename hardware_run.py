@@ -24,8 +24,13 @@ Verified against the installed qiskit-ibm-runtime 0.52.1: SamplerOptions has
 dynamical_decoupling.{enable, sequence_type, ...} and twirling.{enable_gates,
 enable_measure, num_randomizations, strategy}. See sampler_options().
 
+Small-instance mode: --n-loans 4 or 5 forces that instance (same seeded data
+generator and code path); --p picks the QAOA depth. The qubit count, transpiled
+depth and two-qubit gate count are printed BEFORE anything is submitted.
+
 Run:  python hardware_run.py --dry-run
       python hardware_run.py            (needs a saved IBM account / env token)
+      python hardware_run.py --n-loans 5
 """
 
 from __future__ import annotations
@@ -98,18 +103,32 @@ def best_p_from_results(seed: int, results_dir: Path = RESULTS) -> int | None:
 
 
 def get_params(
-    q: Qubo, n_loans: int, seed: int, results_dir: Path = RESULTS
+    q: Qubo,
+    n_loans: int,
+    seed: int,
+    results_dir: Path = RESULTS,
+    p: int | None = None,
 ) -> tuple[int, np.ndarray, str]:
     """Return (p, optimised params, provenance string).
 
-    Uses the saved seed-0 result for the full 8-loan instance when present.
-    Otherwise (missing file or a reduced instance) re-optimises with
-    qaoa_run.optimise at the best saved p, or p=1 if nothing is saved.
+    Uses the saved result results/qaoa_seed{seed}_p{p}.json for the full
+    8-loan instance when present. Otherwise (missing file or a reduced
+    instance) re-optimises with qaoa_run.optimise (same settings as the full
+    runs) and caches the parameters.
+
+    Args:
+        q: QUBO of the instance.
+        n_loans: Number of loans (8 uses saved files).
+        seed: Data and optimiser seed.
+        results_dir: Folder holding saved results.
+        p: QAOA depth. If None, the saved p with the highest sampling
+            P(optimum), or p=1 if nothing is saved.
     """
-    saved_p = best_p_from_results(seed, results_dir)
-    p = 1 if saved_p is None else saved_p
+    if p is None:
+        saved_p = best_p_from_results(seed, results_dir)
+        p = 1 if saved_p is None else saved_p
     path = results_dir / f"qaoa_seed{seed}_p{p}.json"
-    if saved_p is not None and n_loans == 8 and path.exists():
+    if n_loans == 8 and path.exists():
         data = json.loads(path.read_text(encoding="utf-8"))
         return p, np.array(data["optimiser"]["best_params"]), f"saved {path.name}"
     cache = results_dir / f"hardware_params_seed{seed}_n{n_loans}_p{p}.json"
@@ -148,9 +167,15 @@ def too_deep(stats: dict[str, int]) -> bool:
 
 
 def prepare(
-    backend: Any, seed: int = SEED, ladder: tuple[int, ...] = INSTANCE_LADDER
+    backend: Any,
+    seed: int = SEED,
+    ladder: tuple[int, ...] = INSTANCE_LADDER,
+    p: int | None = None,
 ) -> dict[str, Any]:
     """Pick the largest instance that fits the depth limits on this backend.
+
+    A one-element ladder, e.g. (5,), forces that instance size (small-instance
+    mode) and uses the same seeded data generator and code path.
 
     Returns a dict with the portfolio, qubo, p, params, transpiled circuit,
     stats, instance config and a human-readable "reason".
@@ -159,7 +184,7 @@ def prepare(
     for n_loans in ladder:
         pf = make_portfolio(n_loans, seed)
         q = build_qubo(pf, LAM)
-        p, params, provenance = get_params(q, n_loans, seed)
+        p, params, provenance = get_params(q, n_loans, seed, p=p)
         circuit = build_ansatz(q, p).assign_parameters(params)
         tqc = transpile_for(circuit, backend)
         stats = circuit_stats(tqc)
@@ -178,6 +203,8 @@ def prepare(
                     f"{MAX_TWO_QUBIT_GATES} 2q gates or depth {MAX_DEPTH} after "
                     "routing: " + "; ".join(tried)
                 )
+            elif len(ladder) == 1:
+                reason = f"Small-instance mode: n_loans={n_loans} requested."
             elif too_deep(stats):
                 reason = "Smallest instance; still above the depth limits."
             else:
@@ -198,6 +225,11 @@ def prepare(
             f"2q={stats['two_qubit_gates']}"
         )
     raise RuntimeError("empty instance ladder")
+
+
+def min_qubits_for(n_loans: int) -> int:
+    """Return the qubits (loans plus slack bits) an instance needs."""
+    return build_qubo(make_portfolio(n_loans, SEED), LAM).n_vars
 
 
 def fallback_backend() -> Any:
@@ -281,25 +313,45 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--dry-run", action="store_true", help="do not submit")
     parser.add_argument("--seed", type=int, default=SEED)
+    parser.add_argument(
+        "--n-loans",
+        type=int,
+        choices=(4, 5, 8),
+        default=None,
+        help="force one instance size (small-instance mode); default tries 8, 5, 4",
+    )
+    parser.add_argument("--p", type=int, choices=CANDIDATE_PS, default=None)
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(message)s")
+    ladder = INSTANCE_LADDER if args.n_loans is None else (args.n_loans,)
+    size_flag = "" if args.n_loans is None else f" --n-loans {args.n_loans}"
+    p_flag = "" if args.p is None else f" --p {args.p}"
 
     service = connect_service()
     if service is None:
         backend: Any = fallback_backend()
-        prep = prepare(backend, args.seed)
+        prep = prepare(backend, args.seed, ladder, args.p)
         print(
             f"No IBM credentials found: nothing submitted. Generic target "
-            f"{backend.name}: n_loans={prep['n_loans']} depth={prep['stats']['depth']} "
+            f"{backend.name}: n_loans={prep['n_loans']} qubits={prep['q'].n_vars} "
+            f"p={prep['p']} depth={prep['stats']['depth']} "
             f"two_qubit_gates={prep['stats']['two_qubit_gates']}"
         )
         print(prep["reason"])
+        print(
+            "To submit, save your IBM account or set QISKIT_IBM_TOKEN, then run: "
+            f"python hardware_run.py{size_flag}{p_flag}"
+        )
         return 0
 
-    backend = service.least_busy(operational=True, simulator=False, min_num_qubits=12)
-    prep = prepare(backend, args.seed)
+    min_qubits = 12 if args.n_loans is None else min_qubits_for(args.n_loans)
+    backend = service.least_busy(
+        operational=True, simulator=False, min_num_qubits=min_qubits
+    )
+    prep = prepare(backend, args.seed, ladder, args.p)
     print(
         f"Backend {backend.name}: n_loans={prep['n_loans']} "
+        f"qubits={prep['q'].n_vars} p={prep['p']} "
         f"depth={prep['stats']['depth']} "
         f"two_qubit_gates={prep['stats']['two_qubit_gates']}"
     )

@@ -5,7 +5,7 @@
   "n_qubits": 9,
   "lam": 0.3,
   "p": 1,
-  "params_source": "re-optimised p=1 n_loans=5",
+  "params_source": "cached hardware_params_seed0_n5_p1.json",
   "exact_objective": -1.4457459946823221,
   "exact_x": [
    0,
@@ -115,8 +115,8 @@
   ]
  ],
  "timings_s": {
-  "noiseless_s": 0.15299179998692125,
-  "noisy_s": 8.70370099999127,
-  "readout_mitigation_s": 15.924015299999155
+  "noiseless_s": 0.08467509999172762,
+  "noisy_s": 8.023905700014438,
+  "readout_mitigation_s": 12.651262200000929
  }
 }

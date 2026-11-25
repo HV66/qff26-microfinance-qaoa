@@ -205,6 +205,38 @@ def vs_random_md(block: dict[str, Any]) -> str:
     return intro + "\n\n" + md_table(heads, [[r[k] for k in keys] for r in rows])
 
 
+def noise_md(paths: list[Path]) -> str:
+    """Markdown table of noise-model runs (one block per saved file)."""
+    blocks = ["## Noise-model simulation (fake_fez Aer noise model)"]
+    for path in paths:
+        d = json.loads(path.read_text(encoding="utf-8"))
+        inst, tr = d["instance"], d["transpiled"]
+        rows = [
+            [
+                name,
+                d["mitigation_applied"][name],
+                v["p_optimal"],
+                v["p_feasible_decoded"],
+                v["best_feasible_gap_pct"],
+            ]
+            for name, v in d["variants"].items()
+        ]
+        head = (
+            f"Source: `{path.as_posix()}`. {inst['n_loans']} loans, "
+            f"{inst['n_qubits']} qubits, p={inst['p']}, {d['shots']} shots, "
+            f"parameters: {inst['params_source']}. Transpiled for "
+            f"{d['backend_noise_model']}: depth {tr['depth']}, "
+            f"{tr['two_qubit_gates']} two-qubit gates. Random sampling for "
+            f"reference: P(optimum) = 1/{2 ** inst['n_loans']} in expectation."
+        )
+        table = md_table(
+            ["variant", "mitigation", "P(optimum)", "P(feasible, decoded)", "gap %"],
+            rows,
+        )
+        blocks.append(head + "\n\n" + table)
+    return "\n\n".join(blocks)
+
+
 def extra_md(title: str, path: Path) -> str:
     """Render top-level scalar fields of an optional result file."""
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -244,12 +276,18 @@ def build(results_dir: Path = RESULTS) -> str:
     ]
     if plots:
         sections.append("## Plots\n\n" + "\n\n".join(plots))
-    for title, name in (
-        ("Noise-model simulation", "noise_run.json"),
-        ("IBM Quantum hardware", "hardware_result.json"),
-    ):
-        if (results_dir / name).exists():
-            sections.append(extra_md(title, results_dir / name))
+    noise_files = sorted(results_dir.glob("noise_run*.json"))
+    if noise_files:
+        sections.append(noise_md(noise_files))
+    if (results_dir / "hardware_result.json").exists():
+        sections.append(
+            extra_md("IBM Quantum hardware", results_dir / "hardware_result.json")
+        )
+    else:
+        sections.append(
+            "## IBM Quantum hardware\n\nNo real-hardware result exists: "
+            "`results/hardware_result.json` is absent."
+        )
     return "\n\n".join(sections) + "\n"
 
 

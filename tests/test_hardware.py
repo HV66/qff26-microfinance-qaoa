@@ -35,7 +35,11 @@ def test_no_credentials_exits_cleanly(
     monkeypatch.setattr(
         hardware_run,
         "get_params",
-        lambda q, n, s, d=hardware_run.RESULTS: (1, np.array([0.3, 0.4]), "test"),
+        lambda q, n, s, d=hardware_run.RESULTS, p=None: (
+            1,
+            np.array([0.3, 0.4]),
+            "test",
+        ),
     )
     assert hardware_run.main(["--dry-run"]) == 0
     assert "No IBM credentials" in capsys.readouterr().out
@@ -88,7 +92,7 @@ def test_noise_run_tiny_instance(
     monkeypatch.setattr(
         noise_run,
         "get_params",
-        lambda q, n, s, d=None: (1, np.array([0.4, 0.6]), "test"),
+        lambda q, n, s, d=None, p=None: (1, np.array([0.4, 0.6]), "test"),
     )
     out_file = tmp_path / "noise.json"
     assert (
@@ -104,3 +108,29 @@ def test_noise_run_tiny_instance(
     assert data["transpiled"]["two_qubit_gates"] > 0
     for m in data["variants"].values():
         assert 0.0 <= m["p_optimal"] <= 1.0
+
+
+def test_small_instance_mode_prints_size_before_any_submit(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """--n-loans 5: qubits, depth, 2q count are printed; nothing is submitted."""
+    monkeypatch.setattr(hardware_run, "connect_service", lambda: None)
+    monkeypatch.setattr(
+        hardware_run,
+        "get_params",
+        lambda q, n, s, d=hardware_run.RESULTS, p=None: (1, np.array([0.3, 0.4]), "t"),
+    )
+    submitted: list[int] = []
+    monkeypatch.setattr(hardware_run, "submit", lambda *a, **k: submitted.append(1))
+    assert hardware_run.main(["--n-loans", "5", "--p", "1"]) == 0
+    out = capsys.readouterr().out
+    assert "n_loans=5" in out and "qubits=9" in out
+    assert "depth=" in out and "two_qubit_gates=" in out
+    assert "Small-instance mode" in out
+    assert "python hardware_run.py --n-loans 5 --p 1" in out
+    assert submitted == []
+
+
+def test_min_qubits_for_matches_qubo() -> None:
+    assert hardware_run.min_qubits_for(5) == 9
+    assert hardware_run.min_qubits_for(4) == 8

@@ -5,7 +5,7 @@
   "n_qubits": 12,
   "lam": 0.3,
   "p": 1,
-  "params_source": "re-optimised p=1 n_loans=8",
+  "params_source": "saved qaoa_seed0_p1.json",
   "exact_objective": -3.139573300265468,
   "exact_x": [
    0,
@@ -139,8 +139,8 @@
   ]
  ],
  "timings_s": {
-  "noiseless_s": 0.24606509998557158,
-  "noisy_s": 65.93903429998318,
-  "readout_mitigation_s": 20.107077499997104
+  "noiseless_s": 0.1987162999866996,
+  "noisy_s": 39.06490189998294,
+  "readout_mitigation_s": 14.134293099981733
  }
 }

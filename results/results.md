@@ -86,12 +86,32 @@ Tally: 5 of 16 runs above random, 1 of 16 runs below random, 10 of 16 runs indis
 
 ![Optimality gap by method](plots/compare_gap_by_method.png)
 
-## Noise-model simulation
+## Noise-model simulation (fake_fez Aer noise model)
 
-Source: `results/noise_run.json`
+Source: `results/noise_run_n5_p1.json`. 5 loans, 9 qubits, p=1, 4096 shots, parameters: cached hardware_params_seed0_n5_p1.json. Transpiled for fake_fez: depth 237, 130 two-qubit gates. Random sampling for reference: P(optimum) = 1/32 in expectation.
 
-| field | value |
-|---|---|
-| backend_noise_model | fake_fez |
-| shots | 4096 |
+| variant | mitigation | P(optimum) | P(feasible, decoded) | gap % |
+|---|---|---|---|---|
+| noiseless | none | 0.0500 | 0.7788 | 0.0000 |
+| noisy | none | 0.0420 | 0.7332 | 0.0000 |
+| noisy_readout_mitigated | tensored readout calibration only | 0.0464 | 0.7288 | 0.0000 |
 
+Source: `results/noise_run_p1.json`. 8 loans, 12 qubits, p=1, 4096 shots, parameters: saved qaoa_seed0_p1.json. Transpiled for fake_fez: depth 334, 223 two-qubit gates. Random sampling for reference: P(optimum) = 1/256 in expectation.
+
+| variant | mitigation | P(optimum) | P(feasible, decoded) | gap % |
+|---|---|---|---|---|
+| noiseless | none | 0.0054 | 0.7915 | 0.0000 |
+| noisy | none | 0.0029 | 0.7087 | 0.0000 |
+| noisy_readout_mitigated | tensored readout calibration only | 0.0022 | 0.7009 | 0.0000 |
+
+Source: `results/noise_run_p2.json`. 8 loans, 12 qubits, p=2, 4096 shots, parameters: saved qaoa_seed0_p2.json. Transpiled for fake_fez: depth 655, 519 two-qubit gates. Random sampling for reference: P(optimum) = 1/256 in expectation.
+
+| variant | mitigation | P(optimum) | P(feasible, decoded) | gap % |
+|---|---|---|---|---|
+| noiseless | none | 0.0042 | 0.8826 | 0.0000 |
+| noisy | none | 0.0034 | 0.7019 | 0.0000 |
+| noisy_readout_mitigated | tensored readout calibration only | 0.0037 | 0.6934 | 0.0000 |
+
+## IBM Quantum hardware
+
+No real-hardware result exists: `results/hardware_result.json` is absent.
