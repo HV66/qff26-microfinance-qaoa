@@ -1,0 +1,43 @@
+flowchart TD
+    D["data.py<br/>synthetic loans: sector, amount, return,<br/>sector-correlated covariance"]
+    Q["qubo.py<br/>QUBO: return - lam*risk<br/>+ budget penalty + binary slack<br/>(12 qubits at 8 loans)"]
+    I["Ising / SparsePauliOp<br/>own conversion, checked<br/>by independent verifier"]
+    A["QAOAAnsatz<br/>p = 1..4 layers"]
+    C["COBYLA<br/>exact statevector cost"]
+    S["Sampler, 4096 shots<br/>(local simulator)"]
+    DEC["decode (shared helpers)<br/>bitstring -> loans, feasibility, objective"]
+    M["metrics<br/>gap %, P(optimum), P(feasible), depth"]
+
+    subgraph CL["Classical baselines (baseline.py, sa_baseline.py)"]
+        direction TB
+        BF["exact brute force"]
+        GR["greedy"]
+        SA["simulated annealing"]
+        RN["uniform random sampling"]
+    end
+
+    CMP["compare.py<br/>comparison tables, 5 seeds, lambda sweep"]
+    RES["results/results.md + plots"]
+
+    subgraph HW["Noise and hardware path"]
+        direction TB
+        NZ["noise_run.py<br/>fake_fez noise model + readout mitigation<br/>DONE: results/noise_run.json"]
+        HR["hardware_run.py<br/>IBM Runtime SamplerV2<br/>dynamical decoupling + Pauli twirling<br/>NOT YET RUN (needs IBM token)"]
+        RH["retrieve_hardware.py<br/>-> results/hardware_result.json<br/>NOT YET PRODUCED"]
+        HR --> RH
+    end
+
+    D --> Q
+    Q --> I --> A --> C --> S --> DEC --> M
+    Q --> CL
+    CL --> DEC
+    M --> CMP
+    DEC --> CMP
+    CMP --> RES
+    A --> NZ
+    A --> HR
+    NZ --> RES
+    RH -.-> RES
+
+    classDef notrun fill:#fff3cd,stroke:#b58900,stroke-dasharray: 5 5,color:#000;
+    class HR,RH notrun;
