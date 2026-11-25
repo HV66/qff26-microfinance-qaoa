@@ -1,0 +1,1381 @@
+{
+ "n_loans": 8,
+ "n_sectors": 3,
+ "note": "Descriptive only. The QUBO has no fairness constraint; sectors are synthetic labels, not protected attributes.",
+ "rows": [
+  {
+   "seed": 0,
+   "lam": 0.1,
+   "solver": "exact",
+   "x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 11,
+   "budget": 11,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 27,
+   "expected_return": 3.454,
+   "portfolio_risk_xT_sigma_x": 1.048088999115107,
+   "objective": -3.3491911000884893,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 2
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 9,
+    "2": 7
+   },
+   "amount_share_by_sector": {
+    "0": 0.09090909090909091,
+    "1": 0.2727272727272727,
+    "2": 0.6363636363636364
+   },
+   "loan_share_by_sector": {
+    "0": 0.25,
+    "1": 0.25,
+    "2": 0.5
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 0,
+   "lam": 0.1,
+   "solver": "greedy",
+   "x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 11,
+   "budget": 11,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 27,
+   "expected_return": 3.454,
+   "portfolio_risk_xT_sigma_x": 1.048088999115107,
+   "objective": -3.3491911000884893,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 2
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 9,
+    "2": 7
+   },
+   "amount_share_by_sector": {
+    "0": 0.09090909090909091,
+    "1": 0.2727272727272727,
+    "2": 0.6363636363636364
+   },
+   "loan_share_by_sector": {
+    "0": 0.25,
+    "1": 0.25,
+    "2": 0.5
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 0,
+   "lam": 0.3,
+   "solver": "exact",
+   "x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 11,
+   "budget": 11,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 27,
+   "expected_return": 3.454,
+   "portfolio_risk_xT_sigma_x": 1.048088999115107,
+   "objective": -3.139573300265468,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 2
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 9,
+    "2": 7
+   },
+   "amount_share_by_sector": {
+    "0": 0.09090909090909091,
+    "1": 0.2727272727272727,
+    "2": 0.6363636363636364
+   },
+   "loan_share_by_sector": {
+    "0": 0.25,
+    "1": 0.25,
+    "2": 0.5
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 0,
+   "lam": 0.3,
+   "solver": "greedy",
+   "x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 11,
+   "budget": 11,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 27,
+   "expected_return": 3.454,
+   "portfolio_risk_xT_sigma_x": 1.048088999115107,
+   "objective": -3.139573300265468,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 2
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 9,
+    "2": 7
+   },
+   "amount_share_by_sector": {
+    "0": 0.09090909090909091,
+    "1": 0.2727272727272727,
+    "2": 0.6363636363636364
+   },
+   "loan_share_by_sector": {
+    "0": 0.25,
+    "1": 0.25,
+    "2": 0.5
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 0,
+   "lam": 1.0,
+   "solver": "exact",
+   "x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 11,
+   "budget": 11,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 27,
+   "expected_return": 3.454,
+   "portfolio_risk_xT_sigma_x": 1.048088999115107,
+   "objective": -2.405911000884893,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 2
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 9,
+    "2": 7
+   },
+   "amount_share_by_sector": {
+    "0": 0.09090909090909091,
+    "1": 0.2727272727272727,
+    "2": 0.6363636363636364
+   },
+   "loan_share_by_sector": {
+    "0": 0.25,
+    "1": 0.25,
+    "2": 0.5
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 0,
+   "lam": 1.0,
+   "solver": "greedy",
+   "x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 11,
+   "budget": 11,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 27,
+   "expected_return": 3.454,
+   "portfolio_risk_xT_sigma_x": 1.048088999115107,
+   "objective": -2.405911000884893,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 2
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 9,
+    "2": 7
+   },
+   "amount_share_by_sector": {
+    "0": 0.09090909090909091,
+    "1": 0.2727272727272727,
+    "2": 0.6363636363636364
+   },
+   "loan_share_by_sector": {
+    "0": 0.25,
+    "1": 0.25,
+    "2": 0.5
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 1,
+   "lam": 0.1,
+   "solver": "exact",
+   "x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 17,
+   "budget": 17,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 42,
+   "expected_return": 4.6183,
+   "portfolio_risk_xT_sigma_x": 4.463651715422962,
+   "objective": -4.171934828457704,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 2
+   },
+   "requested_amount_by_sector": {
+    "0": 13,
+    "1": 20,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.058823529411764705,
+    "1": 0.4117647058823529,
+    "2": 0.5294117647058824
+   },
+   "loan_share_by_sector": {
+    "0": 0.25,
+    "1": 0.25,
+    "2": 0.5
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 1,
+   "lam": 0.1,
+   "solver": "greedy",
+   "x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 17,
+   "budget": 17,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 42,
+   "expected_return": 4.6183,
+   "portfolio_risk_xT_sigma_x": 4.463651715422962,
+   "objective": -4.171934828457704,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 2
+   },
+   "requested_amount_by_sector": {
+    "0": 13,
+    "1": 20,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.058823529411764705,
+    "1": 0.4117647058823529,
+    "2": 0.5294117647058824
+   },
+   "loan_share_by_sector": {
+    "0": 0.25,
+    "1": 0.25,
+    "2": 0.5
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 1,
+   "lam": 0.3,
+   "solver": "exact",
+   "x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0
+   ],
+   "n_funded": 3,
+   "n_requested": 8,
+   "amount_deployed": 15,
+   "budget": 17,
+   "budget_used_fraction": 0.8823529411764706,
+   "total_requested_amount": 42,
+   "expected_return": 4.4045000000000005,
+   "portfolio_risk_xT_sigma_x": 3.4476154070948666,
+   "objective": -3.3702153778715407,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 1
+   },
+   "requested_amount_by_sector": {
+    "0": 13,
+    "1": 20,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.06666666666666667,
+    "1": 0.4666666666666667,
+    "2": 0.4666666666666667
+   },
+   "loan_share_by_sector": {
+    "0": 0.3333333333333333,
+    "1": 0.3333333333333333,
+    "2": 0.3333333333333333
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 1,
+   "lam": 0.3,
+   "solver": "greedy",
+   "x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0
+   ],
+   "n_funded": 3,
+   "n_requested": 8,
+   "amount_deployed": 15,
+   "budget": 17,
+   "budget_used_fraction": 0.8823529411764706,
+   "total_requested_amount": 42,
+   "expected_return": 4.4045000000000005,
+   "portfolio_risk_xT_sigma_x": 3.4476154070948666,
+   "objective": -3.3702153778715407,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 1
+   },
+   "requested_amount_by_sector": {
+    "0": 13,
+    "1": 20,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.06666666666666667,
+    "1": 0.4666666666666667,
+    "2": 0.4666666666666667
+   },
+   "loan_share_by_sector": {
+    "0": 0.3333333333333333,
+    "1": 0.3333333333333333,
+    "2": 0.3333333333333333
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 1,
+   "lam": 1.0,
+   "solver": "exact",
+   "x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0
+   ],
+   "n_funded": 3,
+   "n_requested": 8,
+   "amount_deployed": 15,
+   "budget": 17,
+   "budget_used_fraction": 0.8823529411764706,
+   "total_requested_amount": 42,
+   "expected_return": 4.4045000000000005,
+   "portfolio_risk_xT_sigma_x": 3.4476154070948666,
+   "objective": -0.956884592905134,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 1
+   },
+   "requested_amount_by_sector": {
+    "0": 13,
+    "1": 20,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.06666666666666667,
+    "1": 0.4666666666666667,
+    "2": 0.4666666666666667
+   },
+   "loan_share_by_sector": {
+    "0": 0.3333333333333333,
+    "1": 0.3333333333333333,
+    "2": 0.3333333333333333
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 1,
+   "lam": 1.0,
+   "solver": "greedy",
+   "x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0
+   ],
+   "n_funded": 3,
+   "n_requested": 8,
+   "amount_deployed": 15,
+   "budget": 17,
+   "budget_used_fraction": 0.8823529411764706,
+   "total_requested_amount": 42,
+   "expected_return": 4.4045000000000005,
+   "portfolio_risk_xT_sigma_x": 3.4476154070948666,
+   "objective": -0.956884592905134,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 1
+   },
+   "requested_amount_by_sector": {
+    "0": 13,
+    "1": 20,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.06666666666666667,
+    "1": 0.4666666666666667,
+    "2": 0.4666666666666667
+   },
+   "loan_share_by_sector": {
+    "0": 0.3333333333333333,
+    "1": 0.3333333333333333,
+    "2": 0.3333333333333333
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 2,
+   "lam": 0.1,
+   "solver": "exact",
+   "x": [
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "n_funded": 3,
+   "n_requested": 8,
+   "amount_deployed": 12,
+   "budget": 12,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 30,
+   "expected_return": 2.8595,
+   "portfolio_risk_xT_sigma_x": 3.98526224152746,
+   "objective": -2.460973775847254,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 2,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 8,
+    "2": 11
+   },
+   "amount_share_by_sector": {
+    "0": 0.5833333333333334,
+    "1": 0.4166666666666667,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.3333333333333333,
+    "1": 0.6666666666666666,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 2,
+   "lam": 0.1,
+   "solver": "greedy",
+   "x": [
+    0,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "n_funded": 5,
+   "n_requested": 8,
+   "amount_deployed": 12,
+   "budget": 12,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 30,
+   "expected_return": 2.4346,
+   "portfolio_risk_xT_sigma_x": 4.3707323087220535,
+   "objective": -1.9975267691277947,
+   "loans_by_sector": {
+    "0": 2,
+    "1": 3,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 8,
+    "2": 11
+   },
+   "amount_share_by_sector": {
+    "0": 0.3333333333333333,
+    "1": 0.6666666666666666,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.4,
+    "1": 0.6,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 2,
+   "lam": 0.3,
+   "solver": "exact",
+   "x": [
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "n_funded": 3,
+   "n_requested": 8,
+   "amount_deployed": 12,
+   "budget": 12,
+   "budget_used_fraction": 1.0,
+   "total_requested_amount": 30,
+   "expected_return": 2.8595,
+   "portfolio_risk_xT_sigma_x": 3.98526224152746,
+   "objective": -1.6639213275417621,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 2,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 8,
+    "2": 11
+   },
+   "amount_share_by_sector": {
+    "0": 0.5833333333333334,
+    "1": 0.4166666666666667,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.3333333333333333,
+    "1": 0.6666666666666666,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 2,
+   "lam": 0.3,
+   "solver": "greedy",
+   "x": [
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    1,
+    1
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 9,
+   "budget": 12,
+   "budget_used_fraction": 0.75,
+   "total_requested_amount": 30,
+   "expected_return": 2.0932000000000004,
+   "portfolio_risk_xT_sigma_x": 2.2850400239789765,
+   "objective": -1.4076879928063075,
+   "loans_by_sector": {
+    "0": 2,
+    "1": 2,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 8,
+    "2": 11
+   },
+   "amount_share_by_sector": {
+    "0": 0.4444444444444444,
+    "1": 0.5555555555555556,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.5,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 2,
+   "lam": 1.0,
+   "solver": "exact",
+   "x": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1
+   ],
+   "n_funded": 2,
+   "n_requested": 8,
+   "amount_deployed": 5,
+   "budget": 12,
+   "budget_used_fraction": 0.4166666666666667,
+   "total_requested_amount": 30,
+   "expected_return": 1.0998,
+   "portfolio_risk_xT_sigma_x": 0.808376541537536,
+   "objective": -0.2914234584624641,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 8,
+    "2": 11
+   },
+   "amount_share_by_sector": {
+    "0": 0.2,
+    "1": 0.8,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.5,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 2,
+   "lam": 1.0,
+   "solver": "greedy",
+   "x": [
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "n_funded": 2,
+   "n_requested": 8,
+   "amount_deployed": 2,
+   "budget": 12,
+   "budget_used_fraction": 0.16666666666666666,
+   "total_requested_amount": 30,
+   "expected_return": 0.2845,
+   "portfolio_risk_xT_sigma_x": 0.0829304097682026,
+   "objective": -0.20156959023179738,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 11,
+    "1": 8,
+    "2": 11
+   },
+   "amount_share_by_sector": {
+    "0": 0.5,
+    "1": 0.5,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.5,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 3,
+   "lam": 0.1,
+   "solver": "exact",
+   "x": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1
+   ],
+   "n_funded": 5,
+   "n_requested": 8,
+   "amount_deployed": 12,
+   "budget": 13,
+   "budget_used_fraction": 0.9230769230769231,
+   "total_requested_amount": 33,
+   "expected_return": 2.6409000000000002,
+   "portfolio_risk_xT_sigma_x": 3.3230391961422576,
+   "objective": -2.3085960803857746,
+   "loans_by_sector": {
+    "0": 2,
+    "1": 2,
+    "2": 1
+   },
+   "requested_amount_by_sector": {
+    "0": 10,
+    "1": 14,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.25,
+    "1": 0.5833333333333334,
+    "2": 0.16666666666666666
+   },
+   "loan_share_by_sector": {
+    "0": 0.4,
+    "1": 0.4,
+    "2": 0.2
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 3,
+   "lam": 0.1,
+   "solver": "greedy",
+   "x": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1
+   ],
+   "n_funded": 5,
+   "n_requested": 8,
+   "amount_deployed": 12,
+   "budget": 13,
+   "budget_used_fraction": 0.9230769230769231,
+   "total_requested_amount": 33,
+   "expected_return": 2.6409000000000002,
+   "portfolio_risk_xT_sigma_x": 3.3230391961422576,
+   "objective": -2.3085960803857746,
+   "loans_by_sector": {
+    "0": 2,
+    "1": 2,
+    "2": 1
+   },
+   "requested_amount_by_sector": {
+    "0": 10,
+    "1": 14,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.25,
+    "1": 0.5833333333333334,
+    "2": 0.16666666666666666
+   },
+   "loan_share_by_sector": {
+    "0": 0.4,
+    "1": 0.4,
+    "2": 0.2
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 3,
+   "lam": 0.3,
+   "solver": "exact",
+   "x": [
+    0,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 10,
+   "budget": 13,
+   "budget_used_fraction": 0.7692307692307693,
+   "total_requested_amount": 33,
+   "expected_return": 2.3609999999999998,
+   "portfolio_risk_xT_sigma_x": 2.379493254306671,
+   "objective": -1.6471520237079984,
+   "loans_by_sector": {
+    "0": 2,
+    "1": 2,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 10,
+    "1": 14,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.3,
+    "1": 0.7,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.5,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 3,
+   "lam": 0.3,
+   "solver": "greedy",
+   "x": [
+    0,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 10,
+   "budget": 13,
+   "budget_used_fraction": 0.7692307692307693,
+   "total_requested_amount": 33,
+   "expected_return": 2.3609999999999998,
+   "portfolio_risk_xT_sigma_x": 2.379493254306671,
+   "objective": -1.6471520237079984,
+   "loans_by_sector": {
+    "0": 2,
+    "1": 2,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 10,
+    "1": 14,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.3,
+    "1": 0.7,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.5,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 3,
+   "lam": 1.0,
+   "solver": "exact",
+   "x": [
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0
+   ],
+   "n_funded": 2,
+   "n_requested": 8,
+   "amount_deployed": 3,
+   "budget": 13,
+   "budget_used_fraction": 0.23076923076923078,
+   "total_requested_amount": 33,
+   "expected_return": 0.7756000000000001,
+   "portfolio_risk_xT_sigma_x": 0.23393910777742627,
+   "objective": -0.5416608922225739,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 10,
+    "1": 14,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.3333333333333333,
+    "1": 0.6666666666666666,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.5,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 3,
+   "lam": 1.0,
+   "solver": "greedy",
+   "x": [
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0
+   ],
+   "n_funded": 2,
+   "n_requested": 8,
+   "amount_deployed": 3,
+   "budget": 13,
+   "budget_used_fraction": 0.23076923076923078,
+   "total_requested_amount": 33,
+   "expected_return": 0.7756000000000001,
+   "portfolio_risk_xT_sigma_x": 0.23393910777742627,
+   "objective": -0.5416608922225739,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 10,
+    "1": 14,
+    "2": 9
+   },
+   "amount_share_by_sector": {
+    "0": 0.3333333333333333,
+    "1": 0.6666666666666666,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.5,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 4,
+   "lam": 0.1,
+   "solver": "exact",
+   "x": [
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 20,
+   "budget": 21,
+   "budget_used_fraction": 0.9523809523809523,
+   "total_requested_amount": 52,
+   "expected_return": 5.052899999999999,
+   "portfolio_risk_xT_sigma_x": 7.3654447123036135,
+   "objective": -4.316355528769638,
+   "loans_by_sector": {
+    "0": 2,
+    "1": 1,
+    "2": 1
+   },
+   "requested_amount_by_sector": {
+    "0": 22,
+    "1": 17,
+    "2": 13
+   },
+   "amount_share_by_sector": {
+    "0": 0.7,
+    "1": 0.05,
+    "2": 0.25
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.25,
+    "2": 0.25
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 4,
+   "lam": 0.1,
+   "solver": "greedy",
+   "x": [
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 20,
+   "budget": 21,
+   "budget_used_fraction": 0.9523809523809523,
+   "total_requested_amount": 52,
+   "expected_return": 5.052899999999999,
+   "portfolio_risk_xT_sigma_x": 7.3654447123036135,
+   "objective": -4.316355528769638,
+   "loans_by_sector": {
+    "0": 2,
+    "1": 1,
+    "2": 1
+   },
+   "requested_amount_by_sector": {
+    "0": 22,
+    "1": 17,
+    "2": 13
+   },
+   "amount_share_by_sector": {
+    "0": 0.7,
+    "1": 0.05,
+    "2": 0.25
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.25,
+    "2": 0.25
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 4,
+   "lam": 0.3,
+   "solver": "exact",
+   "x": [
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 20,
+   "budget": 21,
+   "budget_used_fraction": 0.9523809523809523,
+   "total_requested_amount": 52,
+   "expected_return": 5.052899999999999,
+   "portfolio_risk_xT_sigma_x": 7.3654447123036135,
+   "objective": -2.8432665863089155,
+   "loans_by_sector": {
+    "0": 2,
+    "1": 1,
+    "2": 1
+   },
+   "requested_amount_by_sector": {
+    "0": 22,
+    "1": 17,
+    "2": 13
+   },
+   "amount_share_by_sector": {
+    "0": 0.7,
+    "1": 0.05,
+    "2": 0.25
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.25,
+    "2": 0.25
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 4,
+   "lam": 0.3,
+   "solver": "greedy",
+   "x": [
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "n_funded": 4,
+   "n_requested": 8,
+   "amount_deployed": 20,
+   "budget": 21,
+   "budget_used_fraction": 0.9523809523809523,
+   "total_requested_amount": 52,
+   "expected_return": 5.052899999999999,
+   "portfolio_risk_xT_sigma_x": 7.3654447123036135,
+   "objective": -2.8432665863089155,
+   "loans_by_sector": {
+    "0": 2,
+    "1": 1,
+    "2": 1
+   },
+   "requested_amount_by_sector": {
+    "0": 22,
+    "1": 17,
+    "2": 13
+   },
+   "amount_share_by_sector": {
+    "0": 0.7,
+    "1": 0.05,
+    "2": 0.25
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.25,
+    "2": 0.25
+   },
+   "unfunded_sectors": []
+  },
+  {
+   "seed": 4,
+   "lam": 1.0,
+   "solver": "exact",
+   "x": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1
+   ],
+   "n_funded": 2,
+   "n_requested": 8,
+   "amount_deployed": 9,
+   "budget": 21,
+   "budget_used_fraction": 0.42857142857142855,
+   "total_requested_amount": 52,
+   "expected_return": 2.8237,
+   "portfolio_risk_xT_sigma_x": 1.6534369194947165,
+   "objective": -1.1702630805052836,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 22,
+    "1": 17,
+    "2": 13
+   },
+   "amount_share_by_sector": {
+    "0": 0.8888888888888888,
+    "1": 0.1111111111111111,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.5,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  },
+  {
+   "seed": 4,
+   "lam": 1.0,
+   "solver": "greedy",
+   "x": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1
+   ],
+   "n_funded": 2,
+   "n_requested": 8,
+   "amount_deployed": 9,
+   "budget": 21,
+   "budget_used_fraction": 0.42857142857142855,
+   "total_requested_amount": 52,
+   "expected_return": 2.8237,
+   "portfolio_risk_xT_sigma_x": 1.6534369194947165,
+   "objective": -1.1702630805052836,
+   "loans_by_sector": {
+    "0": 1,
+    "1": 1,
+    "2": 0
+   },
+   "requested_amount_by_sector": {
+    "0": 22,
+    "1": 17,
+    "2": 13
+   },
+   "amount_share_by_sector": {
+    "0": 0.8888888888888888,
+    "1": 0.1111111111111111,
+    "2": 0.0
+   },
+   "loan_share_by_sector": {
+    "0": 0.5,
+    "1": 0.5,
+    "2": 0.0
+   },
+   "unfunded_sectors": [
+    2
+   ]
+  }
+ ]
+}

@@ -238,6 +238,64 @@ def holm_md(results_dir: Path) -> str:
     return summary + "\n\n" + table
 
 
+def impact_md(results_dir: Path) -> str:
+    """Markdown for the impact and sector-concentration analysis."""
+    path = results_dir / "impact_analysis.json"
+    if not path.exists():
+        return (
+            "No impact analysis file found (run `python -m scripts.impact_analysis`)."
+        )
+    d = json.loads(path.read_text(encoding="utf-8"))
+    rows = d["rows"]
+    intro = (
+        d["note"] + " Amount shares are the share of the DEPLOYED amount per sector; "
+        "loans per sector are counts of funded loans (sector 0 / 1 / 2). "
+        "An unfunded sector had loan requests but received none."
+    )
+    table_rows = []
+    for r in rows:
+        table_rows.append(
+            [
+                r["seed"],
+                r["lam"],
+                r["solver"],
+                r["n_funded"],
+                f"{r['amount_deployed']} / {r['budget']}",
+                r["expected_return"],
+                r["portfolio_risk_xT_sigma_x"],
+                " / ".join(str(r["loans_by_sector"][str(k)]) for k in range(3)),
+                ", ".join(str(s) for s in r["unfunded_sectors"]) or "none",
+            ]
+        )
+    table = md_table(
+        [
+            "seed",
+            "lam",
+            "solver",
+            "loans funded",
+            "amount deployed / budget",
+            "expected return",
+            "risk x^T Sigma x",
+            "funded loans per sector (0 / 1 / 2)",
+            "unfunded sector",
+        ],
+        table_rows,
+    )
+    exact = [r for r in rows if r["solver"] == "exact"]
+    by_lam = "; ".join(
+        f"lam {lam}: "
+        f"{sum(1 for r in exact if r['lam'] == lam and r['unfunded_sectors'])} of "
+        f"{sum(1 for r in exact if r['lam'] == lam)}"
+        for lam in sorted({r["lam"] for r in exact})
+    )
+    summary = (
+        f"Exact-optimum portfolios that leave at least one sector with zero funded "
+        f"loans: {sum(1 for r in exact if r['unfunded_sectors'])} of {len(exact)} "
+        f"({by_lam})."
+    )
+    return intro + "\n\n" + summary + "\n\n" + table
+
+
 def noise_md(paths: list[Path]) -> str:
     """Markdown table of noise-model runs (one block per saved file)."""
     blocks = ["## Noise-model simulation (fake_fez Aer noise model)"]
@@ -380,6 +438,9 @@ def build(results_dir: Path = RESULTS) -> str:
         )
     sections.append(
         "## Multiple-testing correction (Holm-Bonferroni)\n\n" + holm_md(results_dir)
+    )
+    sections.append(
+        "## Who is funded: impact and sector concentration\n\n" + impact_md(results_dir)
     )
     plots = [
         f"![{alt}](plots/{name})"

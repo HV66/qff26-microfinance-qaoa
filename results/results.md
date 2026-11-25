@@ -113,6 +113,45 @@ Family of 17 one-sided exact binomial tests (16 simulated QAOA runs plus the rea
 | simulated QAOA seed 4 p=1 | 0.9570 | 1.0000 | no |
 | simulated QAOA seed 2 p=2 | 0.9901 | 1.0000 | no |
 
+## Who is funded: impact and sector concentration
+
+Descriptive only. The QUBO has no fairness constraint; sectors are synthetic labels, not protected attributes. Amount shares are the share of the DEPLOYED amount per sector; loans per sector are counts of funded loans (sector 0 / 1 / 2). An unfunded sector had loan requests but received none.
+
+Exact-optimum portfolios that leave at least one sector with zero funded loans: 6 of 15 (lam 0.1: 1 of 5; lam 0.3: 2 of 5; lam 1.0: 3 of 5).
+
+| seed | lam | solver | loans funded | amount deployed / budget | expected return | risk x^T Sigma x | funded loans per sector (0 / 1 / 2) | unfunded sector |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 0.1000 | exact | 4 | 11 / 11 | 3.4540 | 1.0481 | 1 / 1 / 2 | none |
+| 0 | 0.1000 | greedy | 4 | 11 / 11 | 3.4540 | 1.0481 | 1 / 1 / 2 | none |
+| 0 | 0.3000 | exact | 4 | 11 / 11 | 3.4540 | 1.0481 | 1 / 1 / 2 | none |
+| 0 | 0.3000 | greedy | 4 | 11 / 11 | 3.4540 | 1.0481 | 1 / 1 / 2 | none |
+| 0 | 1.0000 | exact | 4 | 11 / 11 | 3.4540 | 1.0481 | 1 / 1 / 2 | none |
+| 0 | 1.0000 | greedy | 4 | 11 / 11 | 3.4540 | 1.0481 | 1 / 1 / 2 | none |
+| 1 | 0.1000 | exact | 4 | 17 / 17 | 4.6183 | 4.4637 | 1 / 1 / 2 | none |
+| 1 | 0.1000 | greedy | 4 | 17 / 17 | 4.6183 | 4.4637 | 1 / 1 / 2 | none |
+| 1 | 0.3000 | exact | 3 | 15 / 17 | 4.4045 | 3.4476 | 1 / 1 / 1 | none |
+| 1 | 0.3000 | greedy | 3 | 15 / 17 | 4.4045 | 3.4476 | 1 / 1 / 1 | none |
+| 1 | 1.0000 | exact | 3 | 15 / 17 | 4.4045 | 3.4476 | 1 / 1 / 1 | none |
+| 1 | 1.0000 | greedy | 3 | 15 / 17 | 4.4045 | 3.4476 | 1 / 1 / 1 | none |
+| 2 | 0.1000 | exact | 3 | 12 / 12 | 2.8595 | 3.9853 | 1 / 2 / 0 | 2 |
+| 2 | 0.1000 | greedy | 5 | 12 / 12 | 2.4346 | 4.3707 | 2 / 3 / 0 | 2 |
+| 2 | 0.3000 | exact | 3 | 12 / 12 | 2.8595 | 3.9853 | 1 / 2 / 0 | 2 |
+| 2 | 0.3000 | greedy | 4 | 9 / 12 | 2.0932 | 2.2850 | 2 / 2 / 0 | 2 |
+| 2 | 1.0000 | exact | 2 | 5 / 12 | 1.0998 | 0.8084 | 1 / 1 / 0 | 2 |
+| 2 | 1.0000 | greedy | 2 | 2 / 12 | 0.2845 | 0.0829 | 1 / 1 / 0 | 2 |
+| 3 | 0.1000 | exact | 5 | 12 / 13 | 2.6409 | 3.3230 | 2 / 2 / 1 | none |
+| 3 | 0.1000 | greedy | 5 | 12 / 13 | 2.6409 | 3.3230 | 2 / 2 / 1 | none |
+| 3 | 0.3000 | exact | 4 | 10 / 13 | 2.3610 | 2.3795 | 2 / 2 / 0 | 2 |
+| 3 | 0.3000 | greedy | 4 | 10 / 13 | 2.3610 | 2.3795 | 2 / 2 / 0 | 2 |
+| 3 | 1.0000 | exact | 2 | 3 / 13 | 0.7756 | 0.2339 | 1 / 1 / 0 | 2 |
+| 3 | 1.0000 | greedy | 2 | 3 / 13 | 0.7756 | 0.2339 | 1 / 1 / 0 | 2 |
+| 4 | 0.1000 | exact | 4 | 20 / 21 | 5.0529 | 7.3654 | 2 / 1 / 1 | none |
+| 4 | 0.1000 | greedy | 4 | 20 / 21 | 5.0529 | 7.3654 | 2 / 1 / 1 | none |
+| 4 | 0.3000 | exact | 4 | 20 / 21 | 5.0529 | 7.3654 | 2 / 1 / 1 | none |
+| 4 | 0.3000 | greedy | 4 | 20 / 21 | 5.0529 | 7.3654 | 2 / 1 / 1 | none |
+| 4 | 1.0000 | exact | 2 | 9 / 21 | 2.8237 | 1.6534 | 1 / 1 / 0 | 2 |
+| 4 | 1.0000 | greedy | 2 | 9 / 21 | 2.8237 | 1.6534 | 1 / 1 / 0 | 2 |
+
 ## Plots
 
 ![QAOA energy convergence](plots/compare_energy_convergence.png)
