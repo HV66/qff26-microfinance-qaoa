@@ -89,6 +89,30 @@ Tally: 5 of 16 runs above random, 1 of 16 runs below random, 10 of 16 runs indis
 | 4 | 2 | 21 | 10 | 0.0051 | 0.0024 | 0.1314 | 0.7893 | 0.3145 | 0.0000 | 0.0000 | indistinguishable from random |
 | 4 | 3 | 18 | 10 | 0.0044 | 0.0024 | 0.3405 | 0.7163 | 0.3145 | 0.0000 | 0.0000 | indistinguishable from random |
 
+## Multiple-testing correction (Holm-Bonferroni)
+
+Family of 17 one-sided exact binomial tests (16 simulated QAOA runs plus the real-hardware job), each against its uniform-random rate. 6 have a raw p-value below 0.05; 3 survive Holm-Bonferroni at 0.05: simulated QAOA seed 1 p=3; simulated QAOA seed 2 p=1; real ibm_fez 5 loans p=1. Holm controls the family-wise error rate; the other raw hits are consistent with chance given the number of tests.
+
+| test | raw p (above random) | Holm adjusted p | survives Holm at 0.05 |
+|---|---|---|---|
+| simulated QAOA seed 1 p=3 | 2.58e-05 | 4.38e-04 | yes |
+| real ibm_fez 5 loans p=1 | 6.00e-04 | 0.0096 | yes |
+| simulated QAOA seed 2 p=1 | 0.0011 | 0.0166 | yes |
+| simulated QAOA seed 2 p=3 | 0.0130 | 0.1814 | no |
+| simulated QAOA seed 3 p=2 | 0.0130 | 0.1814 | no |
+| simulated QAOA seed 1 p=1 | 0.0364 | 0.4367 | no |
+| simulated QAOA seed 0 p=2 | 0.1314 | 1.0000 | no |
+| simulated QAOA seed 4 p=2 | 0.1314 | 1.0000 | no |
+| simulated QAOA seed 1 p=2 | 0.1873 | 1.0000 | no |
+| simulated QAOA seed 4 p=3 | 0.3405 | 1.0000 | no |
+| simulated QAOA seed 0 p=1 | 0.4340 | 1.0000 | no |
+| simulated QAOA seed 3 p=3 | 0.4340 | 1.0000 | no |
+| simulated QAOA seed 3 p=1 | 0.8074 | 1.0000 | no |
+| simulated QAOA seed 0 p=3 | 0.8735 | 1.0000 | no |
+| simulated QAOA seed 0 p=4 | 0.9570 | 1.0000 | no |
+| simulated QAOA seed 4 p=1 | 0.9570 | 1.0000 | no |
+| simulated QAOA seed 2 p=2 | 0.9901 | 1.0000 | no |
+
 ## Plots
 
 ![QAOA energy convergence](plots/compare_energy_convergence.png)

@@ -319,6 +319,43 @@ def binomial_verdict(hits: int, shots: int, n_loans: int) -> tuple[float, str]:
     return p_above, "indistinguishable from random"
 
 
+def holm_bonferroni(
+    p_values: list[float], alpha: float = ALPHA
+) -> list[dict[str, Any]]:
+    """Holm-Bonferroni step-down adjustment for a family of m tests.
+
+    Sort the p-values ascending as p_(1) <= ... <= p_(m). The adjusted value
+    is p_adj_(i) = min(1, max_{j <= i} (m - j + 1) * p_(j)), which keeps the
+    adjusted values monotone. A test survives if p_adj < alpha. This controls
+    the family-wise error rate at alpha without assuming independence.
+
+    Args:
+        p_values: Raw one-sided p-values, in the caller's order.
+        alpha: Family-wise significance level.
+
+    Returns:
+        One dict per input, in the SAME order as p_values, with keys
+        ``p_raw``, ``p_holm``, ``rank`` (1 = smallest p) and ``survives``.
+    """
+    m = len(p_values)
+    order = sorted(range(m), key=lambda i: p_values[i])
+    adjusted = [0.0] * m
+    running = 0.0
+    for rank, idx in enumerate(order, start=1):
+        running = max(running, (m - rank + 1) * p_values[idx])
+        adjusted[idx] = min(1.0, running)
+    ranks = {idx: rank for rank, idx in enumerate(order, start=1)}
+    return [
+        {
+            "p_raw": p_values[i],
+            "p_holm": adjusted[i],
+            "rank": ranks[i],
+            "survives": adjusted[i] < alpha,
+        }
+        for i in range(m)
+    ]
+
+
 def vs_random_rows(
     seeds: tuple[int, ...] = SEEDS,
     ps: tuple[int, ...] = MAIN_PS,

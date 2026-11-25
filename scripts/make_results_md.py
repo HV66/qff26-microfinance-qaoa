@@ -205,6 +205,39 @@ def vs_random_md(block: dict[str, Any]) -> str:
     return intro + "\n\n" + md_table(heads, [[r[k] for k in keys] for r in rows])
 
 
+def holm_md(results_dir: Path) -> str:
+    """Markdown for the Holm-Bonferroni correction over the whole test family."""
+    path = results_dir / "holm_correction.json"
+    if not path.exists():
+        return (
+            "No Holm correction file found (run `python -m scripts.holm_correction`)."
+        )
+    d = json.loads(path.read_text(encoding="utf-8"))
+    summary = (
+        f"Family of {d['family_size']} one-sided exact binomial tests (16 simulated "
+        "QAOA runs plus the real-hardware job), each against its uniform-random "
+        f"rate. {d['n_raw_below_alpha']} have a raw p-value below {d['alpha']}; "
+        f"{d['n_survive_holm']} survive Holm-Bonferroni at {d['alpha']}"
+        + (": " + "; ".join(d["survive_holm"]) if d["survive_holm"] else "")
+        + ". Holm controls the family-wise error rate; the other raw hits are "
+        "consistent with chance given the number of tests."
+    )
+    rows = [
+        [
+            r["label"],
+            f"{r['p_raw']:.2e}" if r["p_raw"] < 1e-3 else f"{r['p_raw']:.4f}",
+            f"{r['p_holm']:.2e}" if r["p_holm"] < 1e-3 else f"{r['p_holm']:.4f}",
+            "yes" if r["survives"] else "no",
+        ]
+        for r in sorted(d["rows"], key=lambda r: r["p_raw"])
+    ]
+    table = md_table(
+        ["test", "raw p (above random)", "Holm adjusted p", "survives Holm at 0.05"],
+        rows,
+    )
+    return summary + "\n\n" + table
+
+
 def noise_md(paths: list[Path]) -> str:
     """Markdown table of noise-model runs (one block per saved file)."""
     blocks = ["## Noise-model simulation (fake_fez Aer noise model)"]
@@ -345,6 +378,9 @@ def build(results_dir: Path = RESULTS) -> str:
             "## QAOA vs random sampling, every seed and depth\n\n"
             + vs_random_md(payload["vs_random"])
         )
+    sections.append(
+        "## Multiple-testing correction (Holm-Bonferroni)\n\n" + holm_md(results_dir)
+    )
     plots = [
         f"![{alt}](plots/{name})"
         for name, alt in PLOT_FILES
