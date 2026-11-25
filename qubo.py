@@ -203,3 +203,64 @@ def _pauli_label(n_qubits: int, z_qubits: tuple[int, ...]) -> str:
     for k in z_qubits:
         chars[n_qubits - 1 - k] = "Z"
     return "".join(chars)
+
+
+def objective(p: LoanPortfolio, x: np.ndarray, lam: float) -> float:
+    """Return the shared objective to MINIMISE: -ret.x + lam * x^T Sigma x.
+
+    This is the single implementation used by baselines, QAOA post-processing
+    and tests. Lower is better; the maximisation value is its negative.
+
+    Args:
+        p: Loan portfolio.
+        x: Binary loan selection, shape (n,).
+        lam: Risk-aversion weight.
+    """
+    xv = np.asarray(x)
+    return float(-(p.ret @ xv) + lam * p.portfolio_risk(xv))
+
+
+def is_feasible(p: LoanPortfolio, x: np.ndarray) -> bool:
+    """Return True if the loan selection x respects the budget."""
+    return bool(p.amount @ np.asarray(x) <= p.budget)
+
+
+def bits_from_string(q: Qubo, bitstring: str) -> np.ndarray:
+    """Convert a Qiskit counts key to a bit array indexed by variable.
+
+    Qiskit prints qubit 0 as the RIGHTMOST character, so variable k is
+    bitstring[-1 - k].
+
+    Args:
+        q: The QUBO (gives the expected length).
+        bitstring: String of 0/1 characters of length q.n_vars.
+
+    Raises:
+        ValueError: If the string has the wrong length or other characters.
+    """
+    if len(bitstring) != q.n_vars or set(bitstring) - {"0", "1"}:
+        raise ValueError(f"bad bitstring {bitstring!r} for {q.n_vars} variables")
+    return np.array([int(bitstring[-1 - k]) for k in range(q.n_vars)], dtype=int)
+
+
+def decode_loans(q: Qubo, bits: np.ndarray) -> np.ndarray:
+    """Return the loan bits x (first n variables), dropping slack bits.
+
+    Works on a single bit vector (N,) or a batch (shots, N).
+    """
+    return np.asarray(bits)[..., : q.n_loans]
+
+
+def decode_bitstring(q: Qubo, bitstring: str) -> np.ndarray:
+    """Decode a Qiskit counts key straight to loan bits x."""
+    return decode_loans(q, bits_from_string(q, bitstring))
+
+
+def residual(p: LoanPortfolio, q: Qubo, bits: np.ndarray) -> np.ndarray:
+    """Return spend + slack - budget for full bit vector(s).
+
+    Zero means the penalty term is zero (raw-feasible). Batch-friendly.
+    """
+    b = np.asarray(bits)
+    u = np.concatenate([p.amount, q.slack_coeffs])
+    return b @ u - p.budget
