@@ -18,8 +18,8 @@ Status values: DONE (path verified to exist in this repo), PARTIAL, TODO-USER (o
 | Item | Satisfied by | Status |
 |---|---|---|
 | Architecture diagram (1 slide) | `docs/architecture.mmd` (Mermaid source). Render to PNG/SVG for the slide, e.g. `npx @mermaid-js/mermaid-cli -i docs/architecture.mmd -o docs/architecture.png`, or paste into mermaid.live | PARTIAL (source done; image TODO-USER) |
-| Real hardware results or noise-model simulation | Noise model done: `noise_run.py` -> `results/noise_run_p1.json`, `noise_run_p2.json`, `noise_run_n5_p1.json` (fake_fez). Real hardware NOT run: no `results/hardware_result.json`. After setting the IBM token: `python hardware_run.py`, then later `python retrieve_hardware.py` | PARTIAL (noise model DONE; hardware TODO-USER) |
-| Error-mitigation notes and circuit-depth stats | `README.md` section "Error mitigation and circuit depth"; depth per p in `results/results.md`; transpiled depth 334, 223 two-qubit gates in `results/noise_run_p1.json` | DONE |
+| Real hardware results or noise-model simulation | Noise model done: `noise_run.py` -> `results/noise_run_p1.json`, `noise_run_p2.json`, `noise_run_n5_p1.json` (fake_fez). Real hardware: one 5-loan, p=1 job on `ibm_fez` (job `dc3imv5hdvas73bo063g`, 4096 shots): `results/hardware_job.json`, `results/hardware_result.json`; reproduce with `python hardware_run.py --n-loans 5 --p 1` then `python retrieve_hardware.py` | DONE (5 loans only; 12-qubit instance not run on hardware) |
+| Error-mitigation notes and circuit-depth stats | `README.md` section "Error mitigation and circuit depth"; depth per p in `results/results.md`; transpiled depth on fake_fez 334, 223 two-qubit gates in `results/noise_run_p1.json`; logical depth 72 to 198 in `results/results.md` | DONE |
 | Honest limitations and next steps | `README.md` section "Honest limitations"; `docs/pitch_script.md` section D | DONE |
 | Pinned Qiskit and package versions | `requirements.txt` (qiskit==2.6.2, qiskit-aer==0.18.4, qiskit-ibm-runtime==0.52.1, and others pinned with ==) | DONE |
 | Submit early, not at 23:59 | Target: submit well before the deadline, ideally by Thu 26 Nov evening. Re-run before submitting: `python -m pytest -q` and `python scripts/run_all.py` | TODO-USER |
@@ -31,4 +31,4 @@ Status values: DONE (path verified to exist in this repo), PARTIAL, TODO-USER (o
 | 5-minute live pitch | `docs/pitch_script.md` section B (timings sum to 5:00) | PARTIAL (script DONE; rehearsal TODO-USER) |
 | Rehearsed live demo | `python demo.py`; fallback `results/demo_plot.png`. Rehearse twice on the presenting machine | TODO-USER |
 | 3-minute Q&A prep | `docs/pitch_script.md` section C (8 answers with numbers from `results/`) | PARTIAL (answers DONE; rehearsal TODO-USER) |
-| Update claims if hardware gets run | Edit hardware lines in `docs/pitch_script.md` and `README.md` only after `results/hardware_result.json` exists | TODO-USER |
+| Update claims if hardware gets run | Hardware lines in `README.md` and `docs/pitch_script.md` now describe the one `ibm_fez` job; edit them again only if you run another job | DONE |

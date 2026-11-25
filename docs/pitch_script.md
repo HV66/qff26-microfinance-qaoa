@@ -1,6 +1,6 @@
 # Pitch script: microfinance loan selection with QUBO + QAOA
 
-Honest framing throughout: we built and verified the full QAOA pipeline. At 8 loans classical methods solve the problem exactly and QAOA does not beat them. We make no quantum-advantage claim. Real IBM hardware has NOT been run (no `results/hardware_result.json`); if that changes, update the hardware lines below. All numbers come from `results/` unless marked derived.
+Honest framing throughout: we built and verified the full QAOA pipeline. At 8 loans classical methods solve the problem exactly and QAOA does not beat them. We make no quantum-advantage claim. One real-hardware job exists (`ibm_fez`, 5 loans, p=1, 4096 shots, job `dc3imv5hdvas73bo063g`, `results/hardware_result.json`); no other size was run on hardware. All numbers come from `results/` unless marked derived.
 
 ## A. 3-minute pitch (target 3:00)
 
@@ -11,16 +11,16 @@ Honest framing throughout: we built and verified the full QAOA pipeline. At 8 lo
 | 0:55-1:25 (30 s) | Approach | "We encode it as a QUBO: expected return minus lambda times correlated risk, plus a budget penalty with binary slack bits. 8 loans become 12 qubits. We convert to an Ising Hamiltonian, run QAOA at depth 1 to 4, and sample 4096 shots. Next to it sits an exact brute force, greedy, simulated annealing and random sampling, on identical instances." | Architecture slide, quantum branch then classical branch |
 | 1:25-2:05 (40 s) | Live demo | "This is one command." Run `python demo.py` (loads the saved seed-0 parameters and samples 4096 shots). Point at: (1) the loan table with sectors and budget; (2) the penalty/feasibility line; (3) the final table where every method reports the same objective; (4) the computed note stating no advantage. | Terminal, then `results/demo_plot.png` |
 | 2:05-2:35 (30 s) | Honest result | "At 8 loans, brute force finds the optimum in 0.0061 seconds. QAOA reaches the same optimum, 0.00 percent gap, but so does random sampling, because the search space is only 256 loan vectors. The informative number is the chance a shot hits the optimum. On our headline instance QAOA is 0.0051 at best against 0.0029 for random sampling, and a binomial test says that is indistinguishable from random. Across all 16 runs, 5 are above random, 10 indistinguishable and 1 below. On a fake_fez noise model P(optimum) falls to 0.0029." | results.md table |
-| 2:35-2:50 (15 s) | Quantum claim | "We built and verified the full QAOA pipeline, 28 of 28 independent checks pass. At 8 loans classical methods solve it exactly and QAOA does not beat them. We make no advantage claim, and we have not yet run real hardware." | Limitations slide |
-| 2:50-3:00 (10 s) | Close | "Next: larger instances where brute force is infeasible, real Heron hardware with our dynamical decoupling and twirling setup, and warm-started QAOA. Thank you." | Next steps slide |
+| 2:35-2:50 (15 s) | Quantum claim | "We built and verified the full QAOA pipeline, 28 of 28 independent checks pass. At 8 loans classical methods solve it exactly and QAOA does not beat them. We make no advantage claim. We ran one small 5-loan job on ibm_fez: P(optimum) 0.0405 against 0.0271 for random sampling, one run, no advantage claim." | Limitations slide |
+| 2:50-3:00 (10 s) | Close | "Next: larger instances where brute force is infeasible, more hardware runs and seeds with and without our dynamical decoupling and twirling, and warm-started QAOA. Thank you." | Next steps slide |
 
 Segment seconds: 25+30+30+40+30+15+10 = 180 s = 3:00.
 
 Honest claim, slide by slide:
 
 - Results slide: "A 0 percent gap is weak evidence, because 4096 shots touch 201 to 256 of the 256 loan vectors. P(optimum) against random sampling is the metric."
-- Circuit slide: "The feasibility finding is size: depth 334 and 223 two-qubit gates at p=1, depth 655 and 519 at p=2, on a fake_fez coupling map."
-- Limitations slide (the honest claim): "No quantum advantage at this size. We contribute a verified pipeline and noise measurements, and hardware has not been run."
+- Circuit slide: "The feasibility finding is size: transpiled depth on fake_fez 334 with 223 two-qubit gates at p=1 and 655 with 519 at p=2. Our own logical depth, with all-to-all gates, is 72 and 114."
+- Limitations slide (the honest claim): "No quantum advantage at this size. We contribute a verified pipeline and noise measurements, plus one small 5-loan ibm_fez job; we have not run the 12-qubit instance on hardware."
 
 ## B. 5-minute finals version (target 5:00; then 3 min Q&A)
 
@@ -31,8 +31,8 @@ Honest claim, slide by slide:
 | 1:10-2:00 (50 s) | Approach | Architecture slide in full: QUBO with penalty P = sum(returns) + 1 and slack bits, Ising conversion, QAOAAnsatz, COBYLA on exact statevector, Sampler 4096 shots, shared decode helpers. |
 | 2:00-2:40 (40 s) | Verification | Independent verifier (`results/verifier_report.md`): 28/28 checks pass; every infeasible state sits at least 6.43 above the optimum (lam=0) and 6.79 (lam=0.3, 1.0) over seeds 0-9, so the penalty holds with margin. Qubit-order check is discriminating (reversal changes energies by about 2400). |
 | 2:40-3:30 (50 s) | Live demo | `python demo.py`; point at the loan table, feasibility, per-method objective and the computed no-advantage note. Fallback if it hangs: show `results/demo_plot.png`. |
-| 3:30-4:15 (45 s) | Results | Main table (seed 0): every method 0.00 percent gap; brute force 0.0061 s, greedy 0.0006 s, SA 0.1558 s, QAOA 3 to 6 s. Five-seed summary: greedy mean gap 3.08 percent, worst 15.40 percent; SA, random and QAOA p=1..3 all 0.00 percent. Lambda sweep: greedy suboptimal in 7 of 50 seed/lambda cases, worst 30.83 percent (derived from `lambda_sweep.csv`, see note below). Noise model fake_fez: transpiled depth 334, 223 two-qubit gates, 0.00 percent gap, P(optimum) 0.0029 noisy, 0.0022 with readout mitigation. |
-| 4:15-4:40 (25 s) | Honest claim | No advantage. Per-run binomial test vs random (`results/results.md`): 5 of 16 QAOA runs above random, 10 indistinguishable, 1 below; the seed-0 headline runs are all indistinguishable. Hardware not yet run. |
+| 3:30-4:15 (45 s) | Results | Main table (seed 0): every method 0.00 percent gap; brute force 0.0061 s, greedy 0.0006 s, SA 0.1558 s, QAOA 3 to 6 s. Five-seed summary: greedy mean gap 3.08 percent, worst 15.40 percent; SA, random and QAOA p=1..3 all 0.00 percent. Lambda sweep: greedy suboptimal in 7 of 50 seed/lambda cases, worst 30.83 percent (derived from `lambda_sweep.csv`, see note below). Noise model fake_fez: transpiled depth on fake_fez 334, 223 two-qubit gates (logical depth 72), 0.00 percent gap, P(optimum) 0.0029 noisy, 0.0022 with readout mitigation. |
+| 4:15-4:40 (25 s) | Honest claim | No advantage. Per-run binomial test vs random (`results/results.md`): 5 of 16 QAOA runs above random, 10 indistinguishable, 1 below; the seed-0 headline runs are all indistinguishable. One 5-loan ibm_fez job: P(optimum) 0.0405 vs 0.0271 random; one run, no advantage claim. |
 | 4:40-5:00 (20 s) | Next steps | Larger n beyond brute force, hardware run via `hardware_run.py` then `retrieve_hardware.py`, warm start, CVaR objective. |
 
 Segment seconds: 30+40+50+40+50+45+25+20 = 300 s = 5:00.
@@ -57,7 +57,7 @@ Segment seconds: 30+40+50+40+50+45+25+20 = 300 s = 5:00.
    P = sum(returns) + 1, set in `qubo.auto_penalty`. Any budget violation or nonzero slack residual then costs at least P, more than any possible return gain. The independent verifier (`tests/independent/verify_independent.py`, `results/verifier_report.md`) recomputed the energy of all 2^12 bitstrings for seeds 0-9: the minimum is the true constrained optimum and the smallest infeasible margin is 6.43 (lam=0) and 6.79 (lam=0.3, 1.0). It also ran 75 stress instances and budgets 1..17. This is verified on those instances, not a proof for all inputs, beyond the argument in the code docstring.
 
 5. **What about noise and hardware?**
-   We ran `fake_fez` noise-model simulations with the saved seed-0 parameters (`results/noise_run_p1.json`, `noise_run_p2.json`, `noise_run_n5_p1.json`, 4096 shots). At 12 qubits, p=1: transpiled depth 334, 223 two-qubit gates, P(optimum) 0.0054 noiseless, 0.0029 noisy, 0.0022 with tensored readout mitigation. At p=2: depth 655, 519 two-qubit gates, P(optimum) 0.0042, 0.0034 and 0.0037. At 5 loans (9 qubits), p=1: depth 237, 130 two-qubit gates, P(optimum) 0.0500, 0.0420 and 0.0464. Readout mitigation lowered P(optimum) in one row and raised it in two; these are tens of hits, so we claim no benefit. Real hardware has not been run: we had no IBM account or token available. `hardware_run.py --n-loans 5` (SamplerV2, dynamical decoupling, Pauli twirling) prints qubits, depth and two-qubit count before it submits, but its submit path is untested. We make no hardware claim.
+   We ran `fake_fez` noise-model simulations with the saved seed-0 parameters (`results/noise_run_p1.json`, `noise_run_p2.json`, `noise_run_n5_p1.json`, 4096 shots). Transpiled depth on fake_fez at 12 qubits, p=1: 334 with 223 two-qubit gates, P(optimum) 0.0054 noiseless, 0.0029 noisy, 0.0022 with tensored readout mitigation. At p=2: depth 655, 519 two-qubit gates, P(optimum) 0.0042, 0.0034 and 0.0037. At 5 loans (9 qubits), p=1: depth 237, 130 two-qubit gates, P(optimum) 0.0500, 0.0420 and 0.0464. Readout mitigation lowered P(optimum) in one row and raised it in two; these are tens of hits, so we claim no benefit. We also ran one real job: `ibm_fez`, 5 loans, p=1, 4096 shots, SamplerV2 with dynamical decoupling and Pauli twirling, transpiled depth 238 and 130 two-qubit gates on that backend (237 on the fake_fez target, same circuit, different backend). It gave P(optimum) 0.0405 and decoded-feasible 0.6692, against 0.0271 and 0.4119 for random sampling. That is above random on one run and close to the noisy simulation (0.0420); it is not an advantage claim, and the 12-qubit circuit was not run on hardware (519 two-qubit gates at p=2 is above our 300-gate limit).
 
 6. **How does this scale to realistic portfolios?**
    Qubits = n loans + slack bits (12 at n=8), and the data generator is limited to n of 2 to 10. Realistic portfolios are hundreds to thousands of loans, far beyond today's noisy hardware at this circuit depth (depth 334 and 223 two-qubit gates at 12 qubits, p=1, already) and beyond our simulator. Classical solvers such as MIP or SA also scale much further. A credible next step is a mid-size instance (tens of loans) where exact brute force stops being feasible, compared to SA and a MIP solver.
@@ -78,7 +78,8 @@ With 12 qubits there are 4096 basis states, and we sample QAOA 4096 times. Each 
 ## D. Do not say
 
 - Do not say "quantum advantage", "speedup", "outperforms", or "better than classical". The results show no such thing.
-- Do not say anything ran on real IBM hardware. Only a `fake_fez` noise-model simulation exists unless `results/hardware_result.json` is produced.
+- Hardware: say exactly one 5-loan, p=1 job ran on `ibm_fez` (4096 shots). Do not say the 12-qubit instance ran on hardware, and do not present the hardware P(optimum) as advantage or as a mitigation benefit.
+- Depth: always say whether a depth is logical (generic gates, all-to-all) or transpiled on a named backend.
 - Do not present the 0.00 percent QAOA gap as evidence of quality; random sampling also reaches it.
 - Do not claim the penalty is proven for all inputs; say verified on seeds 0-9 plus stress cases.
 - Do not quote P(optimum) differences between QAOA depths as real; they are sampling noise.

@@ -19,3 +19,6 @@ _patch*
 _append*
 _migrate*
 _block*
+
+# final report (local only, not committed)
+REPORT_FINAL.md
