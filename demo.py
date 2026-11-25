@@ -49,6 +49,10 @@ QUICK_BUDGET = {"restarts": 1, "maxiter": 40, "shots": 1024}
 EPS = 1e-9
 OUT_DIR = Path("results")
 RESULTS_DIR = Path("results")
+DEPTH_FOOTNOTE = (
+    "logical depth = generic gates {cx, rz, sx, x}, all-to-all connectivity, no routing. "
+    "Transpiled depth on fake_fez (coupling map) is larger: see results/noise_run_p*.json."
+)
 BANNER = "*** REDUCED BUDGET, results will differ from results/results.md ***"
 
 
@@ -237,15 +241,16 @@ def format_table(rows: list[dict[str, Any]]) -> str:
     """Return the comparison table as text."""
     head = (
         f"{'method':<24}{'objective':>11}{'gap %':>9}{'P(optimum)':>12}"
-        f"{'depth':>7}{'runtime s':>11}"
+        f"{'logical depth':>14}{'runtime s':>11}"
     )
     lines = [head, "-" * len(head)]
     for r in rows:
         lines.append(
             f"{r['method']:<24}{_fmt(r['objective'], '.4f'):>11}"
             f"{_fmt(r['gap_pct'], '.2f'):>9}{_fmt(r['p_optimum'], '.4f'):>12}"
-            f"{_fmt(r['depth'], 'd'):>7}{r['runtime_s']:>11.3f}"
+            f"{_fmt(r['depth'], 'd'):>14}{r['runtime_s']:>11.3f}"
         )
+    lines.append(DEPTH_FOOTNOTE)
     return "\n".join(lines)
 
 
@@ -273,19 +278,44 @@ def save_plot(
     hists: dict[int, Counter[float]],
     optimum: float,
     path: Path,
+    n_loans: int = N_LOANS,
+    shots: int = FULL_SHOTS,
 ) -> None:
-    """Save gap-by-method bars and QAOA sampled objective distributions."""
+    """Save P(optimum) per method and QAOA sampled objective distributions.
+
+    Left panel: P(optimum) per sampling method (random, QAOA) with a dashed
+    line at the uniform-random expectation 1/2^n_loans. The gap is not plotted
+    because every method reaches a 0% best-sample gap, which is uninformative.
+    """
     import matplotlib
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
-    pairs = [(r["method"], r["gap_pct"]) for r in rows if r["gap_pct"] is not None]
-    ax1.bar([m for m, _ in pairs], [g for _, g in pairs], color="#4477aa")
-    ax1.set_ylabel("gap to exact optimum (%)")
-    ax1.set_title("Best feasible objective gap by method")
+    pairs = [(r["method"], r["p_optimum"]) for r in rows if r["p_optimum"] is not None]
+    ax1.bar([m for m, _ in pairs], [v for _, v in pairs], color="#4477aa", zorder=3)
+    rate = 1 / 2**n_loans
+    sd = (rate * (1 - rate) / shots) ** 0.5
+    ax1.axhspan(
+        max(rate - 2 * sd, 0.0),
+        rate + 2 * sd,
+        color="0.88",
+        zorder=1,
+        label=f"+/- 2 sd of a random count ({shots} shots)",
+    )
+    ax1.axhline(
+        rate,
+        color="k",
+        ls="--",
+        lw=1.2,
+        zorder=4,
+        label=f"uniform-random expectation 1/2^{n_loans}",
+    )
+    ax1.set_ylabel("P(optimum) per shot")
+    ax1.set_title("P(optimum) by method vs uniform-random expectation")
     ax1.tick_params(axis="x", rotation=30, labelsize=8)
+    ax1.legend(fontsize=8)
     for p, hist in hists.items():
         total = sum(hist.values())
         vals = sorted(hist)
@@ -332,7 +362,7 @@ def run_demo(
     print("\n" + honesty_note(rows))
 
     plot_path = out_dir / "demo_plot.png"
-    save_plot(rows, hists, float(rows[0]["objective"]), plot_path)
+    save_plot(rows, hists, float(rows[0]["objective"]), plot_path, pf.n, shots)
     print(f"[6] Plot saved to {plot_path}")
     if quick:
         print(BANNER)

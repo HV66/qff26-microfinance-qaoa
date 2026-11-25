@@ -102,7 +102,7 @@ def test_run_one_metric_sanity() -> None:
 
 @pytest.mark.parametrize("p", [1, 2, 3, 4])
 def test_fast_simulation_matches_qiskit_circuit(p: int) -> None:
-    """The numpy inner loop must equal the Qiskit QAOAAnsatz statevector."""
+    """The numpy inner loop must equal the Qiskit qaoa_ansatz statevector."""
     from qiskit.quantum_info import Statevector
 
     q = build_qubo(make_portfolio(4, 0), LAM)

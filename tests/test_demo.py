@@ -101,3 +101,33 @@ def test_skip_tests_flag_and_mandatory_set() -> None:
     assert not any("hardware" in " ".join(s.args) for s in run_all.build_steps())
     mandatory = [s.name for s in run_all.build_steps() if s.mandatory]
     assert mandatory[:2] == ["pytest", "lambda sweep"]
+
+
+def test_plot_is_written_with_probability_panel(tmp_path: Path) -> None:
+    """save_plot writes a PNG; its left panel plots P(optimum), not the gap."""
+    from collections import Counter
+
+    rows = [
+        {"method": "Random (4096 shots)", "p_optimum": 0.0029, "gap_pct": 0.0},
+        {"method": "QAOA p=2", "p_optimum": 0.0051, "gap_pct": 0.0},
+        {"method": "Exact brute force", "p_optimum": None, "gap_pct": 0.0},
+    ]
+    out = tmp_path / "plot.png"
+    demo.save_plot(rows, {2: Counter({-3.1: 5, -2.0: 3})}, -3.1396, out, n_loans=8)
+    assert out.is_file() and out.stat().st_size > 1000
+    assert out.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
+
+
+def test_table_labels_depth_as_logical() -> None:
+    rows = [
+        {
+            "method": "QAOA p=2",
+            "objective": -3.1,
+            "gap_pct": 0.0,
+            "p_optimum": 0.005,
+            "depth": 114,
+            "runtime_s": 0.1,
+        }
+    ]
+    text = demo.format_table(rows)
+    assert "logical depth" in text and "fake_fez" in text

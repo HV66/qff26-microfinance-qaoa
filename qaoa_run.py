@@ -1,6 +1,6 @@
 """QAOA for the microfinance QUBO: ansatz, optimisation, sampling, metrics.
 
-Pipeline: QUBO -> Ising (own conversion) -> QAOAAnsatz (qiskit core) ->
+Pipeline: QUBO -> Ising (own conversion) -> qaoa_ansatz (qiskit core) ->
 COBYLA on the exact noiseless statevector expectation -> final evaluation by
 sampling the optimised circuit with a primitives-V2 sampler -> metrics.
 
@@ -29,8 +29,8 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from qiskit import transpile
-from qiskit.circuit.library import QAOAAnsatz
+from qiskit import QuantumCircuit, transpile
+from qiskit.circuit.library import qaoa_ansatz
 from qiskit.primitives import StatevectorSampler
 from qiskit.quantum_info import SparsePauliOp
 from scipy.optimize import minimize
@@ -114,13 +114,13 @@ def scaled_cost(q: Qubo) -> tuple[SparsePauliOp, float]:
     return op / scale, scale
 
 
-def build_ansatz(q: Qubo, p: int) -> QAOAAnsatz:
-    """Build the depth-p QAOA ansatz (qiskit QAOAAnsatz, |+>^N start).
+def build_ansatz(q: Qubo, p: int) -> QuantumCircuit:
+    """Build the depth-p QAOA ansatz (qiskit qaoa_ansatz function, |+>^N start).
 
     It has 2p parameters: p mixer angles beta, then p cost angles gamma.
     """
     cost, _ = scaled_cost(q)
-    return QAOAAnsatz(cost_operator=cost, reps=p)
+    return qaoa_ansatz(cost, reps=p)
 
 
 def fast_probabilities(
