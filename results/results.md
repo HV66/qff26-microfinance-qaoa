@@ -152,6 +152,41 @@ Exact-optimum portfolios that leave at least one sector with zero funded loans: 
 | 4 | 1.0000 | exact | 2 | 9 / 21 | 2.8237 | 1.6534 | 1 / 1 / 0 | 2 |
 | 4 | 1.0000 | greedy | 2 | 9 / 21 | 2.8237 | 1.6534 | 1 / 1 / 0 | 2 |
 
+## Scaling and where it breaks
+
+No QAOA optimisation; circuits built with placeholder angles (0.3). Logical = generic gates ['cx', 'rz', 'sx', 'x'], all-to-all connectivity. fake_fez transpiled counts only for n_loans <= 6. The squared budget penalty couples every pair of QUBO variables, so the logical two-qubit count is exactly p * N * (N - 1) for N qubits.
+
+| loans | qubits | loans + slack | logical depth / 2q, p=1 | logical depth / 2q, p=2 | brute-force s | fake_fez transpiled depth / 2q, p=1 |
+|---|---|---|---|---|---|---|
+| 4 | 8 | 4 + 4 | 48 / 56 | 78 / 112 | 0.0001 | 190 / 87 |
+| 5 | 9 | 5 + 4 | 54 / 72 | 87 / 144 | 0.0005 | 247 / 130 |
+| 6 | 10 | 6 + 4 | 60 / 90 | 96 / 180 | 0.0004 | 272 / 174 |
+| 7 | 11 | 7 + 4 | 66 / 110 | 105 / 220 | 0.0008 | skipped (n > 6) |
+| 8 | 12 | 8 + 4 | 72 / 132 | 114 / 264 | 0.0017 | skipped (n > 6) |
+| 9 | 13 | 9 + 4 | 78 / 156 | 123 / 312 | 0.0065 | skipped (n > 6) |
+| 10 | 14 | 10 + 4 | 84 / 182 | 132 / 364 | 0.0065 | skipped (n > 6) |
+
+**EXTRAPOLATION, NOT A MEASUREMENT** (not run, not measured): at 50 loans with an assumed budget of 90 (40% of expected total amount (mean amount 4.5)) the formula gives 57 qubits (50 loans + 7 slack), p * N * (N - 1) = 3192 logical two-qubit gates at p=1 and 6384 at p=2, and 1125899906842624 brute-force states (2^50). The two-qubit formula reproduces every measured size exactly; transpiled counts on a coupling map would be larger and are not extrapolated.
+
+## Hard instances: where greedy fails, does QAOA beat random?
+
+Where greedy fails (gap above 0), QAOA is above random in 2 of 3 runs and below random in 1: seed 2 p=1: above random (survives Holm), seed 2 p=2: below random (does not survive Holm), seed 2 p=3: above random (does not survive Holm). This is a mixed result, not a consistent advantage; it is one failing seed. Where greedy is exact, QAOA is above random in 3 of 9 runs, so being above random does not track where greedy fails.
+
+| seed | greedy gap % | greedy fails | p | QAOA hits | random hits | enrichment (QAOA / random P(opt)) | verdict vs random (raw) | survives Holm |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 0.0000 | no | 1 | 24 | 15 | 1.60 | above random | no |
+| 1 | 0.0000 | no | 2 | 20 | 15 | 1.33 | indistinguishable from random | no |
+| 1 | 0.0000 | no | 3 | 35 | 15 | 2.33 | above random | yes |
+| 2 | 15.3994 | yes | 1 | 30 | 16 | 1.88 | above random | yes |
+| 2 | 15.3994 | yes | 2 | 8 | 16 | 0.50 | below random | no |
+| 2 | 15.3994 | yes | 3 | 26 | 16 | 1.62 | above random | no |
+| 3 | 0.0000 | no | 1 | 13 | 18 | 0.72 | indistinguishable from random | no |
+| 3 | 0.0000 | no | 2 | 26 | 18 | 1.44 | above random | no |
+| 3 | 0.0000 | no | 3 | 17 | 18 | 0.94 | indistinguishable from random | no |
+| 4 | 0.0000 | no | 1 | 10 | 10 | 1.00 | indistinguishable from random | no |
+| 4 | 0.0000 | no | 2 | 21 | 10 | 2.10 | indistinguishable from random | no |
+| 4 | 0.0000 | no | 3 | 18 | 10 | 1.80 | indistinguishable from random | no |
+
 ## Plots
 
 ![QAOA energy convergence](plots/compare_energy_convergence.png)

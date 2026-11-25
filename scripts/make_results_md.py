@@ -296,6 +296,154 @@ def impact_md(results_dir: Path) -> str:
     return intro + "\n\n" + summary + "\n\n" + table
 
 
+def scaling_md(results_dir: Path) -> str:
+    """Markdown for the scaling study: measured sizes plus a labelled extrapolation."""
+    path = results_dir / "scaling_study.json"
+    if not path.exists():
+        return "No scaling study file found (run `python -m scripts.scaling_study`)."
+    d = json.loads(path.read_text(encoding="utf-8"))
+    rows = [
+        [
+            r["n_loans"],
+            r["n_qubits"],
+            f"{r['n_loans']} + {r['n_slack']}",
+            f"{r['logical_depth_p1']} / {r['logical_two_qubit_p1']}",
+            f"{r['logical_depth_p2']} / {r['logical_two_qubit_p2']}",
+            f"{r['brute_force_runtime_s']:.4f}",
+            (
+                "skipped (n > 6)"
+                if r["fake_fez_depth_p1"] is None
+                else f"{r['fake_fez_depth_p1']} / {r['fake_fez_two_qubit_p1']}"
+            ),
+        ]
+        for r in d["rows"]
+    ]
+    table = md_table(
+        [
+            "loans",
+            "qubits",
+            "loans + slack",
+            "logical depth / 2q, p=1",
+            "logical depth / 2q, p=2",
+            "brute-force s",
+            "fake_fez transpiled depth / 2q, p=1",
+        ],
+        rows,
+    )
+    e = d["extrapolation"]
+    extra = (
+        f"**{e['LABEL']}** (not run, not measured): at {e['n_loans']} loans with an "
+        f"assumed budget of {e['assumed_budget']} ({e['assumed_budget_rule']}) the "
+        f"formula gives {e['n_qubits']} qubits ({e['n_loans']} loans + "
+        f"{e['n_slack']} slack), p * N * (N - 1) = "
+        f"{e['logical_two_qubit_p1_extrapolated']} logical two-qubit gates at p=1 "
+        f"and {e['logical_two_qubit_p2_extrapolated']} at p=2, and "
+        f"{e['brute_force_states']} brute-force states (2^{e['n_loans']}). The "
+        "two-qubit formula reproduces every measured size exactly; transpiled "
+        "counts on a coupling map would be larger and are not extrapolated."
+    )
+    note = (
+        d["note"]
+        + " The squared budget penalty couples every pair of QUBO variables, so "
+        "the logical two-qubit count is exactly p * N * (N - 1) for N qubits."
+    )
+    return note + "\n\n" + table + "\n\n" + extra
+
+
+def hard_instance_md(results_dir: Path) -> str:
+    """Join greedy gap, QAOA verdict vs random and enrichment, seeds 1-4.
+
+    QAOA and random numbers come from results/qaoa_seed{1..4}_p*.json; the
+    greedy gap from results/compare_main.json; Holm survival from
+    results/holm_correction.json.
+    """
+    main_path = results_dir / "compare_main.json"
+    holm_path = results_dir / "holm_correction.json"
+    if not main_path.exists():
+        return "No compare_main.json found."
+    main = json.loads(main_path.read_text(encoding="utf-8"))
+    greedy = {
+        r["seed"]: r["gap_pct"]
+        for r in main["seed_summary"]["per_seed"]
+        if r["method"] == "greedy"
+    }
+    verdicts: dict[tuple[int, int], str] = {}
+    csv_path = results_dir / "compare_vs_random.csv"
+    if csv_path.exists():
+        import csv
+
+        with csv_path.open(encoding="utf-8") as fh:
+            for rec in csv.DictReader(fh):
+                verdicts[(int(rec["seed"]), int(rec["p"]))] = rec["verdict"]
+    holm = {}
+    if holm_path.exists():
+        for r in json.loads(holm_path.read_text(encoding="utf-8"))["rows"]:
+            holm[r["label"]] = r["survives"]
+    rows, flagged = [], []
+    for seed in (1, 2, 3, 4):
+        for path in sorted(results_dir.glob(f"qaoa_seed{seed}_p*.json")):
+            run = json.loads(path.read_text(encoding="utf-8"))
+            cfg, smp, rnd = run["config"], run["sampling"], run["random_null"]
+            shots = int(cfg["shots"])
+            hits = round(smp["p_optimal"] * shots)
+            verdict = verdicts.get((seed, int(cfg["p"])), "not tested")
+            enrich = smp["p_optimal"] / rnd["p_optimal"] if rnd["p_optimal"] else None
+            survives = holm.get(f"simulated QAOA seed {seed} p={cfg['p']}")
+            gap = greedy.get(seed)
+            greedy_fails = gap is not None and gap > 0
+            if greedy_fails:
+                flagged.append((seed, cfg["p"], verdict, survives))
+            rows.append(
+                [
+                    seed,
+                    f"{gap:.4f}" if gap is not None else "-",
+                    "yes" if greedy_fails else "no",
+                    cfg["p"],
+                    hits,
+                    round(rnd["p_optimal"] * shots),
+                    f"{enrich:.2f}" if enrich is not None else "-",
+                    verdict,
+                    "-" if survives is None else ("yes" if survives else "no"),
+                ]
+            )
+    table = md_table(
+        [
+            "seed",
+            "greedy gap %",
+            "greedy fails",
+            "p",
+            "QAOA hits",
+            "random hits",
+            "enrichment (QAOA / random P(opt))",
+            "verdict vs random (raw)",
+            "survives Holm",
+        ],
+        rows,
+    )
+    if flagged:
+        parts = ", ".join(
+            f"seed {sd} p={p}: {v}"
+            + (" (survives Holm)" if h else " (does not survive Holm)")
+            for sd, p, v, h in flagged
+        )
+        n_above = sum(1 for _, _, v, _ in flagged if v == "above random")
+        n_below = sum(1 for _, _, v, _ in flagged if v == "below random")
+        verdict_line = (
+            f"Where greedy fails (gap above 0), QAOA is above random in {n_above} of "
+            f"{len(flagged)} runs and below random in {n_below}: {parts}. This is a "
+            "mixed result, not a consistent advantage; it is one failing seed."
+        )
+    else:
+        verdict_line = "Greedy does not fail on any of seeds 1 to 4."
+    other_above = sum(1 for r in rows if r[2] == "no" and r[7] == "above random")
+    other_total = sum(1 for r in rows if r[2] == "no")
+    other_line = (
+        f"Where greedy is exact, QAOA is above random in {other_above} of "
+        f"{other_total} runs, so being above random does not track where greedy fails."
+    )
+    return verdict_line + " " + other_line + "\n\n" + table
+
+
 def noise_md(paths: list[Path]) -> str:
     """Markdown table of noise-model runs (one block per saved file)."""
     blocks = ["## Noise-model simulation (fake_fez Aer noise model)"]
@@ -441,6 +589,11 @@ def build(results_dir: Path = RESULTS) -> str:
     )
     sections.append(
         "## Who is funded: impact and sector concentration\n\n" + impact_md(results_dir)
+    )
+    sections.append("## Scaling and where it breaks\n\n" + scaling_md(results_dir))
+    sections.append(
+        "## Hard instances: where greedy fails, does QAOA beat random?\n\n"
+        + hard_instance_md(results_dir)
     )
     plots = [
         f"![{alt}](plots/{name})"
