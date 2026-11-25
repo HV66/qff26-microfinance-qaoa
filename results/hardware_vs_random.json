@@ -1,0 +1,22 @@
+{
+ "job_id": "dc3imv5hdvas73bo063g",
+ "backend": "ibm_fez",
+ "n_loans": 5,
+ "shots": 4096,
+ "hardware": {
+  "optimum_hits": 166,
+  "p_optimum": 0.04052734375,
+  "p_feasible_decoded": 0.669189453125,
+  "p_feasible_raw": 0.081787109375
+ },
+ "random_null": {
+  "optimum_hits": 111,
+  "p_optimum": 0.027099609375,
+  "p_feasible_decoded": 0.411865234375,
+  "p_feasible_raw": 0.036865234375
+ },
+ "uniform_expectation_p_optimum": 0.03125,
+ "expected_hits_uniform": 128.0,
+ "binomial_p_value_above_random": 0.0006002685527277448,
+ "verdict": "above random"
+}

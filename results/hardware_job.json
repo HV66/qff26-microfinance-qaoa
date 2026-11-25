@@ -1,0 +1,47 @@
+{
+ "job_id": "dc3imv5hdvas73bo063g",
+ "backend": "ibm_fez",
+ "submitted_utc": "2026-11-25T18:39:55.895782+00:00",
+ "shots": 4096,
+ "options": {
+  "default_shots": 4096,
+  "dynamical_decoupling": {
+   "enable": true,
+   "sequence_type": "XpXm"
+  },
+  "twirling": {
+   "enable_gates": true,
+   "enable_measure": true,
+   "num_randomizations": "auto",
+   "shots_per_randomization": "auto",
+   "strategy": "active-accum"
+  }
+ },
+ "transpile": {
+  "optimization_level": 3,
+  "seed_transpiler": 0,
+  "depth": 238,
+  "two_qubit_gates": 130
+ },
+ "instance": {
+  "seed": 0,
+  "n_loans": 5,
+  "n_qubits": 9,
+  "lam": 0.3,
+  "p": 1,
+  "params": [
+   3.525339136279876,
+   -0.48673692000357094
+  ],
+  "params_source": "cached hardware_params_seed0_n5_p1.json",
+  "exact_objective": -1.4457459946823221,
+  "exact_x": [
+   0,
+   0,
+   1,
+   1,
+   0
+  ]
+ },
+ "reason": "Small-instance mode: n_loans=5 requested."
+}

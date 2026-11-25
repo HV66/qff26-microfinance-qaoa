@@ -1,0 +1,55 @@
+{
+ "instance": {
+  "seed": 0,
+  "n_loans": 8,
+  "lam": 0.3,
+  "n_qubits": 12
+ },
+ "penalty": 8.643899999999999,
+ "offset": 1045.9118999999998,
+ "n_bitstrings": 4096,
+ "n_zero_residual_states": 126,
+ "max_abs_residual": 27,
+ "energy_min": -3.1395733002655106,
+ "energy_mean_uniform": 914.700135718959,
+ "energy_max": 6299.606788997967,
+ "energy_range_zero_residual": [
+  -3.1395733002655106,
+  0.38704825410172816
+ ],
+ "energy_min_violating": 5.471605640214193,
+ "per_p": [
+  {
+   "p": 1,
+   "final_H": 155.02005616907792,
+   "stored_final_H": 155.02005616907792,
+   "mass_on_zero_residual_states": 0.09807964714812396,
+   "H_contribution_zero_residual_states": -0.1143485252850588,
+   "H_contribution_violating_states": 155.1344046943629
+  },
+  {
+   "p": 2,
+   "final_H": 88.89624976702015,
+   "stored_final_H": 88.89624976702015,
+   "mass_on_zero_residual_states": 0.13060015599343455,
+   "H_contribution_zero_residual_states": -0.15134920541298866,
+   "H_contribution_violating_states": 89.04759897243315
+  },
+  {
+   "p": 3,
+   "final_H": 140.8156443519826,
+   "stored_final_H": 140.8156443519826,
+   "mass_on_zero_residual_states": 0.10780143593557559,
+   "H_contribution_zero_residual_states": -0.13062887594415498,
+   "H_contribution_violating_states": 140.94627322792675
+  },
+  {
+   "p": 4,
+   "final_H": 610.6746932745027,
+   "stored_final_H": 610.6746932745027,
+   "mass_on_zero_residual_states": 0.04347893259458616,
+   "H_contribution_zero_residual_states": -0.05796806681210907,
+   "H_contribution_violating_states": 610.732661341315
+  }
+ ]
+}

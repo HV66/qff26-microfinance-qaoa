@@ -44,7 +44,7 @@ def main_table_md(main: dict[str, Any]) -> str:
         "value (max = -obj)",
         "gap %",
         "runtime s",
-        "depth",
+        "logical depth",
         "P(optimum)",
         "P(feasible, decoded)",
         "note",
@@ -225,7 +225,7 @@ def noise_md(paths: list[Path]) -> str:
             f"Source: `{path.as_posix()}`. {inst['n_loans']} loans, "
             f"{inst['n_qubits']} qubits, p={inst['p']}, {d['shots']} shots, "
             f"parameters: {inst['params_source']}. Transpiled for "
-            f"{d['backend_noise_model']}: depth {tr['depth']}, "
+            f"{d['backend_noise_model']}: transpiled depth {tr['depth']}, "
             f"{tr['two_qubit_gates']} two-qubit gates. Random sampling for "
             f"reference: P(optimum) = 1/{2 ** inst['n_loans']} in expectation."
         )
@@ -266,6 +266,48 @@ def score_md(results_dir: Path) -> str:
         ["p", "final <H>", "normalised score", "score of the uniform state"], rows
     )
     return intro + "\n\n" + table
+
+
+def hardware_md(path: Path) -> str:
+    """Markdown for the real-hardware result (one job), taken from its JSON."""
+    d = json.loads(path.read_text(encoding="utf-8"))
+    inst, tr, m = d["instance"], d["transpile"], d["metrics"]
+    shots = sum(d["counts"].values())
+    hits = round(m["p_optimal"] * shots)
+    rate = 2.0 ** -inst["n_loans"]
+    instance_text = (
+        f"seed {inst['seed']}, {inst['n_loans']} loans, "
+        f"{inst['n_qubits']} qubits, p={inst['p']}"
+    )
+    rows = [
+        ["job id", d["job_id"]],
+        ["backend", d["backend"]],
+        ["submitted (UTC)", d["submitted_utc"]],
+        ["instance", instance_text],
+        ["transpiled depth on this backend", tr["depth"]],
+        ["two-qubit gates", tr["two_qubit_gates"]],
+        ["shots (sum of saved counts)", shots],
+        ["optimum hits", hits],
+        ["P(optimum)", m["p_optimal"]],
+        ["uniform-random expectation", rate],
+        ["P(feasible, decoded)", m["p_feasible_decoded"]],
+        ["P(raw feasible, zero penalty)", m["p_feasible_raw"]],
+        ["best-sample gap %", m["best_feasible_gap_pct"]],
+        ["distinct loan vectors sampled", m["distinct_loan_vectors"]],
+    ]
+    note = (
+        "One real-hardware job. The 4096 shots cover every loan vector of this "
+        "5-loan instance, so the best-sample gap is uninformative; P(optimum) "
+        "against the uniform-random expectation is the metric. Transpiled depth "
+        "here is on this backend; the noise-model section lists transpiled depth "
+        "on the fake_fez target, and the main table lists logical depth."
+    )
+    return (
+        "## IBM Quantum hardware\n\n"
+        + note
+        + "\n\n"
+        + md_table(["field", "value"], rows)
+    )
 
 
 def extra_md(title: str, path: Path) -> str:
@@ -314,9 +356,7 @@ def build(results_dir: Path = RESULTS) -> str:
     if noise_files:
         sections.append(noise_md(noise_files))
     if (results_dir / "hardware_result.json").exists():
-        sections.append(
-            extra_md("IBM Quantum hardware", results_dir / "hardware_result.json")
-        )
+        sections.append(hardware_md(results_dir / "hardware_result.json"))
     else:
         sections.append(
             "## IBM Quantum hardware\n\nNo real-hardware result exists: "
