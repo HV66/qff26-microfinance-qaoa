@@ -99,7 +99,7 @@ def test_run_one_metric_sanity() -> None:
     assert r["config"]["shots"] == r["random_null"]["shots"]
 
 
-@pytest.mark.parametrize("p", [1, 2])
+@pytest.mark.parametrize("p", [1, 2, 3, 4])
 def test_fast_simulation_matches_qiskit_circuit(p: int) -> None:
     """The numpy inner loop must equal the Qiskit QAOAAnsatz statevector."""
     from qiskit.quantum_info import Statevector
