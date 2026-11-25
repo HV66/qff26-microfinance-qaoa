@@ -1,4 +1,6 @@
-﻿# Independent review: `qaoa_run.py` and `tests/test_qaoa.py`
+Note: written before the metric rename approx_ratio -> normalised_score.
+
+# Independent review: `qaoa_run.py` and `tests/test_qaoa.py`
 
 Reviewed read-only. No source or test files were changed. Numerical checks used a temporary scratch script outside the repository.
 
