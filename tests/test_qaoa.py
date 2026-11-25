@@ -117,3 +117,27 @@ def test_z_diagonal_matches_to_matrix_on_small_instance() -> None:
     q = build_qubo(make_portfolio(4, 1), LAM)
     op, _ = qubo_to_ising(q)
     assert np.allclose(z_diagonal(op), op.to_matrix(sparse=True).diagonal().real)
+
+
+def test_gap_percent_zero_optimum_is_not_silently_zero() -> None:
+    from qaoa_run import gap_percent
+
+    assert gap_percent(0.0, 0.0) == 0.0
+    assert gap_percent(0.7, 0.0) is None
+    assert gap_percent(-2.0, -4.0) == pytest.approx(50.0)
+    assert gap_percent(-4.0, -4.0) == pytest.approx(0.0)
+
+
+def test_unique_optimum_for_published_instances() -> None:
+    """P(optimum) counts one reference vector; guard that seeds 0-4 are unique."""
+    from qubo import is_feasible, objective
+
+    for seed in range(5):
+        pf = make_portfolio(8, seed)
+        vals = []
+        for k in range(2**pf.n):
+            x = np.array([(k >> i) & 1 for i in range(pf.n)])
+            if is_feasible(pf, x):
+                vals.append(objective(pf, x, LAM))
+        v = np.array(vals)
+        assert int((np.abs(v - v.min()) < 1e-9).sum()) == 1

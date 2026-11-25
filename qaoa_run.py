@@ -235,6 +235,18 @@ def circuit_cost(q: Qubo, p: int, seed: int) -> dict[str, int]:
     return {"depth": int(tqc.depth()), "two_qubit_gates": int(ops.get("cx", 0))}
 
 
+def gap_percent(value: float, optimum: float) -> float | None:
+    """Return 100 * (value - optimum) / |optimum|, or None if undefined.
+
+    When the optimum is exactly 0 the percentage is undefined, so a match
+    returns 0.0 and anything else returns None. A suboptimal value is never
+    reported as a 0% gap.
+    """
+    if abs(optimum) < 1e-12:
+        return 0.0 if abs(value - optimum) < 1e-9 else None
+    return 100.0 * (value - optimum) / abs(optimum)
+
+
 def sample_metrics(
     pf: LoanPortfolio,
     q: Qubo,
@@ -266,7 +278,7 @@ def sample_metrics(
         p_opt += c * int(np.array_equal(x, opt_x))
     gap = None
     if best_obj is not None:
-        gap = 100.0 * (best_obj - opt_obj) / abs(opt_obj) if opt_obj else 0.0
+        gap = gap_percent(best_obj, opt_obj)
     return {
         "p_optimal": p_opt / total,
         "p_feasible_raw": p_raw / total,
