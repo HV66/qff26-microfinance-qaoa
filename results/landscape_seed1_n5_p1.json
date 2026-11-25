@@ -1,0 +1,79 @@
+{
+ "seed": 1,
+ "n_loans": 5,
+ "n_qubits": 9,
+ "p": 1,
+ "lam": 0.3,
+ "optimum_x": [
+  1,
+  1,
+  0,
+  0,
+  1
+ ],
+ "uniform_p_optimum": 0.03125,
+ "grid": {
+  "n_beta": 101,
+  "beta_range": "[0, pi), points k*pi/n_beta, step pi/n_beta",
+  "beta_step": 0.031104877758314782,
+  "n_gamma": 201,
+  "gamma_range": "[-pi, pi], np.linspace, both ends included",
+  "gamma_step": 0.031415926535897754,
+  "n_points": 20301
+ },
+ "saved_angles": {
+  "beta": 1.912081314289934,
+  "gamma": 1.1275789454898104,
+  "beta_mod_pi": 1.912081314289934,
+  "p_optimum_exact": 0.01337902505440158,
+  "p_optimum_exact_beta_mod_pi": 0.01337902505440158,
+  "expectation_exact": 565.9974616585538,
+  "expectation_exact_beta_mod_pi": 565.9974616585538,
+  "nearest_grid_index": [
+   61,
+   136
+  ],
+  "nearest_grid_beta": 1.8973975432572017,
+  "nearest_grid_gamma": 1.1309733552923262
+ },
+ "grid_max_p_optimum": {
+  "value": 0.11481018370449957,
+  "beta": 2.270656076356979,
+  "gamma": -1.4451326206513047,
+  "index": [
+   73,
+   54
+  ],
+  "expectation_there": 1602.4623247848572
+ },
+ "grid_min_expectation": {
+  "value": 152.66320008385628,
+  "beta": 0.4043634108580922,
+  "gamma": -0.4712388980384685,
+  "index": [
+   13,
+   85
+  ],
+  "p_optimum_there": 0.03490900443897628
+ },
+ "ratio_saved_p_optimum_to_grid_max": 0.11653169277071053,
+ "saved_p_optimum_over_uniform": 0.42812880174085055,
+ "grid_max_p_optimum_over_uniform": 3.673925878543986,
+ "grid_distance_to_p_optimum_argmax": {
+  "beta_steps": 12,
+  "gamma_steps": 82
+ },
+ "grid_distance_to_expectation_argmin": {
+  "beta_steps": 48,
+  "gamma_steps": 51
+ },
+ "saved_angles_within_one_step_of_p_optimum_max": false,
+ "saved_angles_within_one_step_of_expectation_min": false,
+ "objective_disagreement": {
+  "p_optimum_at_expectation_argmin": 0.03490900443897628,
+  "expectation_at_p_optimum_argmax": 1602.4623247848572,
+  "p_optimum_loss_from_following_expectation": 0.07990117926552329,
+  "expectation_gain_from_following_p_optimum": 1449.799124701001
+ },
+ "statement": "Seed 1: saved angles are NOT within one grid step of the P(optimum) grid maximum (distance 12 beta steps, 82 gamma steps) and NOT within one grid step of the <H> grid minimum (distance 48 beta steps, 51 gamma steps)."
+}

@@ -1,0 +1,90 @@
+{
+ "status": "ok",
+ "backend": "ibm_fez",
+ "caveats": "(1) The layout of a fresh transpile may differ from the layout used at submission time; compare the fresh depth and two-qubit count with the job record's. (2) The calibration data is the CURRENT calibration of the backend, not the calibration at the time of the jobs (2026-11-25), so this is context, not a measurement of the conditions of those jobs.",
+ "calibration_is_current_not_at_job_time": true,
+ "jobs": [
+  {
+   "job_record": "results/hardware_job.json",
+   "job_id": "dc3imv5hdvas73bo063g",
+   "seed": 0,
+   "n_loans": 5,
+   "p": 1,
+   "params_source": "cached hardware_params_seed0_n5_p1.json (optimised on seed 0, 5 loans, p=1)",
+   "transpile_settings": {
+    "optimization_level": 3,
+    "seed_transpiler": 0
+   },
+   "job_record_stats": {
+    "optimization_level": 3,
+    "seed_transpiler": 0,
+    "depth": 238,
+    "two_qubit_gates": 130
+   },
+   "fresh_transpile_stats": {
+    "depth": 238,
+    "two_qubit_gates": 130
+   },
+   "fresh_matches_job_record_depth_and_2q": true,
+   "physical_qubits_used": [
+    2,
+    3,
+    4,
+    16,
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "n_qubits_used": 9,
+   "n_two_qubit_gate_instances": 130,
+   "median_two_qubit_error": 0.001784111794443724,
+   "median_t1_us": 148.52092123894627,
+   "median_t2_us": 120.8539194547063,
+   "median_readout_error": 0.00830078125,
+   "notes": []
+  },
+  {
+   "job_record": "results/hardware_job_seed1_n5_p1.json",
+   "job_id": "dc3jnp6q4uuc73a74reg",
+   "seed": 1,
+   "n_loans": 5,
+   "p": 1,
+   "params_source": "cached hardware_params_seed1_n5_p1.json (optimised on seed 1, 5 loans, p=1)",
+   "transpile_settings": {
+    "optimization_level": 3,
+    "seed_transpiler": 0
+   },
+   "job_record_stats": {
+    "optimization_level": 3,
+    "seed_transpiler": 0,
+    "depth": 250,
+    "two_qubit_gates": 130
+   },
+   "fresh_transpile_stats": {
+    "depth": 247,
+    "two_qubit_gates": 130
+   },
+   "fresh_matches_job_record_depth_and_2q": false,
+   "physical_qubits_used": [
+    2,
+    3,
+    4,
+    16,
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "n_qubits_used": 9,
+   "n_two_qubit_gate_instances": 130,
+   "median_two_qubit_error": 0.001784111794443724,
+   "median_t1_us": 148.52092123894627,
+   "median_t2_us": 120.8539194547063,
+   "median_readout_error": 0.00830078125,
+   "notes": []
+  }
+ ]
+}
