@@ -3,3 +3,6 @@ exact (brute force),5,0,0.0,0.0
 greedy,5,0,3.0798731946540725,15.399365973270362
 simulated annealing,5,0,0.0,0.0
 random sampling (4096 shots),5,0,0.0,0.0
+QAOA p=1,5,0,0.0,0.0
+QAOA p=2,5,0,0.0,0.0
+QAOA p=3,5,0,0.0,0.0

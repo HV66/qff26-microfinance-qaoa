@@ -99,14 +99,22 @@ def reading_md(main: dict[str, Any]) -> str:
         (r["p_optimum"] for r in main["rows"] if r["method"].startswith("random")),
         None,
     )
-    if null_p is not None and best["p_optimum"] is not None:
-        if null_p > 0:
-            text += (
-                f"Best-QAOA P(optimum) {fmt(best['p_optimum'])} vs random "
-                f"{fmt(null_p)} ({best['p_optimum'] / null_p:.1f}x). "
-            )
-        else:
-            text += f"Best-QAOA P(optimum) {fmt(best['p_optimum'])} vs random 0. "
+    with_p = [r for r in qaoa if r["p_optimum"] is not None]
+    if null_p is not None and with_p:
+        top = max(with_p, key=lambda r: r["p_optimum"])
+        n_loan_vectors = 2 ** main["config"]["n_loans"]
+        text += (
+            f"Highest QAOA P(optimum) is {fmt(top['p_optimum'])} ({top['method']}) "
+            f"vs {fmt(null_p)} for uniform random sampling; picking one of the "
+            f"{n_loan_vectors} loan vectors uniformly gives {fmt(1 / n_loan_vectors)}. "
+            "With 4096 shots these P(optimum) values are only a few dozen hits, so "
+            "differences of this size are close to sampling noise. "
+        )
+    text += (
+        "The gap column is best-of-shots over a small search space, so every "
+        "method that samples enough reaches 0%; P(optimum) is the more "
+        "informative column. "
+    )
     text += (
         "Classical solvers at this size are exact or near-exact in well under a "
         "second; no quantum advantage is claimed."
