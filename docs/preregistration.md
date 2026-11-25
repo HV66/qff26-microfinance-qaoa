@@ -55,9 +55,11 @@ after it.
 ## Step 2: slack-free ("unbalanced") budget penalty
 
 - Technique credited to the literature on **unbalanced penalization** (Montanez-Barrera,
-  Willsch, Maldonado-Romo and Michielsen, arXiv 2211.13914, Quantum Science and
-  Technology 2024). The citation is from the author's memory and could not be checked
-  online in this session; the README says so. The coefficients below are our own rule,
+  Willsch, Maldonado-Romo and Michielsen, Quantum Science and Technology, 2024). The
+  citation is from the author's memory and could not be checked online in this
+  session; the README says so. (Editing note, 2026-11-26: this file originally also
+  gave an arXiv number from memory; it was removed from this line because it is
+  unverified. See the dated correction section at the end of this file.) The coefficients below are our own rule,
   not the paper's.
 - Form: `E(x) = -ret . x + lam * x_w^T Sigma x_w + (-l1 * g + l2 * g^2)`, with
   `g = budget - sum_i amount_i x_i` and no slack bits, so the QUBO has `n_loans` variables.
@@ -153,3 +155,7 @@ test now pins the recorded outcome (seeds 0, 2, 6 decode to the exact optimum; s
 5, 7, 8, 9 do not, and each failing minimum must be budget-feasible and strictly worse than
 the optimum) and `scripts/unbalanced_min_decode.py` writes every seed's outcome to
 `results/unbalanced_min_decode.json`. This keeps the failures visible without tuning anything.
+
+## Editing note, dated 2026-11-26 (citation detail)
+
+The original Step 2 text quoted an arXiv number for the unbalanced-penalization paper. That number is not verified, so the line above now gives authors, venue and year only. No setting, coefficient or result changed.

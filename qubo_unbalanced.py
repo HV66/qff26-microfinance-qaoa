@@ -9,8 +9,11 @@ g = B - sum_i a_i x_i:
 so the QUBO has n_loans variables (qubits) instead of n_loans + bit_length(B).
 
 Credit: the technique "unbalanced penalization" is from Montanez-Barrera,
-Willsch, Maldonado-Romo and Michielsen, arXiv:2211.13914, Quantum Science and
-Technology 2024. This citation is from memory and was not verified online in
+Willsch, Maldonado-Romo and Michielsen, Quantum Science and Technology, 2024
+(title as remembered: Unbalanced penalization: a new approach to encode
+inequality constraints of combinatorial problems for quantum optimization
+algorithms). The arXiv number is deliberately not given because it could not
+be verified. This citation is from memory and was not verified online in
 this session. The coefficient rule below (l1, l2) is our own preregistered rule
 (docs/preregistration.md, Step 2), not the paper's.
 

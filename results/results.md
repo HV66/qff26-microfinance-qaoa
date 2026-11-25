@@ -224,9 +224,7 @@ Constraint: every sector with >= 1 loan request has >= 1 funded loan. Classical 
 
 ## Slack-free (unbalanced) budget penalty
 
-Technique: unbalanced penalization of an inequality constraint (credited in `qubo_unbalanced.py`; the citation is from memory and was not verified online). The coefficient rule is fixed in `docs/preregistration.md` and was not tuned.
-
-**Minimum decodes to the exact optimum on 3 of 10 seeds (lambda 0.3, 8 loans): pass [0, 2, 6], fail [1, 3, 4, 5, 7, 8, 9].** On every failing seed the minimum is budget-feasible and spends the full budget but is a worse portfolio than the exact optimum: the penalty is almost an equality constraint at integer amounts (see the dated correction in the preregistration).
+**7 of 10 seeds fail the brute-force decode check.** The minimum-energy bitstring decodes to the exact optimum on 3 of 10 seeds (lambda 0.3, 8 loans): pass [0, 2, 6], fail [1, 3, 4, 5, 7, 8, 9]. On every failing seed the minimum is budget-feasible and spends the full budget but is a worse portfolio than the exact optimum: the penalty is almost an equality constraint at integer amounts (see the dated correction in the preregistration).
 
 | seed | min-energy decode | decoded x | spend / budget | exact x | exact spend | decoded objective | exact objective | penalty for 1 unspent unit |
 |---|---|---|---|---|---|---|---|---|
@@ -240,6 +238,8 @@ Technique: unbalanced penalization of an inequality constraint (credited in `qub
 | 7 | FAIL | 01110000 | 20 / 20 | 01010000 | 14 | -1.1981 | -2.2259 | 5.1372 |
 | 8 | FAIL | 10000110 | 15 / 15 | 11001100 | 14 | -1.9779 | -2.5603 | 3.5470 |
 | 9 | FAIL | 10001110 | 16 / 16 | 10011010 | 14 | -1.6780 | -2.5756 | 7.2528 |
+
+Technique: unbalanced penalization of an inequality constraint (credited in `qubo_unbalanced.py`; the citation is from memory and was not verified online). The coefficient rule is fixed in `docs/preregistration.md` and was not tuned.
 
 QAOA on both versions (seeds 0-4, p = 1-3, same settings). Cells show unbalanced / slack. Verdicts are the raw one-sided binomial verdict against uniform random sampling.
 

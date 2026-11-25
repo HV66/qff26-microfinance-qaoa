@@ -67,20 +67,25 @@ def test_preregistered_coefficient_properties(seed: int) -> None:
     assert l1 > 0 and l2 > 0
 
 
-# Preregistered outcome of the per-seed min-decodes-to-optimum check (see the dated
-# correction in docs/preregistration.md). Seeds in PASSING decode to the exact optimum;
-# every other seed is a recorded failure of the rule, not a bug and not tuned away.
+# RECORDED outcome of the per-seed min-decodes-to-optimum check, copied from
+# results/unbalanced_min_decode.json (see also the dated correction in
+# docs/preregistration.md). Seeds in PASSING decode to the exact optimum; every
+# other seed is a recorded failure of the preregistered rule, not a bug and not
+# tuned away. These tests do NOT assert that the rule works: they pin what was
+# recorded so that any change to the rule or the data is noticed.
 PASSING = {0, 2, 6}
 
 
 @pytest.mark.parametrize("seed", range(10))
-def test_min_energy_decode_outcome_is_pinned(seed: int) -> None:
-    """Pin the recorded per-seed outcome so a change in the rule is noticed.
+def test_recorded_decode_outcome_seedN(seed: int) -> None:
+    """Pin the RECORDED per-seed decode outcome (results/unbalanced_min_decode.json).
 
     Passing seeds must decode to the exact optimum. Failing seeds must decode to a
     budget-feasible portfolio that is strictly worse than the optimum, never an
     infeasible one and never silently better.
     """
+    # Recorded outcome for this seed lives in results/unbalanced_min_decode.json
+    # (keys pass_seeds / fail_seeds); PASSING above mirrors it.
     pf = make_portfolio(8, seed)
     q = build_unbalanced_qubo(pf, LAM)
     best = int(np.argmin(q.all_energies()))
@@ -95,7 +100,8 @@ def test_min_energy_decode_outcome_is_pinned(seed: int) -> None:
         assert objective(pf, decoded, LAM) > bf.objective + 1e-9
 
 
-def test_recorded_min_decode_file_matches_the_test_pin() -> None:
+def test_recorded_decode_outcome_file_matches_the_pin() -> None:
+    """The pinned PASSING set equals the recorded file results/unbalanced_min_decode.json."""
     import json
     from pathlib import Path
 

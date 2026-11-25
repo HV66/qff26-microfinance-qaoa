@@ -134,12 +134,14 @@ def unbalanced_md(results_dir: Path) -> str:
         "online). The coefficient rule is fixed in `docs/preregistration.md` and was "
         "not tuned."
     )
-    parts = [technique]
+    parts = []
     if dec is not None:
         parts.append(
-            f"**Minimum decodes to the exact optimum on {len(dec['pass_seeds'])} of "
+            f"**{len(dec['fail_seeds'])} of {len(dec['rows'])} seeds fail the "
+            "brute-force decode check.** The minimum-energy bitstring decodes to the "
+            f"exact optimum on {len(dec['pass_seeds'])} of "
             f"{len(dec['rows'])} seeds (lambda {dec['lam']}, {dec['n_loans']} loans): "
-            f"pass {dec['pass_seeds']}, fail {dec['fail_seeds']}.** On every failing "
+            f"pass {dec['pass_seeds']}, fail {dec['fail_seeds']}. On every failing "
             "seed the minimum is budget-feasible and spends the full budget but is a "
             "worse portfolio than the exact optimum: the penalty is almost an equality "
             "constraint at integer amounts (see the dated correction in the "
@@ -191,6 +193,7 @@ def unbalanced_md(results_dir: Path) -> str:
                 s["verdict"],
             ]
         )
+    parts.append(technique)
     parts.append(
         "QAOA on both versions (seeds 0-4, p = 1-3, same settings). Cells show "
         "unbalanced / slack. Verdicts are the raw one-sided binomial verdict against "

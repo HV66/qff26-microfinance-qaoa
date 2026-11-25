@@ -69,3 +69,16 @@ def test_calibration_skip_is_reported(tmp_path: Path) -> None:
         '{"status": "skipped", "reason": "no credentials"}', encoding="utf-8"
     )
     assert "Skipped: no credentials" in sw.calibration_md(tmp_path)
+
+
+def test_unbalanced_section_leads_with_the_failure_count() -> None:
+    """The failure count must come before the technique line and any QAOA table."""
+    import json
+
+    d = json.loads((RESULTS / "unbalanced_min_decode.json").read_text(encoding="utf-8"))
+    out = sw.unbalanced_md(RESULTS)
+    lead = f"**{len(d['fail_seeds'])} of {len(d['rows'])} seeds fail"
+    assert out.startswith(lead)
+    assert (
+        out.index(lead) < out.index("Technique:") < out.index("QAOA on both versions")
+    )
