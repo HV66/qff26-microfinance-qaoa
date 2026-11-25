@@ -87,22 +87,27 @@ def slack_coefficients(budget: int) -> np.ndarray:
     return np.array([*powers, budget - sum(powers)], dtype=int)
 
 
-def auto_penalty(p: LoanPortfolio, lam: float) -> float:
-    """Choose penalty weight P from the largest objective magnitude.
+def auto_penalty(p: LoanPortfolio) -> float:
+    """Choose penalty weight P = sum(ret) + 1 (requires lam >= 0).
 
-    Objective g(x) = -ret.x + lam * risk(x). Since ret > 0 and Sigma has only
-    positive entries, g is bounded: -sum(ret) <= g(x) <= lam * risk(all loans).
-    So its full range is at most R = sum(ret) + lam * risk(all loans).
+    Objective g(x) = -ret.x + lam * risk(x). Proof that no penalised state
+    can beat the best feasible state:
 
-    Any infeasible x has spend >= budget + 1, so the residual
-    (spend + slack - budget) is a nonzero integer and the penalty is >= P.
-    Any wrong slack setting also gives a nonzero integer residual. With
-    P = R + 1 > R, every penalised state costs more than the whole objective
-    range, so no penalised state can beat the best feasible state.
-    P is not made larger, because a very large P flattens the useful part of
-    the energy landscape and hurts QAOA.
+    1. risk(x) = w^T Sigma w >= 0 because Sigma is PSD, and lam >= 0, so
+       g(x) >= -ret.x >= -sum(ret) for every bitstring x (ret > 0).
+       This does not use the signs of the Sigma entries.
+    2. x = 0 (no loans, slack = budget) is feasible with objective 0, so the
+       feasible optimum is <= 0.
+    3. Any constraint or slack violation has an integer residual
+       r = spend + slack - budget != 0, because amounts, slack weights and
+       budget are integers. Its penalty is P * r^2 >= P.
+    4. So a penalised state has energy >= -sum(ret) + P = 1 > 0 >= the
+       feasible optimum.
+
+    P is not made larger than needed, because a very large P flattens the
+    useful part of the energy landscape and hurts QAOA.
     """
-    return float(p.ret.sum() + lam * p.portfolio_risk(np.ones(p.n)) + 1.0)
+    return float(p.ret.sum() + 1.0)
 
 
 def build_qubo(
@@ -121,7 +126,7 @@ def build_qubo(
     n = p.n
     c = slack_coefficients(p.budget)
     big_n = n + len(c)
-    pen = auto_penalty(p, lam) if penalty is None else float(penalty)
+    pen = auto_penalty(p) if penalty is None else float(penalty)
 
     # E = z^T M z + lin . z + offset, with M symmetric.
     m_sym = np.zeros((big_n, big_n))

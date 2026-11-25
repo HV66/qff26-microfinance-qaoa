@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from data import LoanPortfolio, make_portfolio
-from qubo import Qubo, build_qubo, slack_coefficients, to_ising
+from qubo import Qubo, auto_penalty, build_qubo, slack_coefficients, to_ising
 
 SEEDS = range(10)
 N_LOANS = 8
@@ -103,9 +103,26 @@ def test_penalty_is_necessary() -> None:
     assert p.amount @ x > p.budget
 
 
-def test_auto_penalty_scales_with_lambda() -> None:
-    p = make_portfolio(N_LOANS, 0)
-    assert build_qubo(p, lam=1.0).penalty > build_qubo(p, lam=0.1).penalty
+@pytest.mark.parametrize("seed", SEEDS)
+@pytest.mark.parametrize("lam", [0.0, 0.3, 1.0])
+def test_penalty_is_tight_and_not_larger_than_old_bound(seed: int, lam: float) -> None:
+    p = make_portfolio(N_LOANS, seed)
+    p_new = auto_penalty(p)
+    p_old = p.ret.sum() + lam * p.portfolio_risk(np.ones(p.n)) + 1.0
+    assert p_new == pytest.approx(p.ret.sum() + 1.0)
+    assert p_new <= p_old + 1e-12
+    assert build_qubo(p, lam=lam).penalty == p_new
+
+
+@pytest.mark.parametrize("seed", SEEDS)
+@pytest.mark.parametrize("lam", [0.0, 0.3, 1.0])
+def test_tight_penalty_still_matches_brute_force(seed: int, lam: float) -> None:
+    p = make_portfolio(N_LOANS, seed)
+    q = build_qubo(p, lam=lam)
+    e = q.all_energies()
+    assert e.min() == pytest.approx(brute_force(p, lam)[0], abs=1e-9)
+    x_idx = np.arange(len(e)) & (2**p.n - 1)
+    assert e[spends(p)[x_idx] > p.budget].min() > e.min() + 1e-9
 
 
 @pytest.mark.parametrize("seed", SEEDS)
