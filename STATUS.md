@@ -2,22 +2,17 @@
 
 Updated: 2026-11-25. Code freeze: Thu 26 Nov 23:59 IST.
 
-## Done (committed)
-- data.py, qubo.py, baseline.py, scripts/lambda_sweep.py (212 tests passing at 701f6aa)
-
-## In progress
-- Phase 1: qaoa_run.py + tests/test_qaoa.py written, NOT yet gated or committed.
-  First pytest run of tests/test_qaoa.py exceeded 300 s (running in background). Likely cause: run_one test and optimise at 12 qubits. Check before committing.
-- Phase 2 subagents launched in parallel BEFORE the Phase 1 commit (user asked to fan out):
-  - A hardware: hardware_run.py, retrieve_hardware.py, noise_run.py, tests/test_hardware.py
-  - B compare: compare.py, sa_baseline.py, scripts/make_results_md.py, results/results.md
-  - C verifier: tests/independent/verify_independent.py, results/verifier_report.md
-  - D demo/packaging: demo.py, LICENSE (Apache-2.0), requirements.txt, .gitignore, scripts/run_all.py
+## Done (committed, 269 tests, ruff and black clean)
+- data, QUBO (own Ising conversion, PSD penalty proof), baselines (exact, greedy, SA, random)
+- QAOA p=1..4 seed 0, p=1..3 seeds 1-4; per-run QAOA vs random binomial table
+- Noise-model runs with real saved parameters: 12 qubits p=1, p=2; 9 qubits p=1
+- Independent verifier 28/28; demo (default = saved best-p, --quick = reduced budget)
+- README, architecture.mmd, pitch_script.md, submission_checklist.md
+- Fresh-clone `scripts/run_all.py`: all 9 steps OK, exit 0, 372 s
 
 ## Blocked
-- Real IBM hardware run needs the user's saved account or QISKIT_IBM_TOKEN.
+- Real IBM hardware: no saved account or QISKIT_IBM_TOKEN here. Nothing submitted.
+  `results/hardware_job.json` does not exist. Submit path untested.
 
-## Next
-- Finish Phase 1 gate and commit, then run seed 0 p=1..4 and seeds 1-4 p=1..3.
-- Merge Phase 2, run full gate, read verifier_report.md, commit.
-- Phase 3 docs (README, pitch), Phase 4 fresh-clone QA.
+## Left for the user
+- See final report: hardware run, video, public repo push, team form.
