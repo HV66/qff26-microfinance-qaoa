@@ -1,0 +1,1046 @@
+{
+ "constraint": "every sector with >= 1 loan request has >= 1 funded loan",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "lams": [
+  0.1,
+  0.3,
+  1.0
+ ],
+ "n_loans": 8,
+ "rows": [
+  {
+   "seed": 0,
+   "lam": 0.1,
+   "unconstrained_objective": -3.3491911000884893,
+   "unconstrained_x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "unconstrained_covers_all_sectors": true,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 12,
+   "qubo_qubits_with_constraint": 17,
+   "constrained_objective": -3.3491911000884893,
+   "constrained_x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "loss_abs": 0.0,
+   "loss_pct": 0.0,
+   "constrained": {
+    "x": [
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 11,
+    "budget": 11,
+    "expected_return": 3.454,
+    "portfolio_risk": 1.048088999115107
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 11,
+    "budget": 11,
+    "expected_return": 3.454,
+    "portfolio_risk": 1.048088999115107
+   }
+  },
+  {
+   "seed": 0,
+   "lam": 0.3,
+   "unconstrained_objective": -3.139573300265468,
+   "unconstrained_x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "unconstrained_covers_all_sectors": true,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 12,
+   "qubo_qubits_with_constraint": 17,
+   "constrained_objective": -3.139573300265468,
+   "constrained_x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "loss_abs": 0.0,
+   "loss_pct": 0.0,
+   "constrained": {
+    "x": [
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 11,
+    "budget": 11,
+    "expected_return": 3.454,
+    "portfolio_risk": 1.048088999115107
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 11,
+    "budget": 11,
+    "expected_return": 3.454,
+    "portfolio_risk": 1.048088999115107
+   }
+  },
+  {
+   "seed": 0,
+   "lam": 1.0,
+   "unconstrained_objective": -2.405911000884893,
+   "unconstrained_x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "unconstrained_covers_all_sectors": true,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 12,
+   "qubo_qubits_with_constraint": 17,
+   "constrained_objective": -2.405911000884893,
+   "constrained_x": [
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0
+   ],
+   "loss_abs": 0.0,
+   "loss_pct": 0.0,
+   "constrained": {
+    "x": [
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 11,
+    "budget": 11,
+    "expected_return": 3.454,
+    "portfolio_risk": 1.048088999115107
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     1,
+     0
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 11,
+    "budget": 11,
+    "expected_return": 3.454,
+    "portfolio_risk": 1.048088999115107
+   }
+  },
+  {
+   "seed": 1,
+   "lam": 0.1,
+   "unconstrained_objective": -4.171934828457704,
+   "unconstrained_x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0
+   ],
+   "unconstrained_covers_all_sectors": true,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 13,
+   "qubo_qubits_with_constraint": 18,
+   "constrained_objective": -4.171934828457704,
+   "constrained_x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    0
+   ],
+   "loss_abs": 0.0,
+   "loss_pct": 0.0,
+   "constrained": {
+    "x": [
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     1,
+     0
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 17,
+    "budget": 17,
+    "expected_return": 4.6183,
+    "portfolio_risk": 4.463651715422962
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     0,
+     1,
+     0,
+     1,
+     1,
+     1,
+     0
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 17,
+    "budget": 17,
+    "expected_return": 4.6183,
+    "portfolio_risk": 4.463651715422962
+   }
+  },
+  {
+   "seed": 1,
+   "lam": 0.3,
+   "unconstrained_objective": -3.3702153778715407,
+   "unconstrained_x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0
+   ],
+   "unconstrained_covers_all_sectors": true,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 13,
+   "qubo_qubits_with_constraint": 18,
+   "constrained_objective": -3.3702153778715407,
+   "constrained_x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0
+   ],
+   "loss_abs": 0.0,
+   "loss_pct": 0.0,
+   "constrained": {
+    "x": [
+     0,
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     0
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 15,
+    "budget": 17,
+    "expected_return": 4.4045000000000005,
+    "portfolio_risk": 3.4476154070948666
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     0
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 15,
+    "budget": 17,
+    "expected_return": 4.4045000000000005,
+    "portfolio_risk": 3.4476154070948666
+   }
+  },
+  {
+   "seed": 1,
+   "lam": 1.0,
+   "unconstrained_objective": -0.956884592905134,
+   "unconstrained_x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0
+   ],
+   "unconstrained_covers_all_sectors": true,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 13,
+   "qubo_qubits_with_constraint": 18,
+   "constrained_objective": -0.956884592905134,
+   "constrained_x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    0
+   ],
+   "loss_abs": 0.0,
+   "loss_pct": 0.0,
+   "constrained": {
+    "x": [
+     0,
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     0
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 15,
+    "budget": 17,
+    "expected_return": 4.4045000000000005,
+    "portfolio_risk": 3.4476154070948666
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     0
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 15,
+    "budget": 17,
+    "expected_return": 4.4045000000000005,
+    "portfolio_risk": 3.4476154070948666
+   }
+  },
+  {
+   "seed": 2,
+   "lam": 0.1,
+   "unconstrained_objective": -2.460973775847254,
+   "unconstrained_x": [
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "unconstrained_covers_all_sectors": false,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 12,
+   "qubo_qubits_with_constraint": 17,
+   "constrained_objective": -2.370076598113929,
+   "constrained_x": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1
+   ],
+   "loss_abs": 0.09089717773332495,
+   "loss_pct": 3.6935451578321365,
+   "constrained": {
+    "x": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     1
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 12,
+    "budget": 12,
+    "expected_return": 2.9503000000000004,
+    "portfolio_risk": 5.80223401886071
+   },
+   "unconstrained": {
+    "x": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 12,
+    "budget": 12,
+    "expected_return": 2.8595,
+    "portfolio_risk": 3.98526224152746
+   }
+  },
+  {
+   "seed": 2,
+   "lam": 0.3,
+   "unconstrained_objective": -1.6639213275417621,
+   "unconstrained_x": [
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   "unconstrained_covers_all_sectors": false,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 12,
+   "qubo_qubits_with_constraint": 17,
+   "constrained_objective": -1.2096297943417875,
+   "constrained_x": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1
+   ],
+   "loss_abs": 0.4542915331999746,
+   "loss_pct": 27.302464706737915,
+   "constrained": {
+    "x": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     1
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 12,
+    "budget": 12,
+    "expected_return": 2.9503000000000004,
+    "portfolio_risk": 5.80223401886071
+   },
+   "unconstrained": {
+    "x": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     1,
+     0
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 12,
+    "budget": 12,
+    "expected_return": 2.8595,
+    "portfolio_risk": 3.98526224152746
+   }
+  },
+  {
+   "seed": 2,
+   "lam": 1.0,
+   "unconstrained_objective": -0.2914234584624641,
+   "unconstrained_x": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1
+   ],
+   "unconstrained_covers_all_sectors": false,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 12,
+   "qubo_qubits_with_constraint": 17,
+   "constrained_objective": 1.6794816688574532,
+   "constrained_x": [
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1
+   ],
+   "loss_abs": 1.9709051273199174,
+   "loss_pct": 676.302840450222,
+   "constrained": {
+    "x": [
+     0,
+     0,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 6,
+    "budget": 12,
+    "expected_return": 0.9595,
+    "portfolio_risk": 2.6389816688574532
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1
+    ],
+    "loans_funded": 2,
+    "amount_deployed": 5,
+    "budget": 12,
+    "expected_return": 1.0998,
+    "portfolio_risk": 0.808376541537536
+   }
+  },
+  {
+   "seed": 3,
+   "lam": 0.1,
+   "unconstrained_objective": -2.3085960803857746,
+   "unconstrained_x": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1
+   ],
+   "unconstrained_covers_all_sectors": true,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 12,
+   "qubo_qubits_with_constraint": 17,
+   "constrained_objective": -2.3085960803857746,
+   "constrained_x": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1
+   ],
+   "loss_abs": 0.0,
+   "loss_pct": 0.0,
+   "constrained": {
+    "x": [
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    "loans_funded": 5,
+    "amount_deployed": 12,
+    "budget": 13,
+    "expected_return": 2.6409000000000002,
+    "portfolio_risk": 3.3230391961422576
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    "loans_funded": 5,
+    "amount_deployed": 12,
+    "budget": 13,
+    "expected_return": 2.6409000000000002,
+    "portfolio_risk": 3.3230391961422576
+   }
+  },
+  {
+   "seed": 3,
+   "lam": 0.3,
+   "unconstrained_objective": -1.6471520237079984,
+   "unconstrained_x": [
+    0,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1
+   ],
+   "unconstrained_covers_all_sectors": false,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 12,
+   "qubo_qubits_with_constraint": 17,
+   "constrained_objective": -1.643988241157323,
+   "constrained_x": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    1
+   ],
+   "loss_abs": 0.003163782550675398,
+   "loss_pct": 0.19207592894511497,
+   "constrained": {
+    "x": [
+     0,
+     1,
+     1,
+     1,
+     1,
+     0,
+     0,
+     1
+    ],
+    "loans_funded": 5,
+    "amount_deployed": 12,
+    "budget": 13,
+    "expected_return": 2.6409000000000002,
+    "portfolio_risk": 3.3230391961422576
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     1,
+     1,
+     0,
+     1,
+     0,
+     0,
+     1
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 10,
+    "budget": 13,
+    "expected_return": 2.3609999999999998,
+    "portfolio_risk": 2.379493254306671
+   }
+  },
+  {
+   "seed": 3,
+   "lam": 1.0,
+   "unconstrained_objective": -0.5416608922225739,
+   "unconstrained_x": [
+    0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0
+   ],
+   "unconstrained_covers_all_sectors": false,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 12,
+   "qubo_qubits_with_constraint": 17,
+   "constrained_objective": -0.12279926801200469,
+   "constrained_x": [
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0
+   ],
+   "loss_abs": 0.41886162421056916,
+   "loss_pct": 77.3291242223289,
+   "constrained": {
+    "x": [
+     0,
+     1,
+     0,
+     1,
+     1,
+     0,
+     0,
+     0
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 5,
+    "budget": 13,
+    "expected_return": 1.0554999999999999,
+    "portfolio_risk": 0.9327007319879952
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0
+    ],
+    "loans_funded": 2,
+    "amount_deployed": 3,
+    "budget": 13,
+    "expected_return": 0.7756000000000001,
+    "portfolio_risk": 0.23393910777742627
+   }
+  },
+  {
+   "seed": 4,
+   "lam": 0.1,
+   "unconstrained_objective": -4.316355528769638,
+   "unconstrained_x": [
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "unconstrained_covers_all_sectors": true,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 13,
+   "qubo_qubits_with_constraint": 18,
+   "constrained_objective": -4.316355528769638,
+   "constrained_x": [
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "loss_abs": 0.0,
+   "loss_pct": 0.0,
+   "constrained": {
+    "x": [
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 20,
+    "budget": 21,
+    "expected_return": 5.052899999999999,
+    "portfolio_risk": 7.3654447123036135
+   },
+   "unconstrained": {
+    "x": [
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 20,
+    "budget": 21,
+    "expected_return": 5.052899999999999,
+    "portfolio_risk": 7.3654447123036135
+   }
+  },
+  {
+   "seed": 4,
+   "lam": 0.3,
+   "unconstrained_objective": -2.8432665863089155,
+   "unconstrained_x": [
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "unconstrained_covers_all_sectors": true,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 13,
+   "qubo_qubits_with_constraint": 18,
+   "constrained_objective": -2.8432665863089155,
+   "constrained_x": [
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "loss_abs": 0.0,
+   "loss_pct": 0.0,
+   "constrained": {
+    "x": [
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 20,
+    "budget": 21,
+    "expected_return": 5.052899999999999,
+    "portfolio_risk": 7.3654447123036135
+   },
+   "unconstrained": {
+    "x": [
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1
+    ],
+    "loans_funded": 4,
+    "amount_deployed": 20,
+    "budget": 21,
+    "expected_return": 5.052899999999999,
+    "portfolio_risk": 7.3654447123036135
+   }
+  },
+  {
+   "seed": 4,
+   "lam": 1.0,
+   "unconstrained_objective": -1.1702630805052836,
+   "unconstrained_x": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1
+   ],
+   "unconstrained_covers_all_sectors": false,
+   "feasible": true,
+   "extra_slack_qubits": 5,
+   "qubo_qubits_existing": 13,
+   "qubo_qubits_with_constraint": 18,
+   "constrained_objective": -0.45800608815522015,
+   "constrained_x": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1
+   ],
+   "loss_abs": 0.7122569923500635,
+   "loss_pct": 60.86298065923201,
+   "constrained": {
+    "x": [
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1
+    ],
+    "loans_funded": 3,
+    "amount_deployed": 14,
+    "budget": 21,
+    "expected_return": 3.5419,
+    "portfolio_risk": 3.08389391184478
+   },
+   "unconstrained": {
+    "x": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1
+    ],
+    "loans_funded": 2,
+    "amount_deployed": 9,
+    "budget": 21,
+    "expected_return": 2.8237,
+    "portfolio_risk": 1.6534369194947165
+   }
+  }
+ ],
+ "by_lambda": {
+  "0.1": {
+   "n_cases": 5,
+   "n_loss_positive": 1,
+   "mean_loss_pct": 0.7387090315664273,
+   "max_loss_pct": 3.6935451578321365,
+   "n_infeasible": 0
+  },
+  "0.3": {
+   "n_cases": 5,
+   "n_loss_positive": 2,
+   "mean_loss_pct": 5.498908127136606,
+   "max_loss_pct": 27.302464706737915,
+   "n_infeasible": 0
+  },
+  "1.0": {
+   "n_cases": 5,
+   "n_loss_positive": 3,
+   "mean_loss_pct": 162.8989890663566,
+   "max_loss_pct": 676.302840450222,
+   "n_infeasible": 0
+  }
+ }
+}
