@@ -2,14 +2,51 @@
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
 from pathlib import Path
+
+import pytest
 
 import demo
 from scripts import run_all
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def test_default_demo_reproduces_saved_result(tmp_path: Path) -> None:
+    """Default mode samples the saved best-p circuit and matches stored metrics."""
+    saved = demo.load_saved_best(ROOT / "results")
+    assert saved is not None
+    p = saved["config"]["p"]
+    assert saved["optimiser"]["best_value"] == min(
+        json.loads(f.read_text(encoding="utf-8"))["optimiser"]["best_value"]
+        for f in (ROOT / "results").glob("qaoa_seed0_p*.json")
+    )
+    rows = demo.run_demo(quick=False, out_dir=tmp_path, results_dir=ROOT / "results")
+    qaoa = [r for r in rows if r["method"].startswith("QAOA")]
+    assert [r["method"] for r in qaoa] == [f"QAOA p={p}"]
+    assert qaoa[0]["p_optimum"] == saved["sampling"]["p_optimal"]
+    assert qaoa[0]["gap_pct"] == saved["sampling"]["best_feasible_gap_pct"]
+    assert saved["config"]["shots"] == 4096
+
+
+def test_quick_mode_prints_reduced_budget_banner(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    demo.run_demo(quick=True, out_dir=tmp_path)
+    out = capsys.readouterr().out
+    assert out.count("REDUCED BUDGET, results will differ") >= 1
+
+
+def test_default_falls_back_with_banner_when_no_saved_files(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    demo.run_demo(quick=False, out_dir=tmp_path, results_dir=tmp_path / "empty")
+    out = capsys.readouterr().out
+    assert "No matching saved QAOA result found" in out
+    assert "REDUCED BUDGET" in out
 
 
 def test_demo_quick_runs_and_table_is_consistent(tmp_path: Path) -> None:

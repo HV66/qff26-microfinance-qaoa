@@ -1,17 +1,24 @@
 """Live end-to-end demo: microfinance loan selection, QAOA vs classical.
 
-Run:  python demo.py            (default demo budget, well under 60 s)
-      python demo.py --quick    (smaller budget, a few seconds)
+Run:  python demo.py            (default: reproduces the saved headline result)
+      python demo.py --quick    (REDUCED BUDGET: re-optimises, results differ)
 
-The demo uses FEWER COBYLA restarts / iterations / shots than the full runs
-(restarts=5, maxiter=200, shots=4096). Full-budget numbers over several seeds
-live in results/results.md. This demo makes no quantum-advantage claim: it
-prints a computed note comparing QAOA with the classical baselines.
+Default mode loads the optimised parameters saved by qaoa_run.py in
+results/qaoa_seed0_p*.json, picks the depth p with the lowest stored
+optimiser objective, and only samples that saved circuit with 4096 shots
+through qaoa_run.sample_counts (the same primitives-V2 sampler path). With the
+same seed it reproduces the stored sampling metrics exactly.
+
+--quick re-runs the COBYLA optimisation with FEWER restarts / iterations /
+shots than the full runs (5 / 200 / 4096), so its numbers differ from
+results/results.md. This demo makes no quantum-advantage claim: it prints a
+computed note comparing QAOA with the classical baselines.
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import time
 from collections import Counter
@@ -22,13 +29,7 @@ import numpy as np
 
 from baseline import brute_force, greedy, random_sampling
 from data import LoanPortfolio, make_portfolio
-from qaoa_run import (
-    circuit_cost,
-    fast_probabilities,
-    optimise,
-    sample_metrics,
-    scaled_cost_diagonal,
-)
+from qaoa_run import circuit_cost, optimise, sample_counts, sample_metrics
 from qubo import (
     Qubo,
     bits_from_string,
@@ -43,10 +44,12 @@ log = logging.getLogger(__name__)
 SEED = 0
 N_LOANS = 8
 LAM = 0.3
-DEMO_BUDGET = {"restarts": 2, "maxiter": 100, "shots": 4096}
+FULL_SHOTS = 4096
 QUICK_BUDGET = {"restarts": 1, "maxiter": 40, "shots": 1024}
 EPS = 1e-9
 OUT_DIR = Path("results")
+RESULTS_DIR = Path("results")
+BANNER = "*** REDUCED BUDGET, results will differ from results/results.md ***"
 
 
 def gap_pct(value: float | None, optimum: float) -> float | None:
@@ -79,20 +82,27 @@ def decoded_objective_counts(
     return out
 
 
-def fast_sample_counts(
-    q: Qubo, params: np.ndarray, shots: int, seed: int
-) -> dict[str, int]:
-    """Sample the optimised QAOA state with seeded multinomial draws.
+def load_saved_best(results_dir: Path) -> dict[str, Any] | None:
+    """Load the saved seed-0 QAOA run with the lowest stored optimiser objective.
 
-    Uses qaoa_run.fast_probabilities (checked against the Qiskit circuit in
-    tests/test_qaoa.py). The demo avoids qaoa_run.sample_counts here because
-    the StatevectorSampler path is too slow for a live demo on 12 qubits.
-    Bitstrings follow the Qiskit convention: qubit 0 is the rightmost character.
+    Reads results/qaoa_seed{SEED}_p*.json written by qaoa_run.py and keeps
+    files matching this demo's instance (seed, lam, n_loans).
+
+    Returns:
+        The parsed JSON of the best-p run, or None if no matching file exists.
     """
-    probs = fast_probabilities(scaled_cost_diagonal(q), q.n_vars, params)
-    probs = probs / probs.sum()
-    draws = np.random.default_rng(seed).multinomial(shots, probs)
-    return {format(k, f"0{q.n_vars}b"): int(c) for k, c in enumerate(draws) if c}
+    best: dict[str, Any] | None = None
+    for path in sorted(results_dir.glob(f"qaoa_seed{SEED}_p*.json")):
+        run = json.loads(path.read_text(encoding="utf-8"))
+        cfg = run["config"]
+        if (cfg["seed"], cfg["lam"], cfg["n_loans"]) != (SEED, LAM, N_LOANS):
+            continue
+        if (
+            best is None
+            or run["optimiser"]["best_value"] < best["optimiser"]["best_value"]
+        ):
+            best = run
+    return best
 
 
 def run_qaoa_row(
@@ -101,13 +111,16 @@ def run_qaoa_row(
     p: int,
     opt_x: np.ndarray,
     opt_obj: float,
-    budget: dict[str, int],
+    shots: int,
+    params: np.ndarray,
 ) -> tuple[dict[str, Any], Counter[float]]:
-    """Run QAOA at depth p with the demo budget; return (table row, histogram)."""
+    """Sample the circuit with fixed params; return (table row, histogram).
+
+    Sampling goes through qaoa_run.sample_counts, the same primitives-V2 path
+    as the full runs. The row runtime covers sampling only.
+    """
     t0 = time.perf_counter()
-    opt = optimise(q, p, SEED, restarts=budget["restarts"], maxiter=budget["maxiter"])
-    params = np.array(opt["best_params"])
-    counts = fast_sample_counts(q, params, budget["shots"], SEED)
+    counts = sample_counts(q, p, params, shots, SEED)
     runtime = time.perf_counter() - t0
     m = sample_metrics(pf, q, counts, opt_x, opt_obj)
     cost = circuit_cost(q, p, SEED)
@@ -123,13 +136,23 @@ def run_qaoa_row(
 
 
 def build_rows(
-    pf: LoanPortfolio, q: Qubo, budget: dict[str, int]
+    pf: LoanPortfolio,
+    q: Qubo,
+    shots: int,
+    qaoa_runs: dict[int, np.ndarray],
 ) -> tuple[list[dict[str, Any]], dict[int, Counter[float]]]:
-    """Run every method and return (table rows, QAOA objective histograms)."""
+    """Run every method and return (table rows, QAOA objective histograms).
+
+    Args:
+        pf: Portfolio.
+        q: QUBO built from pf.
+        shots: Shot budget for QAOA sampling and for the random null.
+        qaoa_runs: Mapping depth p to its optimised parameters.
+    """
     bf = brute_force(pf, q.lam)
     gr = greedy(pf, q.lam)
     t0 = time.perf_counter()
-    rs = random_sampling(pf, q, budget["shots"], SEED)
+    rs = random_sampling(pf, q, shots, SEED)
     rs_time = time.perf_counter() - t0
     rows: list[dict[str, Any]] = [
         {
@@ -149,7 +172,7 @@ def build_rows(
             "runtime_s": gr.runtime_s,
         },
         {
-            "method": f"Random ({budget['shots']} shots)",
+            "method": f"Random ({shots} shots)",
             "objective": rs.best_objective,
             "gap_pct": gap_pct(rs.best_objective, bf.objective),
             "p_optimum": rs.p_optimal,
@@ -158,10 +181,51 @@ def build_rows(
         },
     ]
     hists: dict[int, Counter[float]] = {}
-    for p in (1, 2):
-        row, hists[p] = run_qaoa_row(pf, q, p, bf.x, bf.objective, budget)
+    for p, params in qaoa_runs.items():
+        row, hists[p] = run_qaoa_row(pf, q, p, bf.x, bf.objective, shots, params)
         rows.append(row)
     return rows, hists
+
+
+def select_qaoa_runs(
+    q: Qubo, quick: bool, results_dir: Path
+) -> tuple[dict[int, np.ndarray], int, str]:
+    """Choose the QAOA circuits to sample and say where their parameters came from.
+
+    Default mode loads the saved best-p parameters. Quick mode (and the fallback
+    when no saved file matches) re-optimises p=1,2 with QUICK_BUDGET.
+
+    Returns:
+        (mapping p -> parameters, shot budget, human-readable source line).
+    """
+    saved = None if quick else load_saved_best(results_dir)
+    if saved is not None:
+        p = int(saved["config"]["p"])
+        params = np.array(saved["optimiser"]["best_params"])
+        src = (
+            f"loaded saved parameters for p={p} (lowest stored objective "
+            f"{saved['optimiser']['best_value']:.4f}) from "
+            f"{results_dir / f'qaoa_seed{SEED}_p{p}.json'}"
+        )
+        return {p: params}, int(saved["config"]["shots"]), src
+    if not quick:
+        print("No matching saved QAOA result found; falling back to the reduced run.")
+    print(BANNER)
+    runs: dict[int, np.ndarray] = {}
+    for p in (1, 2):
+        opt = optimise(
+            q,
+            p,
+            SEED,
+            restarts=QUICK_BUDGET["restarts"],
+            maxiter=QUICK_BUDGET["maxiter"],
+        )
+        runs[p] = np.array(opt["best_params"])
+    src = (
+        f"re-optimised p=1,2 with restarts={QUICK_BUDGET['restarts']}, "
+        f"maxiter={QUICK_BUDGET['maxiter']} (full runs: 5 / 200)"
+    )
+    return runs, QUICK_BUDGET["shots"], src
 
 
 def _fmt(value: float | None, spec: str) -> str:
@@ -244,9 +308,12 @@ def save_plot(
     plt.close(fig)
 
 
-def run_demo(quick: bool = False, out_dir: Path = OUT_DIR) -> list[dict[str, Any]]:
+def run_demo(
+    quick: bool = False,
+    out_dir: Path = OUT_DIR,
+    results_dir: Path = RESULTS_DIR,
+) -> list[dict[str, Any]]:
     """Run the full demo, print each step, save the plot, return table rows."""
-    budget = QUICK_BUDGET if quick else DEMO_BUDGET
     start = time.perf_counter()
     pf = make_portfolio(N_LOANS, SEED)
     show_instance(pf)
@@ -256,12 +323,9 @@ def run_demo(quick: bool = False, out_dir: Path = OUT_DIR) -> list[dict[str, Any
     print(f"\n[2] QUBO: lam={LAM}, qubits={q.n_vars} ({pf.n} loan + {n_slack} slack)")
 
     print("\n[3] Classical baselines run (exact, greedy, random sampling).")
-    print(
-        f"[4] QAOA p=1,2 with a REDUCED budget: restarts={budget['restarts']}, "
-        f"maxiter={budget['maxiter']}, shots={budget['shots']} "
-        "(full runs: 5 / 200 / 4096; see results/results.md)."
-    )
-    rows, hists = build_rows(pf, q, budget)
+    runs, shots, source = select_qaoa_runs(q, quick, results_dir)
+    print(f"[4] QAOA: {source}; sampling {shots} shots via qaoa_run.sample_counts.")
+    rows, hists = build_rows(pf, q, shots, runs)
 
     print("\n[5] Comparison (gap % = best feasible objective vs exact optimum)\n")
     print(format_table(rows))
@@ -270,6 +334,8 @@ def run_demo(quick: bool = False, out_dir: Path = OUT_DIR) -> list[dict[str, Any
     plot_path = out_dir / "demo_plot.png"
     save_plot(rows, hists, float(rows[0]["objective"]), plot_path)
     print(f"[6] Plot saved to {plot_path}")
+    if quick:
+        print(BANNER)
     print(f"Total demo time: {time.perf_counter() - start:.1f} s")
     return rows
 
@@ -277,7 +343,11 @@ def run_demo(quick: bool = False, out_dir: Path = OUT_DIR) -> list[dict[str, Any
 def main(argv: list[str] | None = None) -> int:
     """CLI entry point."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--quick", action="store_true", help="smaller QAOA budget")
+    parser.add_argument(
+        "--quick",
+        action="store_true",
+        help="REDUCED BUDGET: re-optimise with a small budget, results differ",
+    )
     parser.add_argument("--out-dir", type=Path, default=OUT_DIR)
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.WARNING, format="%(message)s")
