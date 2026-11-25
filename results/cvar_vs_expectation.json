@@ -1,0 +1,335 @@
+{
+ "alpha": 0.1,
+ "rows": [
+  {
+   "seed": 0,
+   "p": 1,
+   "cvar": {
+    "p_optimum": 0.003662109375,
+    "hits": 15,
+    "p_feasible_decoded": 0.752197265625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 231.15719685315625,
+    "binom_p_value": 0.6328368456756508,
+    "verdict": "indistinguishable from random"
+   },
+   "expectation": {
+    "p_optimum": 0.004150390625,
+    "hits": 17,
+    "p_feasible_decoded": 0.780517578125,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 155.02005616907792,
+    "binom_p_value": 0.43403745033387753,
+    "verdict": "indistinguishable from random"
+   }
+  },
+  {
+   "seed": 0,
+   "p": 2,
+   "cvar": {
+    "p_optimum": 0.002685546875,
+    "hits": 11,
+    "p_feasible_decoded": 0.76416015625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 235.0242050796453,
+    "binom_p_value": 0.9230037829310855,
+    "verdict": "indistinguishable from random"
+   },
+   "expectation": {
+    "p_optimum": 0.005126953125,
+    "hits": 21,
+    "p_feasible_decoded": 0.88330078125,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 88.89624976702015,
+    "binom_p_value": 0.13139411482693925,
+    "verdict": "indistinguishable from random"
+   }
+  },
+  {
+   "seed": 0,
+   "p": 3,
+   "cvar": {
+    "p_optimum": 0.0009765625,
+    "hits": 4,
+    "p_feasible_decoded": 0.41162109375,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 867.6233770144274,
+    "binom_p_value": 0.9999087941011593,
+    "verdict": "below random"
+   },
+   "expectation": {
+    "p_optimum": 0.0029296875,
+    "hits": 12,
+    "p_feasible_decoded": 0.81201171875,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 140.8156443519826,
+    "binom_p_value": 0.8734922600510742,
+    "verdict": "indistinguishable from random"
+   }
+  },
+  {
+   "seed": 1,
+   "p": 1,
+   "cvar": {
+    "p_optimum": 0.006591796875,
+    "hits": 27,
+    "p_feasible_decoded": 0.66845703125,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 1746.7733916297866,
+    "binom_p_value": 0.007348700657315995,
+    "verdict": "above random"
+   },
+   "expectation": {
+    "p_optimum": 0.005859375,
+    "hits": 24,
+    "p_feasible_decoded": 0.80078125,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 395.00645715957063,
+    "binom_p_value": 0.03639089484353988,
+    "verdict": "above random"
+   }
+  },
+  {
+   "seed": 1,
+   "p": 2,
+   "cvar": {
+    "p_optimum": 0.00634765625,
+    "hits": 26,
+    "p_feasible_decoded": 0.877197265625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 309.0616562153186,
+    "binom_p_value": 0.012957177549562812,
+    "verdict": "above random"
+   },
+   "expectation": {
+    "p_optimum": 0.0048828125,
+    "hits": 20,
+    "p_feasible_decoded": 0.842529296875,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 358.30392916536175,
+    "binom_p_value": 0.18734079648714896,
+    "verdict": "indistinguishable from random"
+   }
+  },
+  {
+   "seed": 1,
+   "p": 3,
+   "cvar": {
+    "p_optimum": 0.009033203125,
+    "hits": 37,
+    "p_feasible_decoded": 0.689453125,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 1663.4799624093314,
+    "binom_p_value": 4.7192354536740665e-06,
+    "verdict": "above random"
+   },
+   "expectation": {
+    "p_optimum": 0.008544921875,
+    "hits": 35,
+    "p_feasible_decoded": 0.80078125,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 390.0261848106974,
+    "binom_p_value": 2.5754761368661332e-05,
+    "verdict": "above random"
+   }
+  },
+  {
+   "seed": 2,
+   "p": 1,
+   "cvar": {
+    "p_optimum": 0.004150390625,
+    "hits": 17,
+    "p_feasible_decoded": 0.44287109375,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 959.8852491721284,
+    "binom_p_value": 0.43403745033387753,
+    "verdict": "indistinguishable from random"
+   },
+   "expectation": {
+    "p_optimum": 0.00732421875,
+    "hits": 30,
+    "p_feasible_decoded": 0.799072265625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 160.03757764718654,
+    "binom_p_value": 0.0011045365903408523,
+    "verdict": "above random"
+   }
+  },
+  {
+   "seed": 2,
+   "p": 2,
+   "cvar": {
+    "p_optimum": 0.005859375,
+    "hits": 24,
+    "p_feasible_decoded": 0.664306640625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 634.7819469753687,
+    "binom_p_value": 0.03639089484353988,
+    "verdict": "above random"
+   },
+   "expectation": {
+    "p_optimum": 0.001953125,
+    "hits": 8,
+    "p_feasible_decoded": 0.683349609375,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 590.3295564614084,
+    "binom_p_value": 0.9901053424635228,
+    "verdict": "below random"
+   }
+  },
+  {
+   "seed": 2,
+   "p": 3,
+   "cvar": {
+    "p_optimum": 0.00244140625,
+    "hits": 10,
+    "p_feasible_decoded": 0.578369140625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 588.0681115085041,
+    "binom_p_value": 0.9569929708112695,
+    "verdict": "indistinguishable from random"
+   },
+   "expectation": {
+    "p_optimum": 0.00634765625,
+    "hits": 26,
+    "p_feasible_decoded": 0.822509765625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 145.76857429932073,
+    "binom_p_value": 0.012957177549562812,
+    "verdict": "above random"
+   }
+  },
+  {
+   "seed": 3,
+   "p": 1,
+   "cvar": {
+    "p_optimum": 0.00634765625,
+    "hits": 26,
+    "p_feasible_decoded": 0.73291015625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 284.8310583617716,
+    "binom_p_value": 0.012957177549562812,
+    "verdict": "above random"
+   },
+   "expectation": {
+    "p_optimum": 0.003173828125,
+    "hits": 13,
+    "p_feasible_decoded": 0.630859375,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 681.2393587747888,
+    "binom_p_value": 0.8073959950298825,
+    "verdict": "indistinguishable from random"
+   }
+  },
+  {
+   "seed": 3,
+   "p": 2,
+   "cvar": {
+    "p_optimum": 0.002685546875,
+    "hits": 11,
+    "p_feasible_decoded": 0.403076171875,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 1176.037187093459,
+    "binom_p_value": 0.9230037829310855,
+    "verdict": "indistinguishable from random"
+   },
+   "expectation": {
+    "p_optimum": 0.00634765625,
+    "hits": 26,
+    "p_feasible_decoded": 0.738525390625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 167.96503294205212,
+    "binom_p_value": 0.012957177549562812,
+    "verdict": "above random"
+   }
+  },
+  {
+   "seed": 3,
+   "p": 3,
+   "cvar": {
+    "p_optimum": 0.0009765625,
+    "hits": 4,
+    "p_feasible_decoded": 0.377197265625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 1218.2853399477456,
+    "binom_p_value": 0.9999087941011593,
+    "verdict": "below random"
+   },
+   "expectation": {
+    "p_optimum": 0.004150390625,
+    "hits": 17,
+    "p_feasible_decoded": 0.55126953125,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 814.8638645690654,
+    "binom_p_value": 0.43403745033387753,
+    "verdict": "indistinguishable from random"
+   }
+  },
+  {
+   "seed": 4,
+   "p": 1,
+   "cvar": {
+    "p_optimum": 0.001220703125,
+    "hits": 5,
+    "p_feasible_decoded": 0.431396484375,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 7616.8571485133725,
+    "binom_p_value": 0.999606720610801,
+    "verdict": "below random"
+   },
+   "expectation": {
+    "p_optimum": 0.00244140625,
+    "hits": 10,
+    "p_feasible_decoded": 0.65771484375,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 3085.2506243289154,
+    "binom_p_value": 0.9569929708112695,
+    "verdict": "indistinguishable from random"
+   }
+  },
+  {
+   "seed": 4,
+   "p": 2,
+   "cvar": {
+    "p_optimum": 0.002197265625,
+    "hits": 9,
+    "p_feasible_decoded": 0.4580078125,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 7425.523374401637,
+    "binom_p_value": 0.9781998289210002,
+    "verdict": "below random"
+   },
+   "expectation": {
+    "p_optimum": 0.005126953125,
+    "hits": 21,
+    "p_feasible_decoded": 0.789306640625,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 670.5327929862153,
+    "binom_p_value": 0.13139411482693925,
+    "verdict": "indistinguishable from random"
+   }
+  },
+  {
+   "seed": 4,
+   "p": 3,
+   "cvar": {
+    "p_optimum": 0.004638671875,
+    "hits": 19,
+    "p_feasible_decoded": 0.43701171875,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 7385.674663149259,
+    "binom_p_value": 0.25732560798262843,
+    "verdict": "indistinguishable from random"
+   },
+   "expectation": {
+    "p_optimum": 0.00439453125,
+    "hits": 18,
+    "p_feasible_decoded": 0.71630859375,
+    "best_gap_pct": 0.0,
+    "expectation_at_angles": 3025.975721188259,
+    "binom_p_value": 0.3404733303209308,
+    "verdict": "indistinguishable from random"
+   }
+  }
+ ]
+}
