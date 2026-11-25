@@ -1,0 +1,9 @@
+amount,expected_return,sector
+3,0.62,farming
+5,1.10,farming
+2,0.55,retail
+4,0.80,retail
+1,0.30,retail
+6,1.45,services
+2,0.40,services
+7,1.20,farming
