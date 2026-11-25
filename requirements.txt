@@ -1,0 +1,10 @@
+# Python 3.11. Versions pinned from the dev environment (uv pip freeze).
+qiskit==2.6.2
+qiskit-aer==0.18.4
+qiskit-ibm-runtime==0.52.1
+numpy==2.4.6
+scipy==1.17.1
+matplotlib==3.11.2
+pytest==9.2.0
+ruff==0.17.6
+black==26.10.1
