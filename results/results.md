@@ -53,6 +53,17 @@ QAOA at a single depth p=2.
 | QAOA p=2 | 5 | 0 | 0.0000 | 0.0000 |
 | QAOA p=3 | 5 | 0 | 0.0000 | 0.0000 |
 
+## Optimiser normalised score (seed 0)
+
+Normalised score = (Emax - E) / (Emax - Emin), where E is the optimiser's final exact <H> and Emin, Emax are the smallest and largest QUBO energies over all bitstrings. It is 1 at the QUBO minimum and 0 at the maximum. It is NOT a multiplicative approximation ratio. It is a measure of the optimiser's expectation value, not of sampled solution quality; the sampled metrics are P(optimum) and the best-feasible gap above.
+
+| p | final <H> | normalised score | score of the uniform state |
+|---|---|---|---|
+| 1 | 155.0201 | 0.9749 | 0.8544 |
+| 2 | 88.8962 | 0.9854 | 0.8544 |
+| 3 | 140.8156 | 0.9772 | 0.8544 |
+| 4 | 610.6747 | 0.9026 | 0.8544 |
+
 ## QAOA vs random sampling, every seed and depth
 
 Each row compares one QAOA run with uniform random sampling at the same 4096 shots. Random sampling draws every QUBO bit uniformly, so its P(optimum) is 1/256 in expectation for 8 loans. The verdict is an exact one-sided binomial test of QAOA's optimum hits against that rate at alpha=0.05; 'p-value' is the chance of at least that many hits under random sampling. With 16 rows, about 0.8 false 'above random' verdicts are expected by chance alone.
@@ -87,6 +98,14 @@ Tally: 5 of 16 runs above random, 1 of 16 runs below random, 10 of 16 runs indis
 ![Optimality gap by method](plots/compare_gap_by_method.png)
 
 ## Noise-model simulation (fake_fez Aer noise model)
+
+Source: `results/noise_run_n4_p1.json`. 4 loans, 8 qubits, p=1, 1024 shots, parameters: cached hardware_params_seed0_n4_p1.json. Transpiled for fake_fez: depth 182, 87 two-qubit gates. Random sampling for reference: P(optimum) = 1/16 in expectation.
+
+| variant | mitigation | P(optimum) | P(feasible, decoded) | gap % |
+|---|---|---|---|---|
+| noiseless | none | 0.0713 | 0.7432 | 0.0000 |
+| noisy | none | 0.0850 | 0.6914 | 0.0000 |
+| noisy_readout_mitigated | tensored readout calibration only | 0.0977 | 0.6875 | 0.0000 |
 
 Source: `results/noise_run_n5_p1.json`. 5 loans, 9 qubits, p=1, 4096 shots, parameters: cached hardware_params_seed0_n5_p1.json. Transpiled for fake_fez: depth 237, 130 two-qubit gates. Random sampling for reference: P(optimum) = 1/32 in expectation.
 

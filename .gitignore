@@ -13,3 +13,9 @@ __pycache__/
 *.pem
 qiskit-ibm.json
 # results/ is intentionally NOT ignored: results are committed evidence.
+
+# one-off helper scripts (never commit)
+_patch*
+_append*
+_migrate*
+_block*

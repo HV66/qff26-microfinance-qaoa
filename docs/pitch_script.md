@@ -16,6 +16,12 @@ Honest framing throughout: we built and verified the full QAOA pipeline. At 8 lo
 
 Segment seconds: 25+30+30+40+30+15+10 = 180 s = 3:00.
 
+Honest claim, slide by slide:
+
+- Results slide: "A 0 percent gap is weak evidence, because 4096 shots touch 201 to 256 of the 256 loan vectors. P(optimum) against random sampling is the metric."
+- Circuit slide: "The feasibility finding is size: depth 334 and 223 two-qubit gates at p=1, depth 655 and 519 at p=2, on a fake_fez coupling map."
+- Limitations slide (the honest claim): "No quantum advantage at this size. We contribute a verified pipeline and noise measurements, and hardware has not been run."
+
 ## B. 5-minute finals version (target 5:00; then 3 min Q&A)
 
 | Time | Segment | Content |
@@ -59,8 +65,15 @@ Segment seconds: 30+40+50+40+50+45+25+20 = 300 s = 5:00.
 7. **Data ethics: where does the data come from?**
    Fully synthetic and deterministic by seed (`data.py`): 3 sectors, integer loan amounts 1 to 8, rates 0.10 to 0.35, volatilities 0.1 to 0.4, same-sector correlation 0.6 and cross-sector 0.1. No real borrower data. A real deployment would need fairness auditing, because optimising return minus risk can exclude the poorest borrowers, which conflicts with the microfinance mission. We have not built that.
 
-8. **Why QAOA at all?**
+8. **So what is the quantum value?**
+   At this size, none: classical exact, greedy and simulated annealing solve the 8-loan instance, and QAOA is indistinguishable from random sampling on the headline seed (`results/results.md`). We make no advantage claim. Our contribution is the verified pipeline and the measurements: an own QUBO-to-Ising conversion checked on every bitstring, a numpy simulator matched to Qiskit at p=1 to 4, a per-run statistical test against random sampling, and noise-model measurements of what the circuit costs on a real coupling map (depth 334 and 223 two-qubit gates at p=1, depth 655 and 519 at p=2). That is a tested starting point for larger instances and real hardware, not a speedup.
+
+9. **Why QAOA at all?**
    Because portfolio selection with a budget is a QUBO, QAOA's natural input, and a verified, reproducible pipeline is a prerequisite for testing larger instances and hardware. We claim a working testbed with an honest baseline, not a speedup.
+
+## C2. Honest-metrics paragraph (say or paste on the results slide)
+
+With 12 qubits there are 4096 basis states, and we sample QAOA 4096 times. Each run therefore touches 201 to 256 of the 256 loan vectors (`results/qaoa_seed*_p*.json`, field `distinct_loan_vectors`), so the best-sample gap is close to an exhaustive search and a 0 percent gap is weak evidence. The meaningful metric is P(optimum) against random sampling at the same shots: 5 of 16 QAOA runs are above random, 10 are indistinguishable and 1 is below (`results/results.md`). The feasibility finding is circuit size on a real coupling map: depth 334 with 223 two-qubit gates at p=1, and depth 655 with 519 two-qubit gates at p=2 (`results/noise_run_p1.json`, `results/noise_run_p2.json`).
 
 ## D. Do not say
 

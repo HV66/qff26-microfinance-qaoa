@@ -4,11 +4,14 @@ IBM Qiskit Fall Fest 2026, 48-Hour Quantum for Humanity Hackathon. Track: Financ
 
 **One-line pitch:** choose which small loans a microfinance lender should fund under a fixed budget, trading expected return against sector-correlated default risk, by encoding the problem as a QUBO and solving it with QAOA next to exact, greedy, simulated-annealing and random baselines. We report the comparison honestly and claim no quantum advantage.
 
-## Team (TODO: fill in before submission)
+## Team (TODO: fill in the remaining placeholders before submission)
 
 - Team name: TODO
-- Members: TODO
-- Track: Financial Inclusion & Resilient Markets
+- Members:
+  - Harsha (GitHub: HV66)
+  - TODO: member 2 (name, GitHub)
+  - TODO: member 3 (name, GitHub)
+- Track: Finance (Financial Inclusion & Resilient Markets), Case Study 4, Option B (microfinance portfolio via QUBO and QAOA)
 - Team lead: TODO
 
 ## Problem and beneficiary
@@ -174,12 +177,27 @@ Honest reading: noise lowers P(optimum) in all three rows. Readout mitigation lo
 - **The 0% gap column for QAOA and random sampling is uninformative.** It is a best-of-4096-shots statistic over a 256-vector search space (all 16 QAOA runs and all 16 random runs report a 0.0% gap). **P(optimum) is the honest metric.** Across the 16 QAOA runs (seed 0 p=1..4, seeds 1-4 p=1..3), an exact one-sided binomial test of QAOA's optimum hits against the uniform-random rate 1/256 at alpha 0.05 gives: 5 runs above random, 10 indistinguishable from random, 1 below random (`results/compare_vs_random.csv`, per-row table in `results/results.md`). The above-random runs are seed 1 p=1, seed 1 p=3, seed 2 p=1, seed 2 p=3 and seed 3 p=2; the below-random run is seed 2 p=2. At seed 0, the headline instance, all four depths are indistinguishable from random. With 16 tests, about 0.8 false 'above random' verdicts are expected by chance, so 5 is more than chance alone, but it is a small effect: mean QAOA P(optimum) is 0.0047 against a mean random value of 0.0034 (both computed from the 16 result files).
 - QAOA does raise the probability that a decoded sample is budget-feasible: 0.3960 to 0.8833 across the 16 runs against 0.3145 to 0.3662 for random sampling at the same shots. The seed-0 p=4 run is the low end (0.3960), so this is not a clean trend with depth.
 - 12 qubits are trivial to simulate classically; this is a feasibility demonstration, not a scaling result.
+- **Honest metrics.** With 12 qubits there are 4096 basis states, and each QAOA run is sampled 4096 times. The sampled runs cover 201 to 256 of the 256 loan vectors (`distinct_loan_vectors` in `results/qaoa_seed*_p*.json`), so a best-sample gap is close to exhaustive search and a 0% gap is weak evidence. The meaningful metric is P(optimum) against random sampling at the same shots (table above): 5 of 16 runs above random, 10 indistinguishable, 1 below.
+- **Feasibility finding.** On the `fake_fez` coupling map the 12-qubit circuit transpiles to depth 334 with 223 two-qubit gates at p=1, and depth 655 with 519 two-qubit gates at p=2 (`results/noise_run_p1.json`, `results/noise_run_p2.json`). The p=2 count is above the 300 two-qubit-gate limit `hardware_run.py` uses to call a circuit unrealistic for current hardware.
+- The optimiser's "normalised score" is (Emax - E)/(Emax - Emin) over the QUBO spectrum, not a multiplicative approximation ratio; see `results/results.md`.
 - The penalty term makes the energy landscape rough, which is hard for QAOA with a local optimiser such as COBYLA.
 - The optimiser's inner loop uses the **exact noiseless expectation**, computed by our own numpy statevector simulator (`qaoa_run.fast_probabilities`), not by Qiskit. It is verified against the Qiskit `QAOAAnsatz` statevector for p = 1, 2, 3 and 4 in `tests/test_qaoa.py` (4-loan instance). On hardware the expectation would be estimated from shots; this is a simulation-only shortcut. The final metrics do come from sampling.
 - Final sampling uses `qiskit.primitives.StatevectorSampler`, the primitives-V2 reference sampler (exact simulation, seeded shot noise), on the circuit transpiled to a generic basis.
 - `demo.py` by default loads the saved seed-0 best-p parameters (the lowest stored optimiser objective) and samples the saved circuit with 4096 shots through `qaoa_run.sample_counts`, the same path as the full runs. `demo.py --quick` re-optimises with fewer restarts, iterations and shots, prints a REDUCED BUDGET banner, and its numbers differ from `results/results.md`.
 - Data is synthetic with a simple sector-correlation model; it is not calibrated to real loan books.
 - Only 5 seeds, one instance size, no real-hardware run.
+
+## Verification
+
+Independent review: `results/codex_review.md` (reviewer: Codex). The reviewer confirmed the QUBO-to-Ising energies (an independent enumeration of all 256 bitstrings of a 4-loan instance, plus our own all-bitstring test on five 8-loan instances) and that the numpy simulator matches the Qiskit `QAOAAnsatz` probabilities for p=1 to 4. Its three findings and their status:
+
+| finding | status |
+|---|---|
+| P3: README described a demo sampling path the code does not use (it said a numpy sampler) | Fixed: README now states that `demo.py` samples through `qaoa_run.sample_counts` |
+| P3: a zero optimum forced the best-feasible gap to 0.0% even for a suboptimal sample | Fixed: `qaoa_run.gap_percent` returns 0.0 only on an exact match and `None` otherwise (tested) |
+| P2: `P(optimum)` counts only the single reference optimal vector, so tied optima would be undercounted | Guarded by a test: `tests/test_qaoa.py::test_unique_optimum_for_published_instances` asserts a unique optimum for seeds 0-4 (the published instances); the metric is not changed for tied optima |
+
+Other checks: an independent verifier (`tests/independent/verify_independent.py`, report in `results/verifier_report.md`) re-derives the QUBO energies and the constrained optimum from the problem definition without importing our objective or Ising code; it does not cover the QAOA circuit, sampling or metrics.
 
 ## Next steps
 

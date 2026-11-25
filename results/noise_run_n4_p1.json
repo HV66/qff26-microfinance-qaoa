@@ -1,0 +1,114 @@
+{
+ "instance": {
+  "seed": 0,
+  "n_loans": 4,
+  "n_qubits": 8,
+  "lam": 0.3,
+  "p": 1,
+  "params_source": "cached hardware_params_seed0_n4_p1.json",
+  "exact_objective": -1.5010364881382225,
+  "exact_x": [
+   0,
+   0,
+   1,
+   1
+  ]
+ },
+ "backend_noise_model": "fake_fez",
+ "shots": 1024,
+ "transpiled": {
+  "depth": 182,
+  "two_qubit_gates": 87
+ },
+ "mitigation_applied": {
+  "noiseless": "none",
+  "noisy": "none",
+  "noisy_readout_mitigated": "tensored readout calibration only"
+ },
+ "variants": {
+  "noiseless": {
+   "p_optimal": 0.0712890625,
+   "p_feasible_raw": 0.095703125,
+   "p_feasible_decoded": 0.7431640625,
+   "best_feasible_objective": -1.5010364881382225,
+   "best_feasible_x": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "best_feasible_gap_pct": 0.0,
+   "distinct_loan_vectors": 16,
+   "shots": 1024
+  },
+  "noisy": {
+   "p_optimal": 0.0849609375,
+   "p_feasible_raw": 0.091796875,
+   "p_feasible_decoded": 0.69140625,
+   "best_feasible_objective": -1.5010364881382225,
+   "best_feasible_x": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "best_feasible_gap_pct": 0.0,
+   "distinct_loan_vectors": 16,
+   "shots": 1024
+  },
+  "noisy_readout_mitigated": {
+   "p_optimal": 0.09765625,
+   "p_feasible_raw": 0.0859375,
+   "p_feasible_decoded": 0.6875,
+   "best_feasible_objective": -1.5010364881382225,
+   "best_feasible_x": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "best_feasible_gap_pct": 0.0,
+   "distinct_loan_vectors": 16,
+   "shots": 1024
+  }
+ },
+ "readout_confusion_p01_p10": [
+  [
+   0.005859375,
+   0.00390625
+  ],
+  [
+   0.0029296875,
+   0.001953125
+  ],
+  [
+   0.0087890625,
+   0.005859375
+  ],
+  [
+   0.005859375,
+   0.0068359375
+  ],
+  [
+   0.0029296875,
+   0.0
+  ],
+  [
+   0.0048828125,
+   0.015625
+  ],
+  [
+   0.005859375,
+   0.00390625
+  ],
+  [
+   0.0146484375,
+   0.017578125
+  ]
+ ],
+ "timings_s": {
+  "noiseless_s": 0.14234300001407973,
+  "noisy_s": 9.704710999998497,
+  "readout_mitigation_s": 18.26726759999292
+ }
+}
