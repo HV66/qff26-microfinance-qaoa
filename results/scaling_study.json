@@ -1,0 +1,133 @@
+{
+ "seed": 0,
+ "lam": 0.3,
+ "note": "No QAOA optimisation; circuits built with placeholder angles (0.3). Logical = generic gates ['cx', 'rz', 'sx', 'x'], all-to-all connectivity. fake_fez transpiled counts only for n_loans <= 6.",
+ "rows": [
+  {
+   "n_loans": 4,
+   "n_slack": 4,
+   "n_qubits": 8,
+   "budget": 8,
+   "brute_force_runtime_s": 9.410001803189516e-05,
+   "brute_force_states": 16,
+   "logical_depth_p1": 48,
+   "logical_two_qubit_p1": 56,
+   "logical_depth_p2": 78,
+   "logical_two_qubit_p2": 112,
+   "fake_fez_depth_p1": 190,
+   "fake_fez_two_qubit_p1": 87
+  },
+  {
+   "n_loans": 5,
+   "n_slack": 4,
+   "n_qubits": 9,
+   "budget": 10,
+   "brute_force_runtime_s": 0.0005079999682493508,
+   "brute_force_states": 32,
+   "logical_depth_p1": 54,
+   "logical_two_qubit_p1": 72,
+   "logical_depth_p2": 87,
+   "logical_two_qubit_p2": 144,
+   "fake_fez_depth_p1": 247,
+   "fake_fez_two_qubit_p1": 130
+  },
+  {
+   "n_loans": 6,
+   "n_slack": 4,
+   "n_qubits": 10,
+   "budget": 10,
+   "brute_force_runtime_s": 0.0004338999860920012,
+   "brute_force_states": 64,
+   "logical_depth_p1": 60,
+   "logical_two_qubit_p1": 90,
+   "logical_depth_p2": 96,
+   "logical_two_qubit_p2": 180,
+   "fake_fez_depth_p1": 272,
+   "fake_fez_two_qubit_p1": 174
+  },
+  {
+   "n_loans": 7,
+   "n_slack": 4,
+   "n_qubits": 11,
+   "budget": 10,
+   "brute_force_runtime_s": 0.0008423000108450651,
+   "brute_force_states": 128,
+   "logical_depth_p1": 66,
+   "logical_two_qubit_p1": 110,
+   "logical_depth_p2": 105,
+   "logical_two_qubit_p2": 220,
+   "fake_fez_depth_p1": null,
+   "fake_fez_two_qubit_p1": null,
+   "fake_fez_skipped_reason": "skipped for n_loans > 6 (transpile time)"
+  },
+  {
+   "n_loans": 8,
+   "n_slack": 4,
+   "n_qubits": 12,
+   "budget": 11,
+   "brute_force_runtime_s": 0.0016879999893717468,
+   "brute_force_states": 256,
+   "logical_depth_p1": 72,
+   "logical_two_qubit_p1": 132,
+   "logical_depth_p2": 114,
+   "logical_two_qubit_p2": 264,
+   "fake_fez_depth_p1": null,
+   "fake_fez_two_qubit_p1": null,
+   "fake_fez_skipped_reason": "skipped for n_loans > 6 (transpile time)"
+  },
+  {
+   "n_loans": 9,
+   "n_slack": 4,
+   "n_qubits": 13,
+   "budget": 12,
+   "brute_force_runtime_s": 0.006451099994592369,
+   "brute_force_states": 512,
+   "logical_depth_p1": 78,
+   "logical_two_qubit_p1": 156,
+   "logical_depth_p2": 123,
+   "logical_two_qubit_p2": 312,
+   "fake_fez_depth_p1": null,
+   "fake_fez_two_qubit_p1": null,
+   "fake_fez_skipped_reason": "skipped for n_loans > 6 (transpile time)"
+  },
+  {
+   "n_loans": 10,
+   "n_slack": 4,
+   "n_qubits": 14,
+   "budget": 14,
+   "brute_force_runtime_s": 0.00649969995720312,
+   "brute_force_states": 1024,
+   "logical_depth_p1": 84,
+   "logical_two_qubit_p1": 182,
+   "logical_depth_p2": 132,
+   "logical_two_qubit_p2": 364,
+   "fake_fez_depth_p1": null,
+   "fake_fez_two_qubit_p1": null,
+   "fake_fez_skipped_reason": "skipped for n_loans > 6 (transpile time)"
+  }
+ ],
+ "extrapolation": {
+  "LABEL": "EXTRAPOLATION, NOT A MEASUREMENT",
+  "n_loans": 50,
+  "assumed_budget": 90,
+  "assumed_budget_rule": "40% of expected total amount (mean amount 4.5)",
+  "n_slack": 7,
+  "n_qubits": 57,
+  "brute_force_states": 1125899906842624,
+  "brute_force_states_note": "exactly 2^n_loans, from the definition",
+  "two_qubit_p1_fit_crosscheck": {
+   "a": -5.353182751540104,
+   "b": 0.9548254620123207,
+   "max_abs_residual": 0.24435318275158124
+  },
+  "logical_two_qubit_p1_extrapolated": 3192,
+  "logical_two_qubit_p1_fit_value": 3096.8747433264894,
+  "two_qubit_p2_fit_crosscheck": {
+   "a": -10.706365503080209,
+   "b": 1.9096509240246413,
+   "max_abs_residual": 0.4887063655031625
+  },
+  "logical_two_qubit_p2_extrapolated": 6384,
+  "logical_two_qubit_p2_fit_value": 6193.749486652979
+ }
+}
