@@ -153,6 +153,58 @@ def seeds_md(seeds: dict[str, Any]) -> str:
     return md_table(heads, rows)
 
 
+def vs_random_md(block: dict[str, Any]) -> str:
+    """Markdown for the per-run QAOA vs random-sampling table with verdicts."""
+    rows = block["rows"]
+    if not rows:
+        return "No QAOA result files found."
+    counts: dict[str, int] = {}
+    for r in rows:
+        counts[r["verdict"]] = counts.get(r["verdict"], 0) + 1
+    tally = ", ".join(f"{n} of {len(rows)} runs {v}" for v, n in sorted(counts.items()))
+    shots = rows[0]["shots"]
+    intro = (
+        f"Each row compares one QAOA run with uniform random sampling at the same "
+        f"{shots} shots. Random sampling draws every QUBO bit uniformly, so its "
+        "P(optimum) is 1/256 in expectation for 8 loans. The verdict is an exact "
+        f"one-sided binomial test of QAOA's optimum hits against that rate at "
+        f"alpha={block['alpha']}; 'p-value' is the chance of at least that many "
+        "hits under random sampling. With "
+        f"{len(rows)} rows, about {len(rows) * block['alpha']:.1f} false 'above "
+        "random' verdicts are expected by chance alone.\n\n"
+        f"Tally: {tally}."
+    )
+    heads = [
+        "seed",
+        "p",
+        "QAOA hits",
+        "random hits",
+        "QAOA P(opt)",
+        "random P(opt)",
+        "p-value",
+        "QAOA P(feas)",
+        "random P(feas)",
+        "QAOA gap %",
+        "random gap %",
+        "verdict",
+    ]
+    keys = [
+        "seed",
+        "p",
+        "qaoa_hits",
+        "random_hits",
+        "qaoa_p_optimum",
+        "random_p_optimum",
+        "binom_p_value",
+        "qaoa_p_feasible",
+        "random_p_feasible",
+        "qaoa_gap_pct",
+        "random_gap_pct",
+        "verdict",
+    ]
+    return intro + "\n\n" + md_table(heads, [[r[k] for k in keys] for r in rows])
+
+
 def extra_md(title: str, path: Path) -> str:
     """Render top-level scalar fields of an optional result file."""
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -180,6 +232,11 @@ def build(results_dir: Path = RESULTS) -> str:
         "## Lambda sensitivity (seed 0)\n\n" + lambda_md(payload["lambda_sensitivity"]),
         "## Five-seed summary (lam=0.3)\n\n" + seeds_md(payload["seed_summary"]),
     ]
+    if "vs_random" in payload:
+        sections.append(
+            "## QAOA vs random sampling, every seed and depth\n\n"
+            + vs_random_md(payload["vs_random"])
+        )
     plots = [
         f"![{alt}](plots/{name})"
         for name, alt in PLOT_FILES

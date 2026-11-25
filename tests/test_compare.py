@@ -93,3 +93,40 @@ def test_best_qaoa_p_picks_lowest_gap(tmp_path: Path) -> None:
         d["sampling"]["best_feasible_gap_pct"] = gap
         (tmp_path / f"qaoa_seed0_p{p}.json").write_text(json.dumps(d), encoding="utf-8")
     assert compare.best_qaoa_p(0, (1, 2), tmp_path) == 2
+
+
+def test_binomial_verdict_flags_clear_cases() -> None:
+    from compare import binomial_verdict
+
+    # Random rate for 8 loans is 1/256; 4096 shots -> 16 expected hits.
+    assert binomial_verdict(16, 4096, 8)[1] == "indistinguishable from random"
+    assert binomial_verdict(21, 4096, 8)[1] == "indistinguishable from random"
+    assert binomial_verdict(60, 4096, 8)[1] == "above random"
+    assert binomial_verdict(0, 4096, 8)[1] == "below random"
+    p_value, _ = binomial_verdict(16, 4096, 8)
+    assert 0.0 < p_value <= 1.0
+
+
+def test_vs_random_rows_use_saved_files(tmp_path) -> None:
+    import json
+
+    from compare import vs_random_rows
+
+    res = {
+        "config": {"shots": 4096, "n_loans": 8, "p": 1, "seed": 0},
+        "sampling": {
+            "p_optimal": 100 / 4096,
+            "p_feasible_decoded": 0.8,
+            "best_feasible_gap_pct": 0.0,
+        },
+        "random_null": {
+            "p_optimal": 12 / 4096,
+            "p_feasible_decoded": 0.37,
+            "best_gap_pct": 0.0,
+        },
+    }
+    (tmp_path / "qaoa_seed0_p1.json").write_text(json.dumps(res), encoding="utf-8")
+    rows = vs_random_rows(seeds=(0, 1), ps=(1, 2), results_dir=tmp_path)
+    assert len(rows) == 1
+    assert rows[0]["qaoa_hits"] == 100 and rows[0]["random_hits"] == 12
+    assert rows[0]["verdict"] == "above random"

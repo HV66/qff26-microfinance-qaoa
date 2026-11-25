@@ -275,6 +275,91 @@ def seed_summary(
     return {"per_seed": per_seed, "summary": summarise_gaps(per_seed)}
 
 
+ALPHA = 0.05
+VS_RANDOM_FIELDS = [
+    "seed",
+    "p",
+    "shots",
+    "qaoa_hits",
+    "random_hits",
+    "qaoa_p_optimum",
+    "random_p_optimum",
+    "binom_p_value",
+    "qaoa_p_feasible",
+    "random_p_feasible",
+    "qaoa_gap_pct",
+    "random_gap_pct",
+    "verdict",
+]
+
+
+def binomial_verdict(hits: int, shots: int, n_loans: int) -> tuple[float, str]:
+    """Test QAOA's P(optimum) against the uniform-random rate 2^-n_loans.
+
+    Uniform random sampling draws every QUBO bit (loans and slack) uniformly,
+    so the decoded loan vector equals the optimum with probability exactly
+    2^-n_loans. The test is an exact binomial test of ``hits`` out of
+    ``shots`` against that rate, at significance ALPHA.
+
+    Returns:
+        (one-sided p-value for "above random", verdict). Verdict is
+        "above random" if hits are significantly more frequent than random,
+        "below random" if significantly less frequent, otherwise
+        "indistinguishable from random".
+    """
+    from scipy.stats import binomtest
+
+    rate = 2.0**-n_loans
+    p_above = float(binomtest(hits, shots, rate, alternative="greater").pvalue)
+    p_below = float(binomtest(hits, shots, rate, alternative="less").pvalue)
+    if p_above < ALPHA:
+        return p_above, "above random"
+    if p_below < ALPHA:
+        return p_above, "below random"
+    return p_above, "indistinguishable from random"
+
+
+def vs_random_rows(
+    seeds: tuple[int, ...] = SEEDS,
+    ps: tuple[int, ...] = MAIN_PS,
+    results_dir: Path = RESULTS,
+) -> list[dict[str, Any]]:
+    """One row per (seed, p): QAOA vs random sampling at the same shot budget.
+
+    Every number comes from the saved qaoa_seed*_p*.json (the random null is
+    stored in the same file, drawn with the same shots and seed). Missing
+    files are skipped.
+    """
+    rows: list[dict[str, Any]] = []
+    for seed in seeds:
+        for p in ps:
+            res = load_qaoa(seed, p, results_dir)
+            if res is None:
+                continue
+            s, rn, cfg = res["sampling"], res["random_null"], res["config"]
+            shots = int(cfg["shots"])
+            hits = round(s["p_optimal"] * shots)
+            p_value, verdict = binomial_verdict(hits, shots, int(cfg["n_loans"]))
+            rows.append(
+                {
+                    "seed": seed,
+                    "p": p,
+                    "shots": shots,
+                    "qaoa_hits": hits,
+                    "random_hits": round(rn["p_optimal"] * shots),
+                    "qaoa_p_optimum": s["p_optimal"],
+                    "random_p_optimum": rn["p_optimal"],
+                    "binom_p_value": p_value,
+                    "qaoa_p_feasible": s["p_feasible_decoded"],
+                    "random_p_feasible": rn["p_feasible_decoded"],
+                    "qaoa_gap_pct": s["best_feasible_gap_pct"],
+                    "random_gap_pct": rn["best_gap_pct"],
+                    "verdict": verdict,
+                }
+            )
+    return rows
+
+
 def summarise_gaps(per_seed: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Aggregate per-seed gaps into mean and worst (max) gap per method.
 
@@ -414,10 +499,12 @@ def run_all(run_qaoa_lam: bool = False, results_dir: Path = RESULTS) -> dict[str
     qp = best_qaoa_p(0, MAIN_PS, results_dir)
     lam_rows = lambda_table(qaoa_p=qp, run_qaoa=run_qaoa_lam, results_dir=results_dir)
     seeds = seed_summary(results_dir=results_dir)
+    vs_random = vs_random_rows(results_dir=results_dir)
     payload = {
         "main": main,
         "lambda_sensitivity": {"qaoa_p": qp, "rows": lam_rows},
         "seed_summary": seeds,
+        "vs_random": {"alpha": ALPHA, "rows": vs_random},
     }
     results_dir.mkdir(parents=True, exist_ok=True)
     (results_dir / "compare_main.json").write_text(
@@ -434,6 +521,7 @@ def run_all(run_qaoa_lam: bool = False, results_dir: Path = RESULTS) -> dict[str
         seeds["summary"],
         ["method", "n_seeds", "n_missing", "mean_gap_pct", "worst_gap_pct"],
     )
+    write_csv(results_dir / "compare_vs_random.csv", vs_random, VS_RANDOM_FIELDS)
     plots = results_dir / "plots"
     plot_convergence(MAIN_PS, plots / "compare_energy_convergence.png", results_dir)
     plot_p_optimum(MAIN_PS, plots / "compare_p_optimum_vs_p.png", results_dir)
