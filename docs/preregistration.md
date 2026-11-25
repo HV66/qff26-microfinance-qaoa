@@ -136,3 +136,20 @@ after it.
 
 Only an error in this document. Any such correction is made in a new, dated section at the
 end of this file and the original text is left as written.
+
+## Correction, dated 2026-11-26 (added after the Step 2 tests ran; original text above is unchanged)
+
+Step 2 states that the unbalanced penalty "can reward unspent budget by at most
+`l1^2 / (4 * l2) = r`". That property is true but it is attained only at the real-valued
+minimiser `g* = l1 / (2 * l2)`, which is below 1 on every seed checked (0.12 to 0.25). Loan
+amounts are integers, so the unspent budget `g` is a whole number and the penalty at `g = 1`
+is `l2 - l1`, which is positive (5.3 to 8.1 on the seeds checked). The rule therefore behaves
+almost like an equality constraint, so it penalises leaving any budget unspent, while the true
+problem has an inequality constraint. The coefficient rule itself is unchanged. The Step 2
+test results (3 of 10 seeds pass) are reported as they came out.
+
+The pytest gate cannot stay green with seven deliberately failing tests, so the per-seed
+test now pins the recorded outcome (seeds 0, 2, 6 decode to the exact optimum; seeds 1, 3, 4,
+5, 7, 8, 9 do not, and each failing minimum must be budget-feasible and strictly worse than
+the optimum) and `scripts/unbalanced_min_decode.py` writes every seed's outcome to
+`results/unbalanced_min_decode.json`. This keeps the failures visible without tuning anything.

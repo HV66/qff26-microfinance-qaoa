@@ -1,0 +1,144 @@
+{
+ "alpha": 0.05,
+ "family": "F2: unbalanced QAOA vs uniform random",
+ "family_size": 15,
+ "n_raw_below_alpha": 6,
+ "n_survive_holm": 4,
+ "rows": [
+  {
+   "label": "unbalanced QAOA seed 0 p=1",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.0005519753972423496,
+   "p_holm": 0.007175680164150545,
+   "rank": 3,
+   "survives": true,
+   "raw_below_alpha": true
+  },
+  {
+   "label": "unbalanced QAOA seed 0 p=2",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.8073959950298825,
+   "p_holm": 1.0,
+   "rank": 10,
+   "survives": false,
+   "raw_below_alpha": false
+  },
+  {
+   "label": "unbalanced QAOA seed 0 p=3",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.0005519753972423496,
+   "p_holm": 0.007175680164150545,
+   "rank": 4,
+   "survives": true,
+   "raw_below_alpha": true
+  },
+  {
+   "label": "unbalanced QAOA seed 1 p=1",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.18734079648714896,
+   "p_holm": 1.0,
+   "rank": 7,
+   "survives": false,
+   "raw_below_alpha": false
+  },
+  {
+   "label": "unbalanced QAOA seed 1 p=2",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.012957177549562812,
+   "p_holm": 0.14252895304519092,
+   "rank": 5,
+   "survives": false,
+   "raw_below_alpha": true
+  },
+  {
+   "label": "unbalanced QAOA seed 1 p=3",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 4.7192354536740665e-06,
+   "p_holm": 6.606929635143693e-05,
+   "rank": 2,
+   "survives": true,
+   "raw_below_alpha": true
+  },
+  {
+   "label": "unbalanced QAOA seed 2 p=1",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.02209110085970675,
+   "p_holm": 0.2209110085970675,
+   "rank": 6,
+   "survives": false,
+   "raw_below_alpha": true
+  },
+  {
+   "label": "unbalanced QAOA seed 2 p=2",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.18734079648714896,
+   "p_holm": 1.0,
+   "rank": 8,
+   "survives": false,
+   "raw_below_alpha": false
+  },
+  {
+   "label": "unbalanced QAOA seed 2 p=3",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.8734922600510742,
+   "p_holm": 1.0,
+   "rank": 11,
+   "survives": false,
+   "raw_below_alpha": false
+  },
+  {
+   "label": "unbalanced QAOA seed 3 p=1",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.999606720610801,
+   "p_holm": 1.0,
+   "rank": 13,
+   "survives": false,
+   "raw_below_alpha": false
+  },
+  {
+   "label": "unbalanced QAOA seed 3 p=2",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.999606720610801,
+   "p_holm": 1.0,
+   "rank": 14,
+   "survives": false,
+   "raw_below_alpha": false
+  },
+  {
+   "label": "unbalanced QAOA seed 3 p=3",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.18734079648714896,
+   "p_holm": 1.0,
+   "rank": 9,
+   "survives": false,
+   "raw_below_alpha": false
+  },
+  {
+   "label": "unbalanced QAOA seed 4 p=1",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 7.801351257738441e-07,
+   "p_holm": 1.1702026886607662e-05,
+   "rank": 1,
+   "survives": true,
+   "raw_below_alpha": true
+  },
+  {
+   "label": "unbalanced QAOA seed 4 p=2",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.9901053424635228,
+   "p_holm": 1.0,
+   "rank": 12,
+   "survives": false,
+   "raw_below_alpha": false
+  },
+  {
+   "label": "unbalanced QAOA seed 4 p=3",
+   "kind": "unbalanced QAOA (8 loans, 8 qubits)",
+   "p_raw": 0.9999981390699751,
+   "p_holm": 1.0,
+   "rank": 15,
+   "survives": false,
+   "raw_below_alpha": false
+  }
+ ]
+}

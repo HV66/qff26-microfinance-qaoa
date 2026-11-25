@@ -1,0 +1,84 @@
+{
+ "config": {
+  "seed": 1,
+  "p": 2,
+  "lam": 0.3,
+  "n_loans": 8,
+  "shots": 4096,
+  "n_qubits": 8,
+  "maxiter": 200,
+  "restarts": 5,
+  "optimiser": "COBYLA",
+  "penalty": 10.854,
+  "l1": 2.648953682288024,
+  "l2": 8.205046317711975,
+  "budget": 17,
+  "raw_feasible": "not applicable (no slack bits)"
+ },
+ "exact": {
+  "objective": -3.3702153778715407,
+  "x": [
+   0,
+   0,
+   1,
+   0,
+   1,
+   0,
+   1,
+   0
+  ],
+  "qubo_min_energy": -3.2792044853724747,
+  "qubo_min_decodes_to_optimum": false
+ },
+ "optimiser": {
+  "best_value": 569.9227005201008,
+  "best_params": [
+   3.306762913115492,
+   1.8614969360353775,
+   5.974209196385436,
+   7.6352470161204575
+  ],
+  "restart_values": [
+   680.3072688134012,
+   687.1463244751569,
+   710.720394256985,
+   569.9227005201008,
+   571.8961666273526
+  ],
+  "n_evals": 656
+ },
+ "sampling": {
+  "p_optimal": 0.00634765625,
+  "p_feasible_decoded": 0.366943359375,
+  "best_feasible_objective": -3.3702153778715407,
+  "best_feasible_x": [
+   0,
+   0,
+   1,
+   0,
+   1,
+   0,
+   1,
+   0
+  ],
+  "best_feasible_gap_pct": 0.0,
+  "distinct_loan_vectors": 244,
+  "shots": 4096,
+  "hits": 26,
+  "binom_p_value_above_random": 0.012957177549562812,
+  "verdict": "above random"
+ },
+ "circuit": {
+  "depth": 78,
+  "two_qubit_gates": 112
+ },
+ "null": {
+  "p_optimal": 0.00390625,
+  "p_feasible_decoded": 0.34375,
+  "shots": 4096,
+  "kind": "analytic uniform"
+ },
+ "runtime_s": {
+  "optimise": 1.373017699981574
+ }
+}
