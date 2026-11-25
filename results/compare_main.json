@@ -1,0 +1,358 @@
+{
+ "main": {
+  "config": {
+   "seed": 0,
+   "lam": 0.3,
+   "n_loans": 8,
+   "shots": 4096
+  },
+  "exact_objective": -3.139573300265468,
+  "rows": [
+   {
+    "method": "exact (brute force)",
+    "objective": -3.139573300265468,
+    "max_value": 3.139573300265468,
+    "gap_pct": 0.0,
+    "runtime_s": 0.0074591000156942755,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "method": "greedy",
+    "objective": -3.139573300265468,
+    "max_value": 3.139573300265468,
+    "gap_pct": 0.0,
+    "runtime_s": 0.0012781999830622226,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "method": "simulated annealing",
+    "objective": -3.139573300265468,
+    "max_value": 3.139573300265468,
+    "gap_pct": 0.0,
+    "runtime_s": 0.579853599978378,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "method": "random sampling (4096 shots)",
+    "objective": -3.139573300265468,
+    "max_value": 3.139573300265468,
+    "gap_pct": 0.0,
+    "runtime_s": null,
+    "circuit_depth": null,
+    "p_optimum": 0.0029296875,
+    "p_feasible_decoded": 0.3662109375,
+    "note": ""
+   }
+  ],
+  "missing_qaoa_p": [
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "lambda_sensitivity": {
+  "qaoa_p": null,
+  "rows": [
+   {
+    "lam": 0.1,
+    "exact_objective": -3.3491911000884893,
+    "method": "exact (brute force)",
+    "objective": -3.3491911000884893,
+    "max_value": 3.3491911000884893,
+    "gap_pct": 0.0,
+    "runtime_s": 0.00732349997269921,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "lam": 0.1,
+    "exact_objective": -3.3491911000884893,
+    "method": "greedy",
+    "objective": -3.3491911000884893,
+    "max_value": 3.3491911000884893,
+    "gap_pct": 0.0,
+    "runtime_s": 0.0005505000008270144,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "lam": 0.1,
+    "exact_objective": -3.3491911000884893,
+    "method": "simulated annealing",
+    "objective": -3.3491911000884893,
+    "max_value": 3.3491911000884893,
+    "gap_pct": 0.0,
+    "runtime_s": 0.5570825000177138,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "lam": 0.1,
+    "exact_objective": -3.3491911000884893,
+    "method": "random sampling (4096 shots)",
+    "objective": -3.3491911000884893,
+    "max_value": 3.3491911000884893,
+    "gap_pct": 0.0,
+    "runtime_s": null,
+    "circuit_depth": null,
+    "p_optimum": 0.0029296875,
+    "p_feasible_decoded": 0.3662109375,
+    "note": ""
+   },
+   {
+    "lam": 0.3,
+    "exact_objective": -3.139573300265468,
+    "method": "exact (brute force)",
+    "objective": -3.139573300265468,
+    "max_value": 3.139573300265468,
+    "gap_pct": 0.0,
+    "runtime_s": 0.008313500002259389,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "lam": 0.3,
+    "exact_objective": -3.139573300265468,
+    "method": "greedy",
+    "objective": -3.139573300265468,
+    "max_value": 3.139573300265468,
+    "gap_pct": 0.0,
+    "runtime_s": 0.0006226999976206571,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "lam": 0.3,
+    "exact_objective": -3.139573300265468,
+    "method": "simulated annealing",
+    "objective": -3.139573300265468,
+    "max_value": 3.139573300265468,
+    "gap_pct": 0.0,
+    "runtime_s": 0.5136658999836072,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "lam": 0.3,
+    "exact_objective": -3.139573300265468,
+    "method": "random sampling (4096 shots)",
+    "objective": -3.139573300265468,
+    "max_value": 3.139573300265468,
+    "gap_pct": 0.0,
+    "runtime_s": null,
+    "circuit_depth": null,
+    "p_optimum": 0.0029296875,
+    "p_feasible_decoded": 0.3662109375,
+    "note": ""
+   },
+   {
+    "lam": 1.0,
+    "exact_objective": -2.405911000884893,
+    "method": "exact (brute force)",
+    "objective": -2.405911000884893,
+    "max_value": 2.405911000884893,
+    "gap_pct": 0.0,
+    "runtime_s": 0.0063396000186912715,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "lam": 1.0,
+    "exact_objective": -2.405911000884893,
+    "method": "greedy",
+    "objective": -2.405911000884893,
+    "max_value": 2.405911000884893,
+    "gap_pct": 0.0,
+    "runtime_s": 0.0005988999910186976,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "lam": 1.0,
+    "exact_objective": -2.405911000884893,
+    "method": "simulated annealing",
+    "objective": -2.405911000884893,
+    "max_value": 2.405911000884893,
+    "gap_pct": 0.0,
+    "runtime_s": 0.7916468000039458,
+    "circuit_depth": null,
+    "p_optimum": null,
+    "p_feasible_decoded": null,
+    "note": ""
+   },
+   {
+    "lam": 1.0,
+    "exact_objective": -2.405911000884893,
+    "method": "random sampling (4096 shots)",
+    "objective": -2.405911000884893,
+    "max_value": 2.405911000884893,
+    "gap_pct": 0.0,
+    "runtime_s": null,
+    "circuit_depth": null,
+    "p_optimum": 0.0029296875,
+    "p_feasible_decoded": 0.3662109375,
+    "note": ""
+   }
+  ]
+ },
+ "seed_summary": {
+  "per_seed": [
+   {
+    "seed": 0,
+    "method": "exact (brute force)",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 0,
+    "method": "greedy",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 0,
+    "method": "simulated annealing",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 0,
+    "method": "random sampling (4096 shots)",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 1,
+    "method": "exact (brute force)",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 1,
+    "method": "greedy",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 1,
+    "method": "simulated annealing",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 1,
+    "method": "random sampling (4096 shots)",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 2,
+    "method": "exact (brute force)",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 2,
+    "method": "greedy",
+    "gap_pct": 15.399365973270362
+   },
+   {
+    "seed": 2,
+    "method": "simulated annealing",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 2,
+    "method": "random sampling (4096 shots)",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 3,
+    "method": "exact (brute force)",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 3,
+    "method": "greedy",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 3,
+    "method": "simulated annealing",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 3,
+    "method": "random sampling (4096 shots)",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 4,
+    "method": "exact (brute force)",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 4,
+    "method": "greedy",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 4,
+    "method": "simulated annealing",
+    "gap_pct": 0.0
+   },
+   {
+    "seed": 4,
+    "method": "random sampling (4096 shots)",
+    "gap_pct": 0.0
+   }
+  ],
+  "summary": [
+   {
+    "method": "exact (brute force)",
+    "n_seeds": 5,
+    "n_missing": 0,
+    "mean_gap_pct": 0.0,
+    "worst_gap_pct": 0.0
+   },
+   {
+    "method": "greedy",
+    "n_seeds": 5,
+    "n_missing": 0,
+    "mean_gap_pct": 3.0798731946540725,
+    "worst_gap_pct": 15.399365973270362
+   },
+   {
+    "method": "simulated annealing",
+    "n_seeds": 5,
+    "n_missing": 0,
+    "mean_gap_pct": 0.0,
+    "worst_gap_pct": 0.0
+   },
+   {
+    "method": "random sampling (4096 shots)",
+    "n_seeds": 5,
+    "n_missing": 0,
+    "mean_gap_pct": 0.0,
+    "worst_gap_pct": 0.0
+   }
+  ]
+ }
+}

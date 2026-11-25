@@ -1,0 +1,122 @@
+{
+ "instance": {
+  "seed": 0,
+  "n_loans": 5,
+  "n_qubits": 9,
+  "lam": 0.3,
+  "p": 1,
+  "params_source": "re-optimised p=1 n_loans=5",
+  "exact_objective": -1.4457459946823221,
+  "exact_x": [
+   0,
+   0,
+   1,
+   1,
+   0
+  ]
+ },
+ "backend_noise_model": "fake_fez",
+ "shots": 4096,
+ "transpiled": {
+  "depth": 237,
+  "two_qubit_gates": 130
+ },
+ "mitigation_applied": {
+  "noiseless": "none",
+  "noisy": "none",
+  "noisy_readout_mitigated": "tensored readout calibration only"
+ },
+ "variants": {
+  "noiseless": {
+   "p_optimal": 0.050048828125,
+   "p_feasible_raw": 0.11181640625,
+   "p_feasible_decoded": 0.77880859375,
+   "best_feasible_objective": -1.4457459946823221,
+   "best_feasible_x": [
+    0,
+    0,
+    1,
+    1,
+    0
+   ],
+   "best_feasible_gap_pct": 0.0,
+   "distinct_loan_vectors": 32,
+   "shots": 4096
+  },
+  "noisy": {
+   "p_optimal": 0.0419921875,
+   "p_feasible_raw": 0.091552734375,
+   "p_feasible_decoded": 0.733154296875,
+   "best_feasible_objective": -1.4457459946823221,
+   "best_feasible_x": [
+    0,
+    0,
+    1,
+    1,
+    0
+   ],
+   "best_feasible_gap_pct": 0.0,
+   "distinct_loan_vectors": 32,
+   "shots": 4096
+  },
+  "noisy_readout_mitigated": {
+   "p_optimal": 0.04638671875,
+   "p_feasible_raw": 0.092041015625,
+   "p_feasible_decoded": 0.728759765625,
+   "best_feasible_objective": -1.4457459946823221,
+   "best_feasible_x": [
+    0,
+    0,
+    1,
+    1,
+    0
+   ],
+   "best_feasible_gap_pct": 0.0,
+   "distinct_loan_vectors": 32,
+   "shots": 4096
+  }
+ },
+ "readout_confusion_p01_p10": [
+  [
+   0.019775390625,
+   0.017578125
+  ],
+  [
+   0.005615234375,
+   0.007080078125
+  ],
+  [
+   0.00390625,
+   0.00341796875
+  ],
+  [
+   0.00439453125,
+   0.003662109375
+  ],
+  [
+   0.006591796875,
+   0.007568359375
+  ],
+  [
+   0.0029296875,
+   0.00537109375
+  ],
+  [
+   0.010009765625,
+   0.0087890625
+  ],
+  [
+   0.00439453125,
+   0.005126953125
+  ],
+  [
+   0.010986328125,
+   0.014892578125
+  ]
+ ],
+ "timings_s": {
+  "noiseless_s": 0.15299179998692125,
+  "noisy_s": 8.70370099999127,
+  "readout_mitigation_s": 15.924015299999155
+ }
+}

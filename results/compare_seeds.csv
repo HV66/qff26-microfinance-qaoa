@@ -1,0 +1,5 @@
+method,n_seeds,n_missing,mean_gap_pct,worst_gap_pct
+exact (brute force),5,0,0.0,0.0
+greedy,5,0,3.0798731946540725,15.399365973270362
+simulated annealing,5,0,0.0,0.0
+random sampling (4096 shots),5,0,0.0,0.0

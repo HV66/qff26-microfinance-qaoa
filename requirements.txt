@@ -1,4 +1,6 @@
-# Python 3.11. Versions pinned from the dev environment (uv pip freeze).
+# Python 3.11. Direct dependencies only, pinned to the versions installed in the
+# dev environment (generated from `uv pip freeze --python .venv\Scripts\python.exe`
+# and filtered to direct dependencies; transitive packages resolve from these).
 qiskit==2.6.2
 qiskit-aer==0.18.4
 qiskit-ibm-runtime==0.52.1
