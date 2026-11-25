@@ -1,5 +1,7 @@
 # QubitQuest: Microfinance Loan Portfolio Selection with QAOA
 
+[![CI](https://github.com/HV66/qff26-microfinance-qaoa/actions/workflows/ci.yml/badge.svg)](https://github.com/HV66/qff26-microfinance-qaoa/actions/workflows/ci.yml)
+
 IBM Qiskit Fall Fest 2026, 48-Hour Quantum for Humanity Hackathon. Track: Financial Inclusion & Resilient Markets (Option B: microfinance portfolio via QUBO and QAOA).
 
 **One-line pitch:** choose which small loans a microfinance lender should fund under a fixed budget, trading expected return against sector-correlated default risk, by encoding the problem as a QUBO and solving it with QAOA next to exact, greedy, simulated-annealing and random baselines. We report the comparison honestly and claim no quantum advantage.
@@ -247,9 +249,39 @@ Honest reading: noise lowers P(optimum) in all three rows. Readout mitigation lo
 | **real `ibm_fez`** | **0.0405** | **0.6692** | **0.0818** | 0.0000 |
 | uniform random sampling (same 4096 shots, 5 loans) | 0.0271 | 0.4119 | 0.0369 | n/a |
 
-Reading: the hardware P(optimum) of 0.0405 is 166 optimum hits out of 4096; uniform random sampling expects 1/32 = 128 hits. The exact one-sided binomial test used elsewhere in this README (alpha 0.05) calls that above random (p-value 0.0006), on one run, one instance and one seed, with no mitigation comparison on hardware. It is close to the noisy simulation (0.0420), slightly below the noiseless one (0.0500), and it is not evidence of quantum advantage: at 5 loans the search space has 32 loan vectors and the classical baselines solve it exactly. The best-sample gap is 0% because the 4096 shots cover all 32 loan vectors (`distinct_loan_vectors` is 32 in `results/hardware_result.json`), so it is uninformative here too. Depth 237 versus 238 above is the same circuit transpiled for two different backends.
+Reading: the hardware P(optimum) of 0.0405 is 166 optimum hits out of 4096; uniform random sampling expects 1/32 = 128 hits. The exact one-sided binomial test used elsewhere in this README (alpha 0.05) calls that above random (raw p-value 0.0006; Holm-adjusted 0.0096, so it survives a correction over all 17 tests, see `results/holm_correction.json`), on one run, one instance and one seed, with no mitigation comparison on hardware. It is close to the noisy simulation (0.0420), slightly below the noiseless one (0.0500), and it is not evidence of quantum advantage: at 5 loans the search space has 32 loan vectors and the classical baselines solve it exactly. The best-sample gap is 0% because the 4096 shots cover all 32 loan vectors (`distinct_loan_vectors` is 32 in `results/hardware_result.json`), so it is uninformative here too. Depth 237 versus 238 above is the same circuit transpiled for two different backends.
 
 Other instance sizes were not run on hardware. The 12-qubit instance transpiles to 223 two-qubit gates at p=1 and 519 at p=2 on the `fake_fez` coupling map, above the 300-gate limit `hardware_run.py` uses to flag a circuit as unrealistic. The hardware run used real credentials supplied by the user outside the repo; no token is stored in the repo.
+
+## Who benefits and fairness audit
+
+`scripts/impact_analysis.py` describes who is funded by the exact optimum and by greedy, for seeds 0 to 4 and lambda in {0.1, 0.3, 1.0} (30 rows, `results/impact_analysis.json`, table in `results/results.md`). It is a descriptive audit of synthetic data; the QUBO has no fairness constraint and none was added.
+
+- **Sector concentration.** 6 of the 15 exact-optimum portfolios fund no loan at all in one sector (lambda 0.1: 1 of 5; lambda 0.3: 2 of 5; lambda 1.0: 3 of 5). Greedy does the same in 6 of 15. In each of those rows the unfunded sector is sector 2, and that sector did request loans: for example seed 2 requested 11 of 30 units in sector 2 and funded none, and seed 3 requested 9 of 33 and funded none (`requested_amount_by_sector` in the JSON).
+- **Risk aversion shrinks the portfolio.** Mean loans funded by the exact optimum falls from 4.0 (lambda 0.1) to 3.6 (lambda 0.3) to 2.6 (lambda 1.0); mean expected return falls from 3.725 to 3.626 to 2.512 and mean portfolio risk falls from 4.037 to 3.645 to 1.438. A more risk-averse lender therefore reaches fewer borrowers.
+- **Budget is not always used.** In 9 of the 15 exact portfolios the amount deployed is below the budget, because the objective prefers to leave money unlent rather than fund a loan whose risk outweighs its return.
+- **What this does and does not show.** Sectors here are synthetic labels, not protected attributes, and nothing in this repo measures disparate impact on real groups. The audit shows that a return-minus-risk objective with sector-correlated risk can leave a whole sector unfunded, which is the kind of outcome a lender would need to check on real data before using any such model.
+
+## Scaling and where it breaks
+
+`scripts/scaling_study.py` (`results/scaling_study.json`, table in `results/results.md`) measures circuit size and brute-force cost for 4 to 10 loans on the seed-0 instance. No QAOA optimisation is run.
+
+- **Qubits and gates.** Qubits are loans plus 4 slack bits for every size tested (8 to 14 qubits). The logical two-qubit count is exactly p * N * (N - 1) for N qubits, because the squared budget penalty couples every pair of variables: 56 to 182 at p=1 and 112 to 364 at p=2 over the 4 to 10 loan range. Logical depth at p=1 grows from 48 to 84.
+- **Coupling map.** On the `fake_fez` coupling map the transpiled count is larger: 87, 130 and 174 two-qubit gates at 4, 5 and 6 loans (p=1). Larger sizes were skipped for transpile time. The 8-loan, p=1 circuit is 132 logical and 223 transpiled two-qubit gates (`results/noise_run_p1.json`).
+- **Brute force does not break here.** Brute force takes at most 0.0065 s up to 10 loans (1024 states).
+- **Extrapolation, not a measurement.** For 50 loans with an assumed budget of 90, the same formula gives 57 qubits (50 loans plus 7 slack bits), 3192 logical two-qubit gates at p=1 and 6384 at p=2, and 1125899906842624 brute-force states (2^50). These were not run. Transpiled counts on a real coupling map would be larger, and the dense all-pairs coupling is what makes this circuit hard for hardware.
+
+Where it breaks: the two-qubit count grows with the square of the qubit count, and the circuit is already large on a coupling map at 12 qubits (223 two-qubit gates at p=1 and 519 at p=2, above the 300-gate limit `hardware_run.py` uses to flag a circuit as unrealistic for current hardware). At the sizes measured, brute force stays far cheaper than the circuit, so this study does not show a size at which QAOA becomes useful. A sparser formulation, for example a constraint-preserving mixer without slack bits, is listed under next steps.
+
+## Deployment path and ethics
+
+This is a research prototype on synthetic data, not a credit-scoring product.
+
+- **Intended user.** A small microfinance lender or a funder that has a fixed pool of money, more loan requests than it can fund, and a view of how borrowers in the same sector tend to default together.
+- **Inputs a user would provide.** Anonymised, de-identified loan-request records: requested amount (in whole units), an expected return per loan, a sector label, and an estimated sector-correlated loss covariance. No names, identifiers or contact details would be needed or accepted, and no real data is used or stored in this repo.
+- **Human review stays in the loop.** The output is a ranked candidate portfolio for a human credit officer to review, not a lending decision. It does not replace credit officers, local knowledge or a lender's own policy and legal checks.
+- **Known risks.** As shown above, the objective can leave a whole sector unfunded, and estimated returns and covariances can encode historical bias. Any real use needs checks for disparate impact on the groups a lender serves, and a way for declined applicants to be reviewed.
+- **Next step: a fairness constraint.** Adding a minimum-coverage or sector-balance constraint, or a penalty on unfunded sectors, is listed under next steps; it is not implemented here.
 
 ## Honest limitations
 
@@ -286,6 +318,8 @@ Other checks: an independent verifier (`tests/independent/verify_independent.py`
 - Shot-based expectation estimation in the optimiser loop, and warm-started or layer-wise parameter initialisation.
 - Mixers or encodings that respect the budget constraint to avoid the penalty term and the slack qubits.
 - Real, anonymised sector default data and a sector-shock stress test.
+- A fairness constraint (minimum sector coverage or a penalty on unfunded sectors) in the QUBO, followed by a re-run of the impact analysis to measure what it costs in return and risk.
+- A sparser formulation, for example a constraint-preserving mixer, to remove the slack qubits and the all-pairs coupling.
 
 ## Pinned versions
 

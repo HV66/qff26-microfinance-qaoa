@@ -293,7 +293,29 @@ def impact_md(results_dir: Path) -> str:
         f"loans: {sum(1 for r in exact if r['unfunded_sectors'])} of {len(exact)} "
         f"({by_lam})."
     )
-    return intro + "\n\n" + summary + "\n\n" + table
+    by_lam_rows = [
+        [
+            r["lam"],
+            r["mean_loans_funded"],
+            r["mean_expected_return"],
+            r["mean_portfolio_risk"],
+            r["n_with_unfunded_sector"],
+            r["n_budget_not_fully_used"],
+        ]
+        for r in d.get("exact_by_lambda", [])
+    ]
+    by_lam_table = md_table(
+        [
+            "lam",
+            "mean loans funded",
+            "mean expected return",
+            "mean risk x^T Sigma x",
+            "portfolios with an unfunded sector (of 5)",
+            "portfolios not using the full budget (of 5)",
+        ],
+        by_lam_rows,
+    )
+    return intro + "\n\n" + summary + "\n\n" + by_lam_table + "\n\n" + table
 
 
 def scaling_md(results_dir: Path) -> str:

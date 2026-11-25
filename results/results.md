@@ -119,6 +119,12 @@ Descriptive only. The QUBO has no fairness constraint; sectors are synthetic lab
 
 Exact-optimum portfolios that leave at least one sector with zero funded loans: 6 of 15 (lam 0.1: 1 of 5; lam 0.3: 2 of 5; lam 1.0: 3 of 5).
 
+| lam | mean loans funded | mean expected return | mean risk x^T Sigma x | portfolios with an unfunded sector (of 5) | portfolios not using the full budget (of 5) |
+|---|---|---|---|---|---|
+| 0.1000 | 4.0000 | 3.7251 | 4.0371 | 1 | 2 |
+| 0.3000 | 3.6000 | 3.6264 | 3.6452 | 2 | 3 |
+| 1.0000 | 2.6000 | 2.5115 | 1.4383 | 3 | 4 |
+
 | seed | lam | solver | loans funded | amount deployed / budget | expected return | risk x^T Sigma x | funded loans per sector (0 / 1 / 2) | unfunded sector |
 |---|---|---|---|---|---|---|---|---|
 | 0 | 0.1000 | exact | 4 | 11 / 11 | 3.4540 | 1.0481 | 1 / 1 / 2 | none |

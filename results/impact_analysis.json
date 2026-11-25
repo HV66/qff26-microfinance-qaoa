@@ -2,6 +2,35 @@
  "n_loans": 8,
  "n_sectors": 3,
  "note": "Descriptive only. The QUBO has no fairness constraint; sectors are synthetic labels, not protected attributes.",
+ "exact_by_lambda": [
+  {
+   "lam": 0.1,
+   "n_seeds": 5,
+   "mean_loans_funded": 4.0,
+   "mean_expected_return": 3.7251199999999995,
+   "mean_portfolio_risk": 4.03709737290228,
+   "n_with_unfunded_sector": 1,
+   "n_budget_not_fully_used": 2
+  },
+  {
+   "lam": 0.3,
+   "n_seeds": 5,
+   "mean_loans_funded": 3.6,
+   "mean_expected_return": 3.62638,
+   "mean_portfolio_risk": 3.6451809228695438,
+   "n_with_unfunded_sector": 2,
+   "n_budget_not_fully_used": 3
+  },
+  {
+   "lam": 1.0,
+   "n_seeds": 5,
+   "mean_loans_funded": 2.6,
+   "mean_expected_return": 2.5115200000000004,
+   "mean_portfolio_risk": 1.4382913950039307,
+   "n_with_unfunded_sector": 3,
+   "n_budget_not_fully_used": 4
+  }
+ ],
  "rows": [
   {
    "seed": 0,

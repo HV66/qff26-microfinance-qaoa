@@ -49,3 +49,17 @@ def test_compute_covers_all_cases_and_respects_budget() -> None:
     assert len(out["rows"]) == 5 * 3 * 2
     assert all(r["amount_deployed"] <= r["budget"] for r in out["rows"])
     assert {r["solver"] for r in out["rows"]} == {"exact", "greedy"}
+
+
+def test_exact_by_lambda_summary_matches_rows() -> None:
+    out = impact_analysis.compute()
+    exact = [r for r in out["rows"] if r["solver"] == "exact"]
+    for s in out["exact_by_lambda"]:
+        sel = [r for r in exact if r["lam"] == s["lam"]]
+        assert s["n_seeds"] == len(sel) == 5
+        assert s["mean_loans_funded"] == pytest.approx(
+            sum(r["n_funded"] for r in sel) / 5
+        )
+        assert s["n_with_unfunded_sector"] == sum(
+            1 for r in sel if r["unfunded_sectors"]
+        )

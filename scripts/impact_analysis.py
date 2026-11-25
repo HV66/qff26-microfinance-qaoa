@@ -78,6 +78,33 @@ def describe(pf: LoanPortfolio, x: np.ndarray, lam: float) -> dict[str, Any]:
     }
 
 
+def summarise_by_lambda(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Mean funded loans, return and risk of the exact optimum, per lambda.
+
+    Also counts exact-optimum portfolios that leave a sector with zero funded
+    loans and portfolios that leave part of the budget unlent.
+    """
+    out = []
+    for lam in sorted({r["lam"] for r in rows}):
+        sel = [r for r in rows if r["solver"] == "exact" and r["lam"] == lam]
+        n = len(sel)
+        out.append(
+            {
+                "lam": lam,
+                "n_seeds": n,
+                "mean_loans_funded": sum(r["n_funded"] for r in sel) / n,
+                "mean_expected_return": sum(r["expected_return"] for r in sel) / n,
+                "mean_portfolio_risk": sum(r["portfolio_risk_xT_sigma_x"] for r in sel)
+                / n,
+                "n_with_unfunded_sector": sum(1 for r in sel if r["unfunded_sectors"]),
+                "n_budget_not_fully_used": sum(
+                    1 for r in sel if r["amount_deployed"] < r["budget"]
+                ),
+            }
+        )
+    return out
+
+
 def compute() -> dict[str, Any]:
     """Return the full analysis for all seeds, lambdas and both solvers."""
     rows: list[dict[str, Any]] = []
@@ -103,6 +130,7 @@ def compute() -> dict[str, Any]:
             "Descriptive only. The QUBO has no fairness constraint; sectors are "
             "synthetic labels, not protected attributes."
         ),
+        "exact_by_lambda": summarise_by_lambda(rows),
         "rows": rows,
     }
 
