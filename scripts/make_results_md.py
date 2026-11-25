@@ -214,8 +214,10 @@ def holm_md(results_dir: Path) -> str:
         )
     d = json.loads(path.read_text(encoding="utf-8"))
     summary = (
-        f"Family of {d['family_size']} one-sided exact binomial tests (16 simulated "
-        "QAOA runs plus the real-hardware job), each against its uniform-random "
+        f"Family of {d['family_size']} one-sided exact binomial tests "
+        f"({sum(1 for r in d['rows'] if r['kind'].startswith('simulated'))} simulated "
+        f"QAOA runs plus {sum(1 for r in d['rows'] if r['kind'].startswith('real'))} "
+        "real-hardware jobs), each against its uniform-random "
         f"rate. {d['n_raw_below_alpha']} have a raw p-value below {d['alpha']}; "
         f"{d['n_survive_holm']} survive Holm-Bonferroni at {d['alpha']}"
         + (": " + "; ".join(d["survive_holm"]) if d["survive_holm"] else "")
@@ -571,6 +573,79 @@ def hardware_md(path: Path) -> str:
     )
 
 
+def hardware_jobs_md(results_dir: Path) -> str:
+    """Markdown for ALL real-hardware jobs: one row per job, vs random, with Holm."""
+    legacy = results_dir / "hardware_result.json"
+    paths = ([legacy] if legacy.exists() else []) + sorted(
+        results_dir.glob("hardware_result_seed*_n*_p*.json")
+    )
+    if not paths:
+        return (
+            "## IBM Quantum hardware\n\nNo real-hardware result exists: no "
+            "`hardware_result*.json` file is present."
+        )
+    holm: dict[str, dict[str, Any]] = {}
+    holm_path = results_dir / "holm_correction.json"
+    if holm_path.exists():
+        for r in json.loads(holm_path.read_text(encoding="utf-8"))["rows"]:
+            holm[r["label"]] = r
+    vs_path = results_dir / "hardware_vs_random.json"
+    vs_by_job: dict[str, dict[str, Any]] = {}
+    if vs_path.exists():
+        for job in json.loads(vs_path.read_text(encoding="utf-8")).get("jobs", []):
+            vs_by_job[job["job_id"]] = job
+    rows = []
+    for path in paths:
+        d = json.loads(path.read_text(encoding="utf-8"))
+        inst, tr, m = d["instance"], d["transpile"], d["metrics"]
+        shots = sum(d["counts"].values())
+        vs = vs_by_job.get(d["job_id"], {})
+        label = (
+            f"real {d['backend']} {inst['n_loans']} loans "
+            f"seed {inst['seed']} p={inst['p']}"
+        )
+        h = holm.get(label)
+        rows.append(
+            [
+                d["job_id"],
+                f"{inst['seed']} / {inst['n_loans']} / {inst['p']}",
+                f"{tr['depth']} / {tr['two_qubit_gates']}",
+                shots,
+                f"{round(m['p_optimal'] * shots)} (P {m['p_optimal']:.4f})",
+                vs.get("random_null", {}).get("optimum_hits", "-"),
+                f"{2.0 ** -inst['n_loans']:.4f}",
+                m["p_feasible_decoded"],
+                vs.get("verdict", "-"),
+                "-" if h is None else f"{h['p_holm']:.4f}",
+                "-" if h is None else ("yes" if h["survives"] else "no"),
+            ]
+        )
+    table = md_table(
+        [
+            "job id",
+            "seed / loans / p",
+            "transpiled depth / 2q on this backend",
+            "shots",
+            "optimum hits",
+            "random-null hits (same shots)",
+            "uniform expectation P(opt)",
+            "P(feasible, decoded)",
+            "verdict vs random (raw)",
+            "Holm adjusted p",
+            "survives Holm",
+        ],
+        rows,
+    )
+    note = (
+        f"{len(paths)} real-hardware job(s), each a separate SamplerV2 run with "
+        "dynamical decoupling and Pauli twirling. With 4096 shots over a 5-loan "
+        "instance every loan vector is sampled, so the best-sample gap is "
+        "uninformative; P(optimum) against the uniform-random expectation is the "
+        "metric. Depth is transpiled depth on the backend that ran the job."
+    )
+    return "## IBM Quantum hardware\n\n" + note + "\n\n" + table
+
+
 def extra_md(title: str, path: Path) -> str:
     """Render top-level scalar fields of an optional result file."""
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -627,12 +702,12 @@ def build(results_dir: Path = RESULTS) -> str:
     noise_files = sorted(results_dir.glob("noise_run*.json"))
     if noise_files:
         sections.append(noise_md(noise_files))
+    sections.append(hardware_jobs_md(results_dir))
     if (results_dir / "hardware_result.json").exists():
-        sections.append(hardware_md(results_dir / "hardware_result.json"))
-    else:
         sections.append(
-            "## IBM Quantum hardware\n\nNo real-hardware result exists: "
-            "`results/hardware_result.json` is absent."
+            hardware_md(results_dir / "hardware_result.json").replace(
+                "## IBM Quantum hardware", "### First hardware job: field detail", 1
+            )
         )
     return "\n\n".join(sections) + "\n"
 

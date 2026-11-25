@@ -1,7 +1,10 @@
 {
  "job_id": "dc3imv5hdvas73bo063g",
  "backend": "ibm_fez",
+ "seed": 0,
  "n_loans": 5,
+ "p": 1,
+ "transpiled_depth": 238,
  "shots": 4096,
  "hardware": {
   "optimum_hits": 166,
@@ -17,6 +20,65 @@
  },
  "uniform_expectation_p_optimum": 0.03125,
  "expected_hits_uniform": 128.0,
+ "ideal_noiseless_p_optimum": 0.05075258423741899,
  "binomial_p_value_above_random": 0.0006002685527277448,
- "verdict": "above random"
+ "binomial_p_value_below_random": 0.9995519431991934,
+ "verdict": "above random",
+ "jobs": [
+  {
+   "job_id": "dc3imv5hdvas73bo063g",
+   "backend": "ibm_fez",
+   "seed": 0,
+   "n_loans": 5,
+   "p": 1,
+   "transpiled_depth": 238,
+   "shots": 4096,
+   "hardware": {
+    "optimum_hits": 166,
+    "p_optimum": 0.04052734375,
+    "p_feasible_decoded": 0.669189453125,
+    "p_feasible_raw": 0.081787109375
+   },
+   "random_null": {
+    "optimum_hits": 111,
+    "p_optimum": 0.027099609375,
+    "p_feasible_decoded": 0.411865234375,
+    "p_feasible_raw": 0.036865234375
+   },
+   "uniform_expectation_p_optimum": 0.03125,
+   "expected_hits_uniform": 128.0,
+   "ideal_noiseless_p_optimum": 0.05075258423741899,
+   "binomial_p_value_above_random": 0.0006002685527277448,
+   "binomial_p_value_below_random": 0.9995519431991934,
+   "verdict": "above random"
+  },
+  {
+   "job_id": "dc3jnp6q4uuc73a74reg",
+   "backend": "ibm_fez",
+   "seed": 1,
+   "n_loans": 5,
+   "p": 1,
+   "transpiled_depth": 250,
+   "shots": 4096,
+   "hardware": {
+    "optimum_hits": 82,
+    "p_optimum": 0.02001953125,
+    "p_feasible_decoded": 0.55419921875,
+    "p_feasible_raw": 0.06298828125
+   },
+   "random_null": {
+    "optimum_hits": 125,
+    "p_optimum": 0.030517578125,
+    "p_feasible_decoded": 0.39013671875,
+    "p_feasible_raw": 0.0390625
+   },
+   "uniform_expectation_p_optimum": 0.03125,
+   "expected_hits_uniform": 128.0,
+   "ideal_noiseless_p_optimum": 0.01337902505440158,
+   "binomial_p_value_above_random": 0.9999957568850907,
+   "binomial_p_value_below_random": 6.834523940863538e-06,
+   "verdict": "below random"
+  }
+ ],
+ "n_jobs": 2
 }

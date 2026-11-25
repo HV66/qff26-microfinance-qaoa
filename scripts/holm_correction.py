@@ -1,8 +1,8 @@
 """Holm-Bonferroni correction over the whole family of QAOA-vs-random tests.
 
 The family is every one-sided "above random" exact binomial test in the repo:
-one per saved QAOA run (results/compare_vs_random.csv) plus the real-hardware
-job (results/hardware_vs_random.json). Existing result files are only read.
+one per saved QAOA run (results/compare_vs_random.csv) plus one per real-hardware
+job (results/hardware_vs_random.json, all jobs). Existing result files are only read.
 
 Run:  python -m scripts.holm_correction
 Output: results/holm_correction.json
@@ -39,13 +39,18 @@ def build_family(results_dir: Path = RESULTS) -> list[dict[str, Any]]:
     hw_path = results_dir / "hardware_vs_random.json"
     if hw_path.exists():
         hw = json.loads(hw_path.read_text(encoding="utf-8"))
-        family.append(
-            {
-                "label": f"real {hw['backend']} {hw['n_loans']} loans p=1",
-                "kind": "real hardware (5 loans)",
-                "p_raw": float(hw["binomial_p_value_above_random"]),
-            }
-        )
+        # One entry per hardware job; fall back to the single-job layout.
+        for job in hw.get("jobs", [hw]):
+            family.append(
+                {
+                    "label": (
+                        f"real {job['backend']} {job['n_loans']} loans "
+                        f"seed {job.get('seed', 0)} p={job.get('p', 1)}"
+                    ),
+                    "kind": f"real hardware ({job['n_loans']} loans)",
+                    "p_raw": float(job["binomial_p_value_above_random"]),
+                }
+            )
     return family
 
 

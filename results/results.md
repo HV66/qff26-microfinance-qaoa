@@ -91,16 +91,16 @@ Tally: 5 of 16 runs above random, 1 of 16 runs below random, 10 of 16 runs indis
 
 ## Multiple-testing correction (Holm-Bonferroni)
 
-Family of 17 one-sided exact binomial tests (16 simulated QAOA runs plus the real-hardware job), each against its uniform-random rate. 6 have a raw p-value below 0.05; 3 survive Holm-Bonferroni at 0.05: simulated QAOA seed 1 p=3; simulated QAOA seed 2 p=1; real ibm_fez 5 loans p=1. Holm controls the family-wise error rate; the other raw hits are consistent with chance given the number of tests.
+Family of 18 one-sided exact binomial tests (16 simulated QAOA runs plus 2 real-hardware jobs), each against its uniform-random rate. 6 have a raw p-value below 0.05; 3 survive Holm-Bonferroni at 0.05: simulated QAOA seed 1 p=3; simulated QAOA seed 2 p=1; real ibm_fez 5 loans seed 0 p=1. Holm controls the family-wise error rate; the other raw hits are consistent with chance given the number of tests.
 
 | test | raw p (above random) | Holm adjusted p | survives Holm at 0.05 |
 |---|---|---|---|
-| simulated QAOA seed 1 p=3 | 2.58e-05 | 4.38e-04 | yes |
-| real ibm_fez 5 loans p=1 | 6.00e-04 | 0.0096 | yes |
-| simulated QAOA seed 2 p=1 | 0.0011 | 0.0166 | yes |
-| simulated QAOA seed 2 p=3 | 0.0130 | 0.1814 | no |
-| simulated QAOA seed 3 p=2 | 0.0130 | 0.1814 | no |
-| simulated QAOA seed 1 p=1 | 0.0364 | 0.4367 | no |
+| simulated QAOA seed 1 p=3 | 2.58e-05 | 4.64e-04 | yes |
+| real ibm_fez 5 loans seed 0 p=1 | 6.00e-04 | 0.0102 | yes |
+| simulated QAOA seed 2 p=1 | 0.0011 | 0.0177 | yes |
+| simulated QAOA seed 2 p=3 | 0.0130 | 0.1944 | no |
+| simulated QAOA seed 3 p=2 | 0.0130 | 0.1944 | no |
+| simulated QAOA seed 1 p=1 | 0.0364 | 0.4731 | no |
 | simulated QAOA seed 0 p=2 | 0.1314 | 1.0000 | no |
 | simulated QAOA seed 4 p=2 | 0.1314 | 1.0000 | no |
 | simulated QAOA seed 1 p=2 | 0.1873 | 1.0000 | no |
@@ -112,6 +112,7 @@ Family of 17 one-sided exact binomial tests (16 simulated QAOA runs plus the rea
 | simulated QAOA seed 0 p=4 | 0.9570 | 1.0000 | no |
 | simulated QAOA seed 4 p=1 | 0.9570 | 1.0000 | no |
 | simulated QAOA seed 2 p=2 | 0.9901 | 1.0000 | no |
+| real ibm_fez 5 loans seed 1 p=1 | 1.0000 | 1.0000 | no |
 
 ## Who is funded: impact and sector concentration
 
@@ -236,6 +237,15 @@ Source: `results/noise_run_p2.json`. 8 loans, 12 qubits, p=2, 4096 shots, parame
 | noisy_readout_mitigated | tensored readout calibration only | 0.0037 | 0.6934 | 0.0000 |
 
 ## IBM Quantum hardware
+
+2 real-hardware job(s), each a separate SamplerV2 run with dynamical decoupling and Pauli twirling. With 4096 shots over a 5-loan instance every loan vector is sampled, so the best-sample gap is uninformative; P(optimum) against the uniform-random expectation is the metric. Depth is transpiled depth on the backend that ran the job.
+
+| job id | seed / loans / p | transpiled depth / 2q on this backend | shots | optimum hits | random-null hits (same shots) | uniform expectation P(opt) | P(feasible, decoded) | verdict vs random (raw) | Holm adjusted p | survives Holm |
+|---|---|---|---|---|---|---|---|---|---|---|
+| dc3imv5hdvas73bo063g | 0 / 5 / 1 | 238 / 130 | 4096 | 166 (P 0.0405) | 111 | 0.0312 | 0.6692 | above random | 0.0102 | yes |
+| dc3jnp6q4uuc73a74reg | 1 / 5 / 1 | 250 / 130 | 4096 | 82 (P 0.0200) | 125 | 0.0312 | 0.5542 | below random | 1.0000 | no |
+
+### First hardware job: field detail
 
 One real-hardware job. The 4096 shots cover every loan vector of this 5-loan instance, so the best-sample gap is uninformative; P(optimum) against the uniform-random expectation is the metric. Transpiled depth here is on this backend; the noise-model section lists transpiled depth on the fake_fez target, and the main table lists logical depth.
 

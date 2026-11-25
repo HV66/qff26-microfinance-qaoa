@@ -1,6 +1,6 @@
 {
  "alpha": 0.05,
- "family_size": 17,
+ "family_size": 18,
  "n_raw_below_alpha": 6,
  "n_survive_holm": 3,
  "raw_below_alpha": [
@@ -9,12 +9,12 @@
   "simulated QAOA seed 2 p=1",
   "simulated QAOA seed 2 p=3",
   "simulated QAOA seed 3 p=2",
-  "real ibm_fez 5 loans p=1"
+  "real ibm_fez 5 loans seed 0 p=1"
  ],
  "survive_holm": [
   "simulated QAOA seed 1 p=3",
   "simulated QAOA seed 2 p=1",
-  "real ibm_fez 5 loans p=1"
+  "real ibm_fez 5 loans seed 0 p=1"
  ],
  "rows": [
   {
@@ -57,7 +57,7 @@
    "label": "simulated QAOA seed 1 p=1",
    "kind": "simulated QAOA (8 loans)",
    "p_raw": 0.03639089484353988,
-   "p_holm": 0.4366907381224785,
+   "p_holm": 0.4730816329660184,
    "rank": 6,
    "survives": false,
    "raw_below_alpha": true
@@ -75,7 +75,7 @@
    "label": "simulated QAOA seed 1 p=3",
    "kind": "simulated QAOA (8 loans)",
    "p_raw": 2.5754761368661332e-05,
-   "p_holm": 0.00043783094326724264,
+   "p_holm": 0.00046358570463590396,
    "rank": 1,
    "survives": true,
    "raw_below_alpha": true
@@ -84,7 +84,7 @@
    "label": "simulated QAOA seed 2 p=1",
    "kind": "simulated QAOA (8 loans)",
    "p_raw": 0.0011045365903408523,
-   "p_holm": 0.016568048855112785,
+   "p_holm": 0.017672585445453637,
    "rank": 3,
    "survives": true,
    "raw_below_alpha": true
@@ -102,7 +102,7 @@
    "label": "simulated QAOA seed 2 p=3",
    "kind": "simulated QAOA (8 loans)",
    "p_raw": 0.012957177549562812,
-   "p_holm": 0.18140048569387937,
+   "p_holm": 0.19435766324344217,
    "rank": 4,
    "survives": false,
    "raw_below_alpha": true
@@ -120,7 +120,7 @@
    "label": "simulated QAOA seed 3 p=2",
    "kind": "simulated QAOA (8 loans)",
    "p_raw": 0.012957177549562812,
-   "p_holm": 0.18140048569387937,
+   "p_holm": 0.19435766324344217,
    "rank": 5,
    "survives": false,
    "raw_below_alpha": true
@@ -162,13 +162,22 @@
    "raw_below_alpha": false
   },
   {
-   "label": "real ibm_fez 5 loans p=1",
+   "label": "real ibm_fez 5 loans seed 0 p=1",
    "kind": "real hardware (5 loans)",
    "p_raw": 0.0006002685527277448,
-   "p_holm": 0.009604296843643917,
+   "p_holm": 0.010204565396371662,
    "rank": 2,
    "survives": true,
    "raw_below_alpha": true
+  },
+  {
+   "label": "real ibm_fez 5 loans seed 1 p=1",
+   "kind": "real hardware (5 loans)",
+   "p_raw": 0.9999957568850907,
+   "p_holm": 1.0,
+   "rank": 18,
+   "survives": false,
+   "raw_below_alpha": false
   }
  ]
 }
