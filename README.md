@@ -54,8 +54,8 @@ flowchart TD
     subgraph HW["Noise and hardware path"]
         direction TB
         NZ["noise_run.py<br/>fake_fez noise model + readout mitigation<br/>DONE: results/noise_run_p1.json, _p2, _n5_p1"]
-        HR["hardware_run.py<br/>IBM Runtime SamplerV2<br/>dynamical decoupling + Pauli twirling<br/>ibm_fez, 5 loans, p=1: job DONE"]
-        RH["retrieve_hardware.py<br/>-> results/hardware_result.json<br/>produced (5 loans only)"]
+        HR["hardware_run.py<br/>IBM Runtime SamplerV2<br/>dynamical decoupling + Pauli twirling<br/>ibm_fez, 5 loans, p=1: 2 jobs DONE"]
+        RH["retrieve_hardware.py<br/>-> results/hardware_result*.json<br/>2 jobs (5 loans only)"]
         HR --> RH
     end
 
@@ -240,18 +240,25 @@ Transpiled depth on two different backends is also not identical: the 5-loan, p=
 
 Honest reading: noise lowers P(optimum) in all three rows. Readout mitigation lowered it at p=1 on 12 qubits and raised it slightly in the other two rows; with 4096 shots these differences are tens of hits, so we do not claim mitigation helps. The only mitigation applied in simulation is a tensored per-qubit readout calibration; no ZNE, dynamical decoupling or twirling is applied there (the Aer noise model has no idle dephasing for DD to act on). The p=2 circuit on 12 qubits needs 519 two-qubit gates after routing, which is above the 300-gate limit `hardware_run.py` uses to decide a circuit is unrealistic for current hardware, so a 12-qubit hardware run would not be attempted at p=2.
 
-**Real hardware (`ibm_fez`, 5 loans, p=1).** A real-backend job was submitted and its counts were retrieved with `retrieve_hardware.py`: job id `dc3imv5hdvas73bo063g`, status DONE on IBM Quantum (re-checked with `retrieve_hardware.py`), submitted 2026-11-25 18:39:55 UTC (`results/hardware_job.json`, `results/hardware_result.json`). Instance: seed 0, 5 loans, 9 qubits, parameters from `results/hardware_params_seed0_n5_p1.json`; transpiled depth 238 with 130 two-qubit gates on `ibm_fez` (optimization level 3); SamplerV2 with dynamical decoupling (XpXm) and Pauli twirling. **Shots: 4096.** The job was submitted with 4096 shots, and the saved counts sum to 4096.
+**Real hardware (`ibm_fez`, 5 loans, p=1): two jobs, two seeds.** Two real-backend jobs were submitted and their counts retrieved with `retrieve_hardware.py`. Both used 4096 shots, SamplerV2 with dynamical decoupling (XpXm) and Pauli twirling, optimization level 3, 5 loans, 9 qubits, p=1, and angles optimised beforehand by `qaoa_run.optimise` for that exact instance (cached in `results/hardware_params_seed{S}_n5_p1.json`). Job records and results are keyed by seed: `results/hardware_job.json` / `results/hardware_result.json` for seed 0 and `results/hardware_job_seed1_n5_p1.json` / `results/hardware_result_seed1_n5_p1.json` for seed 1. Both jobs show status DONE on IBM Quantum, and the saved counts sum to 4096.
 
-| 5 loans, p=1, 4096 shots | P(optimum) | P(feasible, decoded) | P(raw feasible, zero penalty) | best-sample gap % |
+| job | seed | transpiled depth / 2q on `ibm_fez` | optimum hits | P(optimum) | ideal noiseless P(optimum) of these angles | P(feasible, decoded) | verdict vs random (raw) | Holm adjusted p |
+|---|---|---|---|---|---|---|---|---|
+| `dc3imv5hdvas73bo063g` | 0 | 238 / 130 | 166 | 0.0405 | 0.0508 | 0.6692 | above random | 0.0102 (survives) |
+| `dc3jnp6q4uuc73a74reg` | 1 | 250 / 130 | 82 | 0.0200 | 0.0134 | 0.5542 | **below random** | 1.0000 (does not survive; this test asks about an excess above random, and this job is below it) |
+
+Uniform random sampling at 5 loans expects 1/32 = 128 optimum hits per 4096 shots (P 0.0312). The per-seed null draws were 111 hits (seed 0) and 125 hits (seed 1) (`results/hardware_vs_random.json`).
+
+Reading, stated plainly: the two hardware runs do not agree. Seed 0 is above the uniform-random rate (166 hits against 128 expected; raw p 0.0006; Holm-adjusted 0.0102 over all 18 tests, so it survives). Seed 1 is below it (82 hits against 128 expected; the exact one-sided test for "below random" gives p = 7e-06). The seed-1 value is also close to what the same angles give with no noise at all (0.0134), so for seed 1 the low value is largely a property of the angles, not of hardware noise: for that instance the optimised circuit puts less probability on the optimum than a uniform guess would. Seed 0's hardware value (0.0405) is slightly below its noiseless value (0.0508) and close to the noisy simulation (0.0420), which is the pattern one expects from noise. Two jobs on two different instances are not enough to say anything general about QAOA on this hardware, and neither is evidence of quantum advantage: at 5 loans the search space has 32 loan vectors and the classical baselines solve it exactly. The best-sample gap is 0% in both jobs because 4096 shots cover all 32 loan vectors, so it is uninformative. Depth 237 (`fake_fez` target, seed 0) versus 238 (`ibm_fez`, seed 0) is the same circuit transpiled for two backends; seed 1 transpiled to depth 250 on `ibm_fez`.
+
+| 5 loans, p=1, 4096 shots, seed 0 | P(optimum) | P(feasible, decoded) | P(raw feasible, zero penalty) | best-sample gap % |
 |---|---|---|---|---|
 | noise model, noiseless (fake_fez target) | 0.0500 | 0.7788 | 0.1118 | 0.0000 |
 | noise model, noisy | 0.0420 | 0.7332 | 0.0916 | 0.0000 |
 | **real `ibm_fez`** | **0.0405** | **0.6692** | **0.0818** | 0.0000 |
 | uniform random sampling (same 4096 shots, 5 loans) | 0.0271 | 0.4119 | 0.0369 | n/a |
 
-Reading: the hardware P(optimum) of 0.0405 is 166 optimum hits out of 4096; uniform random sampling expects 1/32 = 128 hits. The exact one-sided binomial test used elsewhere in this README (alpha 0.05) calls that above random (raw p-value 0.0006; Holm-adjusted 0.0096, so it survives a correction over all 17 tests, see `results/holm_correction.json`), on one run, one instance and one seed, with no mitigation comparison on hardware. It is close to the noisy simulation (0.0420), slightly below the noiseless one (0.0500), and it is not evidence of quantum advantage: at 5 loans the search space has 32 loan vectors and the classical baselines solve it exactly. The best-sample gap is 0% because the 4096 shots cover all 32 loan vectors (`distinct_loan_vectors` is 32 in `results/hardware_result.json`), so it is uninformative here too. Depth 237 versus 238 above is the same circuit transpiled for two different backends.
-
-Other instance sizes were not run on hardware. The 12-qubit instance transpiles to 223 two-qubit gates at p=1 and 519 at p=2 on the `fake_fez` coupling map, above the 300-gate limit `hardware_run.py` uses to flag a circuit as unrealistic. The hardware run used real credentials supplied by the user outside the repo; no token is stored in the repo.
+Other instance sizes were not run on hardware. The 12-qubit instance transpiles to 223 two-qubit gates at p=1 and 519 at p=2 on the `fake_fez` coupling map, above the 300-gate limit `hardware_run.py` uses to flag a circuit as unrealistic. The hardware runs used real credentials supplied by the user outside the repo; no token is stored in the repo.
 
 ## Who benefits and fairness audit
 
@@ -297,7 +304,7 @@ This is a research prototype on synthetic data, not a credit-scoring product.
 - Final sampling uses `qiskit.primitives.StatevectorSampler`, the primitives-V2 reference sampler (exact simulation, seeded shot noise), on the circuit transpiled to a generic basis.
 - `demo.py` by default loads the saved seed-0 best-p parameters (the lowest stored optimiser objective) and samples the saved circuit with 4096 shots through `qaoa_run.sample_counts`, the same path as the full runs. `demo.py --quick` re-optimises with fewer restarts, iterations and shots, prints a REDUCED BUDGET banner, and its numbers differ from `results/results.md`.
 - Data is synthetic with a simple sector-correlation model; it is not calibrated to real loan books.
-- Only 5 seeds and one simulated instance size; one real-hardware run (5 loans, p=1, one job) and no hardware error-mitigation comparison.
+- Only 5 seeds and one simulated instance size; two real-hardware jobs (5 loans, p=1, seeds 0 and 1) that disagree, and no hardware error-mitigation comparison.
 
 ## Verification
 
@@ -313,7 +320,7 @@ Other checks: an independent verifier (`tests/independent/verify_independent.py`
 
 ## Next steps
 
-- Repeat the real-hardware run with more seeds and with and without dynamical decoupling and twirling, to separate the effect of mitigation from run-to-run variation.
+- Repeat the real-hardware runs with more seeds and with and without dynamical decoupling and twirling, and compare each with the noiseless value of the same angles, to separate the effect of mitigation from the effect of the angles.
 - Larger instances (n beyond what brute force handles) with a fair, matched-budget comparison against simulated annealing.
 - Shot-based expectation estimation in the optimiser loop, and warm-started or layer-wise parameter initialisation.
 - Mixers or encodings that respect the budget constraint to avoid the penalty term and the slack qubits.

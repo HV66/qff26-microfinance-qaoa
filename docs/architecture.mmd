@@ -22,8 +22,8 @@ flowchart TD
     subgraph HW["Noise and hardware path"]
         direction TB
         NZ["noise_run.py<br/>fake_fez noise model + readout mitigation<br/>DONE: results/noise_run_p1.json, _p2, _n5_p1"]
-        HR["hardware_run.py<br/>IBM Runtime SamplerV2<br/>dynamical decoupling + Pauli twirling<br/>ibm_fez, 5 loans, p=1: job DONE"]
-        RH["retrieve_hardware.py<br/>-> results/hardware_result.json<br/>produced (5 loans only)"]
+        HR["hardware_run.py<br/>IBM Runtime SamplerV2<br/>dynamical decoupling + Pauli twirling<br/>ibm_fez, 5 loans, p=1: 2 jobs DONE"]
+        RH["retrieve_hardware.py<br/>-> results/hardware_result*.json<br/>2 jobs (5 loans only)"]
         HR --> RH
     end
 
