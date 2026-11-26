@@ -2,7 +2,7 @@
 
 Updated: 2026-11-25. Code freeze: Thu 26 Nov 23:59 IST.
 
-## Done (committed, 269 tests, ruff and black clean)
+## Done (committed, 407 tests, ruff and black clean)
 - data, QUBO (own Ising conversion, PSD penalty proof), baselines (exact, greedy, SA, random)
 - QAOA p=1..4 seed 0, p=1..3 seeds 1-4; per-run QAOA vs random binomial table
 - Noise-model runs with real saved parameters: 12 qubits p=1, p=2; 9 qubits p=1
