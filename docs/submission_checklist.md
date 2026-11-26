@@ -10,7 +10,7 @@ Status values: DONE (path verified to exist in this repo), PARTIAL, TODO-USER (o
 | README: problem, approach, how to run, results | `README.md` (has run, error-mitigation, limitations and credits sections) | DONE |
 | Runnable Qiskit code or notebook | `qaoa_run.py`, `demo.py`; one command: `python demo.py`; full pipeline: `python scripts/run_all.py` | DONE |
 | Classical baseline and comparison table | `baseline.py`, `sa_baseline.py`, `compare.py`; table in `results/results.md`, data in `results/compare_main.csv`, `results/compare_seeds.csv` | DONE |
-| 3-minute pitch video link | Script ready in `docs/pitch_script.md` (section A). Record at 3:00 or less, host it, put the link in README and the form | TODO-USER |
+| 3-minute pitch video link | Recorded and hosted on Google Drive: https://drive.google.com/file/d/1bsB6KaZ1qiLYi64zI8aRNbhbYTqSUVng/view?usp=sharing (also in `README.md` line 30). Script: `docs/video_script_3min.md`. Still to confirm: link sharing is "Anyone with the link", and the link is in the submission form | PARTIAL (link in README; sharing and form TODO-USER) |
 | Team name, members, track in submission form | Track: Finance (Option B, microfinance QUBO + QAOA). Form URL is not in the deck: ask organisers on Discord (#event-ops) | TODO-USER |
 
 ## Strongly recommended

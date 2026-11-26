@@ -27,7 +27,7 @@ Microfinance lenders serve low-income borrowers (smallholder farmers, market tra
 
 Beneficiaries are the borrowers who get funded and the lenders whose portfolios survive a sector shock. The model is a toy: it shows the formulation and method, not a deployable credit-scoring system.
 
-**Demo video:** https://example.com/TODO-replace-with-video-url (placeholder, to be filled in by the team)
+**Demo video (3 min):** https://drive.google.com/file/d/1bsB6KaZ1qiLYi64zI8aRNbhbYTqSUVng/view?usp=sharing
 
 ## Architecture
 
