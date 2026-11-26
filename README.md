@@ -6,15 +6,17 @@ IBM Qiskit Fall Fest 2026, 48-Hour Quantum for Humanity Hackathon. Track: Financ
 
 **One-line pitch:** choose which small loans a microfinance lender should fund under a fixed budget, trading expected return against sector-correlated default risk, by encoding the problem as a QUBO and solving it with QAOA next to exact, greedy, simulated-annealing and random baselines. We report the comparison honestly and claim no quantum advantage.
 
-## Team (TODO: fill in the remaining placeholders before submission)
+## Team
 
-- Team name: TODO
+- Team name: Q-Spark
+- Team lead: Harsha
 - Members:
-  - Harsha (GitHub: HV66)
-  - TODO: member 2 (name, GitHub)
-  - TODO: member 3 (name, GitHub)
+  - Harsha: harshavardhan.mitta27@gmail.com / Harsha.vardhan.Mitta@ibm.com
+  - Anush Yadav: sunnyanush@gmail.com
+  - Lekhana: lplekhana@gmail.com
+  - Vikram: vikramkumar@in.ibm.com
+  - Bharath Bhushan: bchevvak@in.ibm.com / bhushan.bc@gmail.com
 - Track: Finance (Financial Inclusion & Resilient Markets), Case Study 4, Option B (microfinance portfolio via QUBO and QAOA)
-- Team lead: TODO
 
 ## Problem and beneficiary
 
